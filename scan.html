@@ -1079,7 +1079,8 @@ function renderResults() {
       ${winCards}
 
       <div class="btn-row" style="margin-top:1.5rem;">
-        <button class="btn-primary" onclick="SID=genId();ST=6;render()">Save my results →</button>
+        <button class="btn-primary" onclick="goToDashboard()">Full plan →</button>
+        <button class="btn-outline" onclick="SID=genId();ST=6;render()">Save results</button>
         <button class="btn-ghost" onclick="window.location.href='/'">← Home</button>
       </div>
       <p style="text-align:center;margin-top:1rem;font-size:11px;color:var(--dim);">
@@ -1196,7 +1197,7 @@ async function doSave() {
         <p style="font-size:11px;color:var(--dim);margin-bottom:1.5rem;">
           Store this phrase somewhere safe — a password manager, a note, or a photo.
         </p>
-        <button class="btn-primary" onclick="ST=5;render()">View my full results →</button>
+        <button class="btn-primary" onclick="goToDashboard()">View my full plan →</button>
       </div>`;
 
   } catch (err) {
@@ -1205,6 +1206,39 @@ async function doSave() {
     if (errEl) errEl.style.display = 'block';
     if (btn) { btn.disabled = false; btn.textContent = 'Save and confirm →'; }
   }
+}
+
+// ── SESSION PROFILE BUILDER ───────────────────────────────
+// Maps scan.html state (PR + DV) into the format dashboard.html and
+// actor pages read from sessionStorage. Called before any navigation
+// to dashboard.html or an actor detail page.
+function buildProfile() {
+  // Copy all 10 profile slider values
+  const profile = { ...PR };
+
+  // Default all device flags off
+  profile.ip = false; profile.iosV = 1;
+  profile.id = false; profile.ipadV = 1;
+  profile.an = false; profile.anV  = 1;
+  profile.mc = false; profile.mcV  = 1;
+  profile.wn = false; profile.wnV  = 1;
+
+  // Map patch status to a version index in dashboard's version arrays
+  // current → idx 1 (latest), behind → idx 3, outdated → idx 6
+  const vIdx = DV.patch === 'current' ? 1 : DV.patch === 'behind' ? 3 : 6;
+
+  if (DV.type === 'iphone')  { profile.ip = true; profile.iosV  = vIdx; }
+  if (DV.type === 'ipad')    { profile.id = true; profile.ipadV = vIdx; }
+  if (DV.type === 'android') { profile.an = true; profile.anV   = vIdx; }
+  if (DV.type === 'mac')     { profile.mc = true; profile.mcV   = vIdx; }
+  if (DV.type === 'windows') { profile.wn = true; profile.wnV   = vIdx; }
+
+  return profile;
+}
+
+function goToDashboard() {
+  sessionStorage.setItem('mbg_profile', JSON.stringify(buildProfile()));
+  window.location.href = 'dashboard.html';
 }
 
 // ── ROUTER ────────────────────────────────────────────────
