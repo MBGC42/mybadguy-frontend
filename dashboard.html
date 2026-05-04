@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyBadGuy threat dashboard — your personal risk profile across 7 threat actor types.">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="robots" content="noindex">
+  <title>MyBadGuy — Threat Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root{
+      --navy:#0f172a;--mid:#1a2744;--lift:#1e2d4a;
+      --cyan:#22d3ee;--lcyan:#e0f9fd;
+      --slate:#f1f5f9;--muted:#94a3b8;--dim:#475569;
+      --red:#E24B4A;--amber:#EF9F27;--blue:#378ADD;--green:#22c55e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var(--slate);min-height:100vh;}
+
+    /* NAV */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid rgba(34,211,238,.1);background:rgba(15,23,42,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
+    .nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;}
+    .nav-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .btn-back{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;padding:6px 12px;border-radius:99px;transition:color .15s;text-decoration:none;}
+    .btn-back:hover{color:var(--slate);}
+    .btn-rescan{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:7px 18px;border-radius:99px;background:var(--lcyan);color:var(--navy);border:none;cursor:pointer;transition:background .15s;text-decoration:none;display:inline-block;}
+    .btn-rescan:hover{background:#c8f5fb;}
+
+    /* LAYOUT */
+    .page{max-width:760px;margin:0 auto;padding:1.5rem 1.25rem 3rem;}
+    .eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:.5rem;}
+    .sec-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:.3rem;}
+
+    /* OVERALL SCORE HERO */
+    .score-hero{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;}
+    .score-ring{width:88px;height:88px;border-radius:50%;border:3px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+    .score-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;line-height:1;}
+    .score-of{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+    /* PROFILE CARD */
+    .profile-card{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;}
+    .profile-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+    .profile-title-sub{font-size:11px;color:var(--muted);font-weight:400;}
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;}
+    .sl-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
+    .sl-label{font-size:12px;color:var(--muted);width:115px;flex-shrink:0;}
+    .sl-row input[type=range]{flex:1;accent-color:var(--cyan);}
+    .sl-chip{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;min-width:60px;text-align:center;}
+    .sl-sub{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);grid-column:1/-1;margin-top:4px;}
+    .profile-divider{grid-column:1/-1;height:.5px;background:rgba(255,255,255,.06);margin:4px 0;}
+    .dev-section{border-top:.5px solid rgba(255,255,255,.06);margin-top:.85rem;padding-top:.85rem;}
+    .dev-section-title{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+    .dev-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
+    .dev-cb{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:500;min-width:76px;}
+    .dev-ver{font-size:11px;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;}
+    .dev-patch{font-size:11px;padding:2px 7px;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+
+    /* ACTOR GROUP */
+    .group-block{margin-bottom:1.5rem;}
+    .group-hdr{display:flex;align-items:center;gap:10px;padding:.5rem .85rem;border-radius:8px;border-left:3px solid;margin-bottom:.65rem;}
+    .group-hdr-label{font-size:13px;font-weight:500;flex:1;}
+    .group-hdr-avg{font-size:11px;opacity:.65;}
+
+    /* ACTOR ROWS */
+    .actor-row{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:12px;padding:.9rem 1rem;margin-bottom:8px;display:flex;align-items:center;gap:12px;text-decoration:none;transition:border-color .15s,transform .15s;}
+    .actor-row:hover{border-color:rgba(255,255,255,.2);transform:translateY(-1px);}
+    .actor-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+    .actor-info{flex:1;min-width:0;}
+    .actor-name{font-size:14px;font-weight:500;color:var(--slate);margin-bottom:2px;}
+    .actor-sub{font-size:11px;color:var(--muted);}
+    .actor-bars{flex:1;display:flex;flex-direction:column;gap:3px;}
+    .bar-line{display:flex;align-items:center;gap:6px;}
+    .bar-label{font-size:10px;color:var(--muted);width:50px;flex-shrink:0;}
+    .bar-track{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:2px;transition:width .4s ease;}
+    .bar-val{font-size:11px;font-weight:500;min-width:22px;text-align:right;}
+    .actor-combo{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+    .combo-score{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;line-height:1;}
+    .combo-label{font-size:10px;color:var(--muted);}
+    .actor-arrow{font-size:14px;color:var(--dim);flex-shrink:0;}
+
+    /* QUICK WINS */
+    .wins-card{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;}
+    .win-row{display:flex;gap:10px;padding:.5rem 0;border-bottom:.5px solid rgba(255,255,255,.04);}
+    .win-row:last-child{border-bottom:none;}
+    .win-num{width:22px;height:22px;border-radius:50%;background:rgba(34,211,238,.15);color:var(--cyan);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+    .win-title{font-size:13px;font-weight:500;margin-bottom:2px;}
+    .win-where{font-size:11px;color:var(--muted);font-style:italic;}
+
+    /* NVD ATTRIBUTION */
+    .attribution{text-align:center;font-size:10px;color:var(--dim);padding:.75rem;border-top:1px solid rgba(255,255,255,.04);margin-top:1.5rem;}
+
+    @media(max-width:580px){
+      .profile-grid{grid-template-columns:1fr;}
+      .score-hero{flex-direction:column;text-align:center;}
+      .actor-bars{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
+    <span class="nav-name">MyBadGuy</span>
+  </a>
+  <div class="nav-right">
+    <a href="scan.html" class="btn-back">← Back to scan</a>
+    <a href="scan.html" class="btn-rescan">New scan →</a>
+  </div>
+</nav>
+
+<div class="page" id="page"></div>
+
+<script>
+'use strict';
+
+// ── LOAD PROFILE ──────────────────────────────────────────
+// Reads from sessionStorage if set by scan.html, otherwise uses defaults
+let PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
+  age:42, fin:3, tech:2, iso:2, sm:2,
+  role:1, pub:1, mdm:1, home:2, usage:1,
+  ip:true,  iosV:1,
+  id:false, ipadV:1,
+  an:false, anV:1,
+  mc:false, mcV:1,
+  wn:false, wnV:1,
+};
+
+// ── VERSION TABLES ────────────────────────────────────────
+const IOS_V    = [{v:'iOS 26.4.1',ps:0},{v:'iOS 26.4',ps:0},{v:'iOS 26.3.x',ps:6},{v:'iOS 26.2',ps:9},{v:'iOS 26.1',ps:14},{v:'iOS 26.0',ps:20},{v:'iOS 18.4.x',ps:32},{v:'iOS 18.3.x',ps:38},{v:'iOS 18.2',ps:44},{v:'iOS 17.x',ps:82}];
+const IPAD_V   = [{v:'iPadOS 26.4.1',ps:0},{v:'iPadOS 26.4',ps:0},{v:'iPadOS 26.3.x',ps:6},{v:'iPadOS 26.2',ps:9},{v:'iPadOS 26.0-26.1',ps:17},{v:'iPadOS 18.4.x',ps:30},{v:'iPadOS 18.x',ps:52},{v:'iPadOS 17.x',ps:78},{v:'iPadOS 16.x',ps:112}];
+const ANDROID_V= [{v:'Android 15',ps:0},{v:'Android 14',ps:28},{v:'Android 13',ps:62},{v:'Android 12',ps:98},{v:'Android 11',ps:134},{v:'Android 10',ps:178},{v:'Android 9',ps:224}];
+const MAC_V    = [{v:'macOS 26.4.1',ps:0},{v:'macOS 26.4',ps:0},{v:'macOS 26.3.x',ps:6},{v:'macOS 26.2',ps:9},{v:'macOS 26.0-26.1',ps:17},{v:'macOS 15.4.x',ps:28},{v:'macOS 15.x',ps:48},{v:'macOS 14.x',ps:92}];
+const WIN_V    = [{v:'Win 11 24H2',ps:0},{v:'Win 11 23H2',ps:28},{v:'Win 11 22H2',ps:66},{v:'Win 11 21H2',ps:104},{v:'Win 10 22H2',ps:112},{v:'Win 10 21H2',ps:186},{v:'Win 10 21H1',ps:248}];
+
+// ── CHIP DISPLAY ──────────────────────────────────────────
+const FIN_L  =['','Struggling','Working class','Middle income','Affluent','High wealth'];
+const FIN_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const TECH_L =['','No tech skills','Basic user','Moderate','Tech-savvy','Expert / IT'];
+const TECH_S =['','background:#FCEBEB;color:#A32D2D','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A'];
+const ISO_L  =['','Severely isolated','Some isolation','Socially active','Well connected','Community leader'];
+const ISO_S  =['','background:#FCEBEB;color:#A32D2D','background:#FAEEDA;color:#854F0B','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A'];
+const SM_L   =['','Never uses','Casual','Regular','Heavy user','Influencer'];
+const SM_S   =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const ROLE_L =['','No work data','Some work apps','Confidential','Regulated','Gov / exec'];
+const ROLE_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const PUB_L  =['','Very private','Low','Moderate','High','Very public'];
+const PUB_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const MDM_L  =['','Personal only','Work apps','Work email','Corp account','MDM enrolled'];
+const MDM_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const HOME_L =['','Rural','Suburban','Urban','Dense urban'];
+const HOME_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+const USAGE_L=['','At home','Work/commute','Public use','Travel','International'];
+const USAGE_S=['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+
+// ── ACTOR DEFINITIONS (scores only — full detail in actor pages) ──
+const ACTORS = [
+  { id:'apt',          name:'Nation-state / APT',      sub:'Espionage & intelligence', page:'actors/apt.html',
+    g:'technical', gc:'#E24B4A', ab:'#D1ECF1', ac:'#0C447C', ini:'NS',
+    tBase:97, sBase:52, cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
+    ds:{ip:.95,id:.75,an:.85,mc:.80,wn:.90}, mdmW:.90, lw:{home:.10,usage:.85} },
+  { id:'insider',      name:'Insider threat',          sub:'Org access abuse',         page:'actors/insider.html',
+    g:'technical', gc:'#E24B4A', ab:'#EAF3DE', ac:'#27500A', ini:'IT',
+    tBase:55, sBase:62, cf:{age:.1,fin:.3,tech:.2,iso:.2,pub:.4,sm:.3,role:.75},
+    ds:{ip:.8,id:.7,an:.75,mc:.85,wn:.88}, mdmW:.95, lw:{home:.15,usage:.35} },
+  { id:'broker',       name:'Data broker / adtech',    sub:'Passive data harvesting',  page:'actors/data-broker.html',
+    g:'technical', gc:'#E24B4A', ab:'#E2D9F3', ac:'#3C3489', ini:'DB',
+    tBase:42, sBase:35, cf:{age:.3,fin:.7,tech:-.2,iso:.1,pub:.5,sm:.85,role:.2},
+    ds:{ip:.7,id:.8,an:.75,mc:.55,wn:.60}, mdmW:.10, lw:{home:.55,usage:.30} },
+  { id:'stalker',      name:'Partner abuser',          sub:'Control & surveillance',   page:'actors/partner-abuser.html',
+    g:'social', gc:'#378ADD', ab:'#F8D7DA', ac:'#791F1F', ini:'IP',
+    tBase:58, sBase:90, cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
+    ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10} },
+  { id:'scammer',      name:'Elder scammer',           sub:'Fraud & impersonation',    page:'actors/elder-scammer.html',
+    g:'social', gc:'#378ADD', ab:'#FDE8D8', ac:'#712B13', ini:'ES',
+    tBase:22, sBase:88, cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
+    ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05} },
+  { id:'cybercriminal',name:'Cybercriminal',            sub:'Financial gain',           page:'actors/cybercriminal.html',
+    g:'financial', gc:'#EF9F27', ab:'#FFF3CD', ac:'#854F0B', ini:'CC',
+    tBase:78, sBase:72, cf:{age:.6,fin:.9,tech:-.7,iso:.5,pub:.3,sm:.7,role:.2},
+    ds:{ip:.85,id:.55,an:.80,mc:.70,wn:.75}, mdmW:.35, lw:{home:.35,usage:.45} },
+  { id:'thief',        name:'Device thief',            sub:'Device theft & resale',    page:'actors/device-thief.html',
+    g:'financial', gc:'#EF9F27', ab:'#F1EFE8', ac:'#444441', ini:'OT',
+    tBase:35, sBase:45, cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
+    ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90} },
+];
+
+// ── SCORING ENGINE ────────────────────────────────────────
+function devBoost(a) {
+  const p = PR;
+  let b = 0;
+  if(p.ip) b += (IOS_V[p.iosV-1]?.ps||0) * a.ds.ip * 0.25;
+  if(p.id) b += (IPAD_V[p.ipadV-1]?.ps||0) * a.ds.id * 0.18;
+  if(p.an) b += (ANDROID_V[p.anV-1]?.ps||0) * a.ds.an * 0.22;
+  if(p.mc) b += (MAC_V[p.mcV-1]?.ps||0) * a.ds.mc * 0.16;
+  if(p.wn) b += (WIN_V[p.wnV-1]?.ps||0) * a.ds.wn * 0.20;
+  return Math.round(b);
+}
+function mdmBoost(a) { return Math.round(((PR.mdm-1)/4) * a.mdmW * 22); }
+function locBoost(a) {
+  const hn=(PR.home-1)/3, un=(PR.usage-1)/4;
+  const hc=a.lw.home<0?Math.round((1-hn)*Math.abs(a.lw.home)*14):Math.round(hn*a.lw.home*14);
+  return Math.max(0, hc + Math.round(un*a.lw.usage*18));
+}
+function conBoost(a) {
+  const p=PR,f=a.cf;
+  const an=p.age<=25?(25-p.age)/12:p.age>=65?(p.age-65)/20:0;
+  return Math.round(f.age*an*12+f.fin*(p.fin-1)*3+f.tech*(3-p.tech)*3+f.iso*(p.iso-1)*4+f.pub*(p.pub-1)*3+f.sm*(p.sm-1)*3+f.role*(p.role-1)*5);
+}
+function score(a) {
+  const cb=conBoost(a),db=devBoost(a),mb=mdmBoost(a),lb=locBoost(a);
+  return {
+    t: Math.min(99,Math.max(1, a.tBase + Math.round(cb*.5) + db + mb + lb)),
+    s: Math.min(99,Math.max(1, a.sBase + Math.round(cb*.5))),
+  };
+}
+function combo(a) { const s=score(a); return Math.round((s.t+s.s)/2); }
+function scoreColor(v) { return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
+
+// ── TOP QUICK WINS ────────────────────────────────────────
+function getWins(ranked) {
+  const all = [
+    {t:'Enable Stolen Device Protection',     w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial'},
+    {t:'Enable two-factor authentication',    w:'Settings → [Name] → Password & Security → 2FA',           g:'financial'},
+    {t:'Disable cross-app tracking',          w:'Settings → Privacy & Security → Tracking → Off',           g:'technical'},
+    {t:'Update to latest OS version',         w:'Settings → General → Software Update',                     g:'technical'},
+    {t:'Enable Silence Unknown Callers',      w:'Settings → Phone → Silence Unknown Callers → On',          g:'social'},
+    {t:'Set all location to While Using or Never', w:'Settings → Privacy & Security → Location Services',   g:'technical'},
+    {t:'Use Face ID in public — never enter passcode in view', w:'Behavioral practice',                      g:'financial'},
+    {t:'Use unique passwords for every account',  w:'Settings → Passwords → use built-in generator',        g:'financial'},
+  ];
+  const topGroups = ranked.slice(0,3).map(a=>a.g);
+  return all.filter(w=>topGroups.includes(w.g)).slice(0,3);
+}
+
+// ── PROFILE CHIP UPDATE ───────────────────────────────────
+function sc(id, text, style) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = text; el.style.cssText = style; }
+}
+function updateChips() {
+  const p = PR;
+  function ageS(v){return v<=17||v>=65?'background:#FCEBEB;color:#A32D2D':v<=25||v>=55?'background:#FAEEDA;color:#854F0B':'background:#EAF3DE;color:#27500A';}
+  sc('c-age',  p.age,        ageS(p.age));
+  sc('c-fin',  FIN_L[p.fin],  FIN_S[p.fin]);
+  sc('c-tech', TECH_L[p.tech],TECH_S[p.tech]);
+  sc('c-iso',  ISO_L[p.iso],  ISO_S[p.iso]);
+  sc('c-sm',   SM_L[p.sm],    SM_S[p.sm]);
+  sc('c-role', ROLE_L[p.role],ROLE_S[p.role]);
+  sc('c-pub',  PUB_L[p.pub],  PUB_S[p.pub]);
+  sc('c-mdm',  MDM_L[p.mdm],  MDM_S[p.mdm]);
+  sc('c-home', HOME_L[p.home],HOME_S[p.home]);
+  sc('c-usage',USAGE_L[p.usage],USAGE_S[p.usage]);
+}
+
+// ── SAVE PROFILE TO SESSION ───────────────────────────────
+function saveProfile() {
+  sessionStorage.setItem('mbg_profile', JSON.stringify(PR));
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────
+function render() {
+  saveProfile();
+  const p = PR;
+
+  // Score and rank all actors
+  const ranked = ACTORS.map(a => ({...a, sc:score(a), co:combo(a)}))
+                        .sort((a,b)=>b.co-a.co);
+  const overall = Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
+  const overallColor = scoreColor(overall);
+  const overallLabel = overall>=70?'High risk profile':overall>=45?'Elevated risk profile':'Lower risk profile';
+  const wins = getWins(ranked);
+
+  // Group actors
+  const groups = [
+    {id:'technical',label:'Technical threat actors',bc:'#E24B4A',hbg:'#FCEBEB',htc:'#791F1F'},
+    {id:'social',   label:'Social threat actors',   bc:'#378ADD',hbg:'#E6F1FB',htc:'#0C447C'},
+    {id:'financial',label:'Financial threat actors', bc:'#EF9F27',hbg:'#FAEEDA',htc:'#633806'},
+  ];
+
+  let h = '';
+
+  // ── OVERALL SCORE ─────────────────────────────────────
+  h += `<div class="eyebrow">Threat dashboard</div>
+  <div class="score-hero">
+    <div class="score-ring" style="border-color:${overallColor};">
+      <span class="score-num" style="color:${overallColor};">${overall}</span>
+      <span class="score-of">of 99</span>
+    </div>
+    <div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:.3rem;">${overallLabel}</h1>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;max-width:440px;">
+        ${overall>=70?'Several threat actors have strong interest in your profile. Review each actor below and work through their remediation steps.':
+          overall>=45?'Some threat actors find your profile moderately attractive. Start with the highest-scored actors.':
+          'Your profile is less attractive to most threat actors. A few targeted changes close the remaining gaps.'}
+      </p>
+      <div style="margin-top:.75rem;display:flex;gap:8px;flex-wrap:wrap;">
+        ${ranked.slice(0,3).map(a=>`<span style="font-size:11px;padding:3px 9px;border-radius:99px;background:${a.gc}22;color:${a.gc};font-weight:500;">${a.name}: ${a.co}</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  // ── PROFILE CARD ──────────────────────────────────────
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Your profile</div>
+  <div class="profile-card">
+    <div class="profile-title">
+      <span>Consumer profile</span>
+      <span class="profile-title-sub">Adjust sliders to explore how your scores change</span>
+    </div>
+    <div class="profile-grid">
+      <div class="sl-sub">Personal</div><div></div>
+      <div class="sl-row"><span class="sl-label">Age</span><input type="range" min="13" max="85" value="${p.age}" oninput="PR.age=+this.value;updateChips();render()"><span class="sl-chip" id="c-age">${p.age}</span></div>
+      <div class="sl-row"><span class="sl-label">Financial status</span><input type="range" min="1" max="5" value="${p.fin}" oninput="PR.fin=+this.value;updateChips();render()"><span class="sl-chip" id="c-fin">${FIN_L[p.fin]}</span></div>
+      <div class="sl-row"><span class="sl-label">Tech skill</span><input type="range" min="1" max="5" value="${p.tech}" oninput="PR.tech=+this.value;updateChips();render()"><span class="sl-chip" id="c-tech">${TECH_L[p.tech]}</span></div>
+      <div class="sl-row"><span class="sl-label">Social isolation</span><input type="range" min="1" max="5" value="${p.iso}" oninput="PR.iso=+this.value;updateChips();render()"><span class="sl-chip" id="c-iso">${ISO_L[p.iso]}</span></div>
+      <div class="sl-row"><span class="sl-label">Social media</span><input type="range" min="1" max="5" value="${p.sm}" oninput="PR.sm=+this.value;updateChips();render()"><span class="sl-chip" id="c-sm">${SM_L[p.sm]}</span></div>
+      <div></div>
+      <div class="profile-divider"></div>
+      <div class="sl-sub">Work</div><div></div>
+      <div class="sl-row"><span class="sl-label">Job data</span><input type="range" min="1" max="5" value="${p.role}" oninput="PR.role=+this.value;updateChips();render()"><span class="sl-chip" id="c-role">${ROLE_L[p.role]}</span></div>
+      <div class="sl-row"><span class="sl-label">Public profile</span><input type="range" min="1" max="5" value="${p.pub}" oninput="PR.pub=+this.value;updateChips();render()"><span class="sl-chip" id="c-pub">${PUB_L[p.pub]}</span></div>
+      <div class="sl-row" style="grid-column:1/-1;"><span class="sl-label">Device / MDM</span><input type="range" min="1" max="5" value="${p.mdm}" oninput="PR.mdm=+this.value;updateChips();render()"><span class="sl-chip" id="c-mdm">${MDM_L[p.mdm]}</span></div>
+      <div class="profile-divider"></div>
+      <div class="sl-sub">Location</div><div></div>
+      <div class="sl-row"><span class="sl-label">Home environment</span><input type="range" min="1" max="4" value="${p.home}" oninput="PR.home=+this.value;updateChips();render()"><span class="sl-chip" id="c-home">${HOME_L[p.home]}</span></div>
+      <div class="sl-row"><span class="sl-label">Usage context</span><input type="range" min="1" max="5" value="${p.usage}" oninput="PR.usage=+this.value;updateChips();render()"><span class="sl-chip" id="c-usage">${USAGE_L[p.usage]}</span></div>
+    </div>
+    <div class="dev-section">
+      <div class="dev-section-title">Devices</div>
+      <div class="dev-row">
+        <label class="dev-cb"><input type="checkbox" ${p.ip?'checked':''} onchange="PR.ip=this.checked;render()"> iPhone</label>
+        <span class="dev-ver" style="background:#E6F1FB;color:#0C447C;${p.ip?'':'opacity:.4;'}">${IOS_V[p.iosV-1]?.v||'iOS'}</span>
+        <input type="range" min="1" max="${IOS_V.length}" value="${p.iosV}" ${p.ip?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.iosV=+this.value;render()">
+        <span class="dev-patch" style="background:${p.ip&&IOS_V[p.iosV-1]?.ps>0?'rgba(226,75,74,.12)':p.ip?'rgba(34,197,94,.12)':'var(--mid)'};color:${p.ip&&IOS_V[p.iosV-1]?.ps>0?'#E24B4A':p.ip?'#22c55e':'var(--dim)'};">${p.ip?(IOS_V[p.iosV-1]?.ps===0?'Current':IOS_V[p.iosV-1]?.ps+' CVEs'):'Off'}</span>
+      </div>
+      <div class="dev-row">
+        <label class="dev-cb"><input type="checkbox" ${p.id?'checked':''} onchange="PR.id=this.checked;render()"> iPad</label>
+        <span class="dev-ver" style="background:#EEEDFE;color:#3C3489;${p.id?'':'opacity:.4;'}">${IPAD_V[p.ipadV-1]?.v||'iPadOS'}</span>
+        <input type="range" min="1" max="${IPAD_V.length}" value="${p.ipadV}" ${p.id?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.ipadV=+this.value;render()">
+        <span class="dev-patch" style="background:${p.id&&IPAD_V[p.ipadV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.id&&IPAD_V[p.ipadV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.id?(IPAD_V[p.ipadV-1]?.ps===0?'Current':IPAD_V[p.ipadV-1]?.ps+' CVEs'):'Off'}</span>
+      </div>
+      <div class="dev-row">
+        <label class="dev-cb"><input type="checkbox" ${p.an?'checked':''} onchange="PR.an=this.checked;render()"> Android</label>
+        <span class="dev-ver" style="background:#EAF3DE;color:#27500A;${p.an?'':'opacity:.4;'}">${ANDROID_V[p.anV-1]?.v||'Android'}</span>
+        <input type="range" min="1" max="${ANDROID_V.length}" value="${p.anV}" ${p.an?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.anV=+this.value;render()">
+        <span class="dev-patch" style="background:${p.an&&ANDROID_V[p.anV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.an&&ANDROID_V[p.anV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.an?(ANDROID_V[p.anV-1]?.ps===0?'Current':ANDROID_V[p.anV-1]?.ps+' CVEs'):'Off'}</span>
+      </div>
+      <div class="dev-row">
+        <label class="dev-cb"><input type="checkbox" ${p.mc?'checked':''} onchange="PR.mc=this.checked;render()"> Mac</label>
+        <span class="dev-ver" style="background:#FAEEDA;color:#854F0B;${p.mc?'':'opacity:.4;'}">${MAC_V[p.mcV-1]?.v||'macOS'}</span>
+        <input type="range" min="1" max="${MAC_V.length}" value="${p.mcV}" ${p.mc?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.mcV=+this.value;render()">
+        <span class="dev-patch" style="background:${p.mc&&MAC_V[p.mcV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.mc&&MAC_V[p.mcV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.mc?(MAC_V[p.mcV-1]?.ps===0?'Current':MAC_V[p.mcV-1]?.ps+' CVEs'):'Off'}</span>
+      </div>
+      <div class="dev-row">
+        <label class="dev-cb"><input type="checkbox" ${p.wn?'checked':''} onchange="PR.wn=this.checked;render()"> Windows</label>
+        <span class="dev-ver" style="background:#F1EFE8;color:#444441;${p.wn?'':'opacity:.4;'}">${WIN_V[p.wnV-1]?.v||'Windows'}</span>
+        <input type="range" min="1" max="${WIN_V.length}" value="${p.wnV}" ${p.wn?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.wnV=+this.value;render()">
+        <span class="dev-patch" style="background:${p.wn&&WIN_V[p.wnV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.wn&&WIN_V[p.wnV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.wn?(WIN_V[p.wnV-1]?.ps===0?'Current':WIN_V[p.wnV-1]?.ps+' CVEs'):'Off'}</span>
+      </div>
+    </div>
+  </div>`;
+
+  // ── ACTOR GROUPS ──────────────────────────────────────
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actors — ranked by your score</div>`;
+  groups.forEach(g => {
+    const groupActors = ranked.filter(a=>a.g===g.id);
+    const avgScore = Math.round(groupActors.reduce((s,a)=>s+a.co,0)/groupActors.length);
+    h += `<div class="group-block">
+      <div class="group-hdr" style="background:${g.hbg};border-left-color:${g.bc};">
+        <span class="group-hdr-label" style="color:${g.htc};">${g.label}</span>
+        <span class="group-hdr-avg" style="color:${g.htc};">avg ${avgScore}/99</span>
+      </div>`;
+    groupActors.forEach(a => {
+      const cc = scoreColor(a.co);
+      h += `<a class="actor-row" href="${a.page}" onclick="saveProfile()">
+        <div class="actor-avatar" style="background:${a.ab};color:${a.ac};">${a.ini}</div>
+        <div class="actor-info">
+          <div class="actor-name">${a.name}</div>
+          <div class="actor-sub">${a.sub}</div>
+        </div>
+        <div class="actor-bars">
+          <div class="bar-line">
+            <span class="bar-label" style="color:#A32D2D;">Technical</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${a.sc.t}%;background:#E24B4A;"></div></div>
+            <span class="bar-val" style="color:#A32D2D;">${a.sc.t}</span>
+          </div>
+          <div class="bar-line">
+            <span class="bar-label" style="color:#185FA5;">Social</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${a.sc.s}%;background:#378ADD;"></div></div>
+            <span class="bar-val" style="color:#185FA5;">${a.sc.s}</span>
+          </div>
+        </div>
+        <div class="actor-combo">
+          <span class="combo-score" style="color:${cc};">${a.co}</span>
+          <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${cc}22;color:${cc};font-weight:500;">${a.co>=70?'High':a.co>=45?'Medium':'Lower'}</span>
+        </div>
+        <span class="actor-arrow">→</span>
+      </a>`;
+    });
+    h += `</div>`;
+  });
+
+  // ── QUICK WINS ────────────────────────────────────────
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Top quick wins — zero usage impact</div>
+  <div class="wins-card">`;
+  wins.forEach((w,i) => {
+    h += `<div class="win-row">
+      <div class="win-num">${i+1}</div>
+      <div>
+        <div class="win-title">${w.t}</div>
+        <div class="win-where">${w.w}</div>
+      </div>
+    </div>`;
+  });
+  h += `</div>`;
+
+  h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
+
+  document.getElementById('page').innerHTML = h;
+}
+
+render();
+</script>
+</body>
+</html>
