@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>MyBadGuy — Partner Abuser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root{--navy:#0f172a;--mid:#1a2744;--lift:#1e2d4a;--cyan:#22d3ee;--lcyan:#e0f9fd;--slate:#f1f5f9;--muted:#94a3b8;--dim:#475569;--green:#22c55e;--gc:#378ADD;--ghbg:#E6F1FB;--ghtc:#0C447C;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var(--slate);min-height:100vh;}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-bottom:1px solid rgba(34,211,238,.1);background:rgba(15,23,42,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
+    .nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;}
+    .nav-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);}
+    .btn-back{font-size:13px;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:99px;}
+    .btn-back:hover{color:var(--slate);}
+    .btn-rescan{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:7px 18px;border-radius:99px;background:var(--lcyan);color:var(--navy);border:none;cursor:pointer;text-decoration:none;display:inline-block;}
+    .page{max-width:720px;margin:0 auto;padding:1.5rem 1.25rem 3rem;}
+    .safety-notice{background:#E6F1FB;border-left:4px solid #378ADD;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:13px;color:#0C447C;line-height:1.65;}
+    .actor-hdr{background:var(--lift);border-left:4px solid var(--gc);border-radius:14px;padding:1.4rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:1.25rem;}
+    .actor-avatar{width:52px;height:52px;border-radius:50%;background:#F8D7DA;color:#791F1F;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .actor-hdr-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:2px;}
+    .actor-hdr-sub{font-size:13px;color:var(--muted);margin-bottom:.75rem;}
+    .score-chips{display:flex;gap:8px;flex-wrap:wrap;}
+    .score-chip{font-size:13px;font-weight:700;padding:4px 12px;border-radius:99px;}
+    .tabs{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap;}
+    .tab{font-size:12px;padding:5px 12px;border-radius:99px;border:.5px solid rgba(255,255,255,.12);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .tab.on{background:var(--lift);color:var(--slate);border-color:rgba(255,255,255,.25);font-weight:500;}
+    .panel{background:var(--mid);border-radius:14px;padding:1.25rem;border:.5px solid rgba(255,255,255,.06);}
+    .panel-title{font-size:14px;font-weight:500;margin-bottom:.85rem;}
+    .vec-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:.5px solid rgba(255,255,255,.04);}
+    .vec-row:last-child{border-bottom:none;}
+    .vec-label{color:var(--muted);flex:1;padding-right:8px;line-height:1.4;}
+    .vec-bar{width:80px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;flex-shrink:0;}
+    .vec-fill{height:100%;border-radius:2px;}
+    .vec-val{font-weight:500;min-width:28px;text-align:right;flex-shrink:0;}
+    .bio-text{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:1rem;}
+    .ideal-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:.85rem;}
+    .ideal-card{border-radius:8px;padding:.55rem .75rem;border:.5px solid rgba(255,255,255,.08);background:var(--lift);}
+    .ideal-card.match{background:#FCEBEB;border-color:#F09595;}
+    .ideal-card.na{opacity:.25;}
+    .ideal-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:500;margin-bottom:2px;}
+    .ideal-card.match .ideal-lbl{color:#A32D2D;}
+    .ideal-val{font-size:12px;color:var(--slate);line-height:1.45;}
+    .ideal-card.match .ideal-val{color:#791F1F;font-weight:500;}
+    .ideal-why{margin-top:.85rem;padding:.65rem .9rem;border-radius:8px;font-size:12px;line-height:1.6;background:var(--ghbg);color:var(--ghtc);}
+    .cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .cf-card{background:var(--lift);border-radius:8px;padding:.55rem .75rem;border:.5px solid rgba(255,255,255,.06);}
+    .cf-name{font-size:11px;color:var(--muted);margin-bottom:3px;}
+    .boost-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+    .boost-card{background:var(--lift);border:.5px solid rgba(255,255,255,.06);border-radius:8px;padding:.55rem .75rem;}
+    .boost-lbl{font-size:11px;color:var(--muted);margin-bottom:2px;}
+    .cat-hdr{display:flex;align-items:center;gap:8px;padding:.45rem .75rem;border-radius:8px;border-left:3px solid;margin:.85rem 0 .5rem;}
+    .cat-hdr:first-child{margin-top:0;}
+    .cat-title{font-size:12px;font-weight:500;}
+    .cat-count{font-size:11px;opacity:.65;margin-left:auto;}
+    .rem-card{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:12px;padding:.75rem .9rem;margin-bottom:6px;}
+    .rem-hdr{display:flex;align-items:flex-start;gap:9px;margin-bottom:5px;}
+    .rem-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;}
+    .rem-name{font-size:13px;font-weight:500;line-height:1.35;}
+    .rem-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+    .rbadge{font-size:11px;padding:2px 7px;border-radius:99px;font-weight:500;}
+    .rv-row{display:flex;align-items:center;gap:8px;margin:5px 0 3px 31px;}
+    .rv-lbl{font-size:11px;color:var(--dim);width:65px;flex-shrink:0;}
+    .rv-track{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+    .rv-fill{height:100%;border-radius:2px;}
+    .rv-val{font-size:11px;font-weight:500;min-width:30px;text-align:right;}
+    .rem-desc{font-size:12px;color:var(--muted);line-height:1.6;margin:4px 0 3px 31px;}
+    .rem-where{font-size:11px;color:var(--dim);margin:0 0 5px 31px;font-style:italic;}
+    .vec-chips{margin:5px 0 0 31px;display:flex;gap:4px;flex-wrap:wrap;}
+    .vchip{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;line-height:1.5;}
+    .match-legend{display:flex;gap:12px;font-size:11px;color:var(--dim);margin-bottom:.65rem;flex-wrap:wrap;}
+    .leg-sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle;}
+    .attribution{text-align:center;font-size:10px;color:var(--dim);padding:.75rem;border-top:1px solid rgba(255,255,255,.04);margin-top:1.5rem;}
+    @media(max-width:560px){.ideal-grid,.cf-grid,.boost-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true"><path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/><path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="30" r="7" fill="#f1f5f9"/><circle cx="50" cy="30" r="2.5" fill="#22d3ee"/></svg>
+    <span class="nav-name">MyBadGuy</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="../dashboard.html" class="btn-back">← Dashboard</a>
+    <a href="../scan.html" class="btn-rescan">New scan →</a>
+  </div>
+</nav>
+<div class="page" id="page"></div>
+<script>
+'use strict';
+const PR=JSON.parse(sessionStorage.getItem('mbg_profile')||'null')||{age:42,fin:3,tech:2,iso:2,sm:2,role:1,pub:1,mdm:1,home:2,usage:1,ip:true,iosV:1,id:false,ipadV:1,an:false,anV:1,mc:false,mcV:1,wn:false,wnV:1};
+const A={
+  name:'Intimate-partner abuser',sub:'Surveillance & control through technology',
+  tBase:58,sBase:90,
+  cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
+  ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4},mdmW:.05,lw:{home:-.20,usage:.10},
+  na:['role','mdm'],
+  bio:'This actor is typically known to the victim — an ex-partner, current spouse, family member, or caregiver. Physical proximity and emotional leverage provide access that most hackers cannot buy at any price. Apple\'s own ecosystem is frequently weaponized: shared iCloud accounts expose messages, photos, and location; Find My is coerced as a "condition of trust"; Screen Time controls are used to restrict who the victim can contact. This is not primarily a technical attack — it is a pattern of coercive control in which technology is one of many tools. If you believe you may be experiencing this, support is available at the National Domestic Violence Hotline: 1-800-799-7233 or thehotline.org.',
+  whyIdeal:'Physical proximity and emotional coercion eliminate the need for technical sophistication. The ideal target is financially or emotionally dependent, isolated from their support network, and unaware of what is happening to their device.',
+  ideal:[
+    {key:'age',    l:'Age',            v:'18–45 — peak intimate-partner violence demographic'},
+    {key:'fin',    l:'Financial status',v:'Any — financial dependence increases vulnerability significantly'},
+    {key:'tech',   l:'Tech skill',     v:'Basic to no tech skill — less likely to detect monitoring'},
+    {key:'iso',    l:'Social isolation',v:'High to severe — primary risk amplifier for this actor'},
+    {key:'pub',    l:'Public profile',  v:'Very private — abuser controls public narrative'},
+    {key:'sm',     l:'Social media',    v:'Regular — monitored and controlled by abuser'},
+    {key:'role',   l:'Job data',        v:'Not applicable — personal control is the target'},
+    {key:'devices',l:'Devices',         v:'iPhone most targeted; Android also heavily affected'},
+    {key:'loc',    l:'Location',        v:'Rural and suburban isolation reduces access to support services'},
+  ],
+  match:{
+    age:p=>p.age>=18&&p.age<=45,fin:()=>true,tech:p=>p.tech<=2,iso:p=>p.iso>=4,
+    pub:p=>p.pub===1,sm:p=>p.sm===3,role:()=>true,devices:p=>p.ip||p.an,loc:p=>p.home<=2,
+  },
+  tvecs:[
+    {l:'AirTag covert tracking',v:88},{l:'Shared carrier plan location monitoring',v:82},
+    {l:'Find My / location sharing coercion',v:85},{l:'Shared iCloud account access',v:80},
+    {l:'Vehicle GPS tracker installation',v:72},{l:'Smart home device surveillance',v:70},
+    {l:'Screen Time abuse as restriction mechanism',v:62},{l:'Social media location metadata mining',v:58},
+    {l:'Fitness tracker location history access',v:55},{l:'Keylogger apps via physical access',v:44},
+  ],
+  svecs:[
+    {l:'Coercing password and PIN sharing',v:94},{l:'Isolating victim from support network',v:90},
+    {l:'Digital control as isolation mechanism',v:85},{l:'Monitoring messages over shoulder',v:88},
+    {l:'Threatening to share private content',v:82},{l:'Intimidating into disabling Find My alerts',v:80},
+    {l:'Impersonating victim to contacts',v:78},{l:'Financial control via shared accounts',v:76},
+    {l:'Gaslighting about device monitoring',v:70},{l:'Using children to maintain device access',v:65},
+  ],
+  rem:[
+    {t:'Audit who can see your real-time location in Find My',cat:'s',d:'easy',u:0,r:9,tv:[1,2],sv:[],
+     e:'Find My → Share My Location → review every person listed. Stop sharing with anyone you did not deliberately trust with your real-time location.',
+     w:'Find My app → People tab → tap each person → Stop Sharing My Location'},
+    {t:'Check for unknown configuration profiles',cat:'s',d:'easy',u:0,r:9,tv:[5,6],sv:[],
+     e:'A monitoring profile installed during physical access to your device can intercept messages, calls, and location silently. Any profile you did not intentionally install should be removed.',
+     w:'Settings → General → VPN & Device Management — remove anything unrecognized immediately'},
+    {t:'Enable 2FA with a trusted phone number only you control',cat:'s',d:'medium',u:1,r:8,tv:[3],sv:[0],
+     e:'Verify that the 2FA phone number and all trusted devices listed in your Apple ID are ones only you have access to — not shared or monitored by the abuser.',
+     w:'Settings → [Name] → Password & Security → Edit → review trusted phone numbers'},
+    {t:'Reset Screen Time passcode if it was set by someone else',cat:'s',d:'medium',u:0,r:7,tv:[6],sv:[2,7],
+     e:'If someone else set a Screen Time passcode on your device to restrict your communications, you can reset it using your Apple ID credentials.',
+     w:'Settings → Screen Time → Change Screen Time Passcode → Forgot Passcode → reset with Apple ID'},
+    {t:'Scan for unknown AirTags and tracking devices',cat:'d',d:'easy',u:0,r:8,tv:[0,4],sv:[],
+     e:'iOS alerts you automatically when an unknown AirTag has been traveling with you. Manually scan bags, vehicle, stroller, and children\'s belongings for unfamiliar trackers.',
+     w:'Find My app → Items tab — or open any AirTag safety alert → Play Sound to locate it'},
+    {t:'Contact NNEDV Safety Net for confidential guidance',cat:'d',d:'easy',u:0,r:8,tv:[],sv:[0,1,7],
+     e:'Free, confidential tech safety guidance from advocates specifically trained in technology abuse scenarios. They can help you assess and address surveillance on your device safely.',
+     w:'techsafety.org — or National DV Hotline: 1-800-799-7233 (call or text)'},
+    {t:'Change all passwords from a safe device the abuser cannot access',cat:'d',d:'easy',u:0,r:8,tv:[3],sv:[0,6],
+     e:'Use a device the abuser has never physically handled — a library computer, a friend\'s phone, or a new device — to change your Apple ID password and banking credentials.',
+     w:'appleid.apple.com — always from a device the abuser has not touched'},
+    {t:'Create a new independent Apple ID if accounts are shared',cat:'d',d:'medium',u:2,r:9,tv:[3],sv:[0,6],
+     e:'A shared iCloud account exposes every message, photo, location, note, and backup to the other account holder. A new independent Apple ID is often the safest path.',
+     w:'appleid.apple.com → Create Your Apple ID — do this from a safe, unmonitored device'},
+    {t:'Never share your device PIN or passcode under any circumstances',cat:'n',d:'easy',u:0,r:9,tv:[],sv:[0,3],
+     e:'Once a passcode is known, full device access — including messages, banking apps, and account recovery — is possible whenever the abuser has physical access to your device.',
+     w:'No setting — firm rule regardless of relationship, pressure, or stated emergency'},
+  ],
+};
+const IOS_V=[{ps:0},{ps:0},{ps:6},{ps:9},{ps:14},{ps:20},{ps:32},{ps:38},{ps:44},{ps:82}];
+const IPAD_V=[{ps:0},{ps:0},{ps:6},{ps:9},{ps:17},{ps:30},{ps:52},{ps:78},{ps:112}];
+const ANDROID_V=[{ps:0},{ps:28},{ps:62},{ps:98},{ps:134},{ps:178},{ps:224}];
+const MAC_V=[{ps:0},{ps:0},{ps:6},{ps:9},{ps:17},{ps:28},{ps:48},{ps:92}];
+const WIN_V=[{ps:0},{ps:28},{ps:66},{ps:104},{ps:112},{ps:186},{ps:248}];
+function calcScore(){
+  const p=PR,a=A;let db=0;
+  if(p.ip)db+=(IOS_V[p.iosV-1]?.ps||0)*a.ds.ip*0.25;
+  if(p.id)db+=(IPAD_V[p.ipadV-1]?.ps||0)*a.ds.id*0.18;
+  if(p.an)db+=(ANDROID_V[p.anV-1]?.ps||0)*a.ds.an*0.22;
+  if(p.mc)db+=(MAC_V[p.mcV-1]?.ps||0)*a.ds.mc*0.16;
+  if(p.wn)db+=(WIN_V[p.wnV-1]?.ps||0)*a.ds.wn*0.20;
+  db=Math.round(db);
+  const mb=Math.round(((p.mdm-1)/4)*a.mdmW*22);
+  const hn=(p.home-1)/3,un=(p.usage-1)/4;
+  const hc=a.lw.home<0?Math.round((1-hn)*Math.abs(a.lw.home)*14):Math.round(hn*a.lw.home*14);
+  const lb=Math.max(0,hc+Math.round(un*a.lw.usage*18));
+  const f=a.cf,an2=p.age<=25?(25-p.age)/12:p.age>=65?(p.age-65)/20:0;
+  const cb=Math.round(f.age*an2*12+f.fin*(p.fin-1)*3+f.tech*(3-p.tech)*3+f.iso*(p.iso-1)*4+f.pub*(p.pub-1)*3+f.sm*(p.sm-1)*3+f.role*(p.role-1)*5);
+  const t=Math.min(99,Math.max(1,a.tBase+Math.round(cb*.5)+db+mb+lb));
+  const s=Math.min(99,Math.max(1,a.sBase+Math.round(cb*.5)));
+  return{t,s,cb,db,mb,lb,co:Math.round((t+s)/2)};
+}
+function vc(v){return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e';}
+function sc(v){return v>=70?'High':v>=45?'Medium':'Lower';}
+let TAB='technical';
+function renderVecs(vecs,title,val){let h=`<p class="panel-title">${title} <span style="font-size:12px;font-weight:400;color:var(--muted);">— score ${val}/99</span></p>`;vecs.forEach(v=>{const c=v.v>=70?'#E24B4A':v.v>=45?'#EF9F27':'#378ADD';h+=`<div class="vec-row"><span class="vec-label">${v.l}</span><div class="vec-bar"><div class="vec-fill" style="width:${v.v}%;background:${c};"></div></div><span class="vec-val" style="color:${c};">${v.v}</span></div>`;});return h;}
+function renderPanel(sc){
+  if(TAB==='technical')return renderVecs(A.tvecs,'Technical attack vectors',sc.t);
+  if(TAB==='social')return renderVecs(A.svecs,'Social engineering vectors',sc.s);
+  if(TAB==='bio'){
+    const mc=A.ideal.filter(f=>!A.na.includes(f.key)&&A.match[f.key]&&A.match[f.key](PR)).length;
+    let h=`<p class="panel-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">Ideal target profile ${mc>0?`<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:#FCEBEB;color:#A32D2D;font-weight:500;">${mc} field${mc>1?'s':''} match</span>`:''}</p>`;
+    h+=`<p class="bio-text">${A.bio}</p><div style="font-size:13px;font-weight:500;margin-bottom:.5rem;">Ideal consumer target</div>`;
+    h+=`<div class="match-legend"><span><span class="leg-sw" style="background:#FCEBEB;border:.5px solid #F09595;"></span>Matches your profile</span><span><span class="leg-sw" style="background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.1);"></span>Not applicable</span></div>`;
+    h+=`<div class="ideal-grid">`;
+    A.ideal.forEach(f=>{const isNA=A.na.includes(f.key);const isM=!isNA&&A.match[f.key]&&A.match[f.key](PR);h+=`<div class="ideal-card${isNA?' na':isM?' match':''}"><div class="ideal-lbl">${f.l}</div><div class="ideal-val">${f.v}</div></div>`;});
+    h+=`</div><div class="ideal-why"><strong>Why this profile?</strong> ${A.whyIdeal}</div>`;return h;
+  }
+  if(TAB==='weighted'){
+    const factors=[{l:'Age sensitivity',w:A.cf.age},{l:'Financial attractiveness',w:A.cf.fin},{l:'Low tech skill (inverse)',w:Math.max(0,-A.cf.tech)},{l:'Social isolation',w:A.cf.iso},{l:'Public profile',w:A.cf.pub},{l:'Social media use',w:A.cf.sm},{l:'Job data',w:A.cf.role},{l:'MDM enrollment',w:A.mdmW},{l:'Home environment',w:Math.abs(A.lw.home)},{l:'Usage context',w:A.lw.usage}];
+    let h=`<p class="panel-title">Consumer attraction factors</p><div class="cf-grid">`;
+    factors.forEach(f=>{const pct=Math.round(f.w*100);const fc=pct>=70?'#E24B4A':pct>=40?'#EF9F27':'#378ADD';h+=`<div class="cf-card"><div class="cf-name">${f.l}</div><div style="height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-bottom:3px;"><div style="width:${pct}%;height:100%;background:${fc};border-radius:2px;"></div></div><div style="font-size:11px;font-weight:500;color:${fc};">${pct}%</div></div>`;});
+    h+=`</div><div class="boost-grid">`;
+    [{l:'Consumer boost',v:sc.cb,c:sc.cb>=0?'var(--green)':'var(--muted)'},{l:'Device OS boost',v:sc.db,c:sc.db>0?'#A32D2D':'var(--slate)'},{l:'MDM boost',v:sc.mb,c:sc.mb>0?'#A32D2D':'var(--slate)'},{l:'Location boost',v:sc.lb,c:sc.lb>0?'#A32D2D':'var(--slate)'}].forEach(b=>{h+=`<div class="boost-card"><div class="boost-lbl">${b.l}</div><div style="font-weight:500;color:${b.c};">${b.v>0?'+'+b.v+' pts':b.v===0?'No boost':b.v+' pts'}</div></div>`;});
+    h+=`</div>`;return h;
+  }
+  if(TAB==='remediation'){
+    const DIFF={easy:{bg:'#EAF3DE',tc:'#27500A',l:'Easy'},medium:{bg:'#FAEEDA',tc:'#854F0B',l:'Medium'},advanced:{bg:'#FCEBEB',tc:'#A32D2D',l:'Advanced'}};
+    const CAT={s:{l:'Settings',bg:'#E6F1FB',tc:'#0C447C',bc:'#0C447C'},d:{l:'What to Do',bg:'#EAF3DE',tc:'#27500A',bc:'#27500A'},n:{l:'What Not to Do',bg:'#FCEBEB',tc:'#A32D2D',bc:'#A32D2D'}};
+    const UI_L=['None','Minimal','Low','Moderate','High'];
+    const UI_BG=['#EAF3DE','#D8F0D0','#FFF3CD','#FAEEDA','#FCEBEB'];
+    const UI_TC=['#27500A','#2A5C07','#664900','#854F0B','#A32D2D'];
+    const sorted=[...A.rem].sort((a,b)=>(b.r/(b.u+1))-(a.r/(a.u+1)));
+    const cats={s:sorted.filter(r=>r.cat==='s'),d:sorted.filter(r=>r.cat==='d'),n:sorted.filter(r=>r.cat==='n')};
+    let h=`<p class="panel-title">Remediation plan</p>`;let num=1;
+    ['s','d','n'].forEach(cat=>{
+      const items=cats[cat];if(!items.length)return;const c=CAT[cat];
+      h+=`<div class="cat-hdr" style="background:${c.bg};border-left-color:${c.bc};"><span class="cat-title" style="color:${c.tc};">${c.l}</span><span class="cat-count" style="color:${c.tc};">${items.length} step${items.length>1?'s':''}</span></div>`;
+      items.forEach(r=>{
+        const df=DIFF[r.d];const rvc=r.r>=8?'#E24B4A':r.r>=6?'#EF9F27':'#378ADD';
+        const tvs=(r.tv||[]).map(i=>A.tvecs[i]).filter(Boolean);
+        const svs=(r.sv||[]).map(i=>A.svecs[i]).filter(Boolean);
+        h+=`<div class="rem-card"><div class="rem-hdr"><div class="rem-num" style="background:${df.bg};color:${df.tc};">${num++}</div><div style="flex:1;"><div class="rem-name">${r.t}</div><div class="rem-badges"><span class="rbadge" style="background:${df.bg};color:${df.tc};">${df.l}</span><span class="rbadge" style="background:${UI_BG[r.u]};color:${UI_TC[r.u]};">Impact: ${UI_L[r.u]}</span></div></div></div>`;
+        h+=`<div class="rv-row"><span class="rv-lbl">Risk value</span><div class="rv-track"><div class="rv-fill" style="width:${r.r*10}%;background:${rvc};"></div></div><span class="rv-val" style="color:${rvc};">${r.r}/10</span></div>`;
+        h+=`<p class="rem-desc">${r.e}</p><p class="rem-where">${r.w}</p>`;
+        if(tvs.length||svs.length){h+=`<div class="vec-chips">${tvs.map(v=>`<span class="vchip" style="background:#FCEBEB;color:#A32D2D;border:.5px solid #f0a0a0;">${v.l}</span>`).join('')}${svs.map(v=>`<span class="vchip" style="background:#E6F1FB;color:#0C447C;border:.5px solid #a0c4f0;">${v.l}</span>`).join('')}</div>`;}
+        h+=`</div>`;
+      });
+    });
+    return h;
+  }
+  return '';
+}
+const SCORES=calcScore();const cc=vc(SCORES.co);
+function renderContent(){const tabs=['technical','social','bio','weighted','remediation'];let th=tabs.map(t=>`<button class="tab${t===TAB?' on':''}" onclick="TAB='${t}';document.getElementById('panel').innerHTML=renderPanel(SCORES)">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join('');return`<div class="tabs">${th}</div><div class="panel" id="panel">${renderPanel(SCORES)}</div>`;}
+document.getElementById('page').innerHTML=`
+  <div style="background:#E6F1FB;border-left:4px solid #378ADD;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:13px;color:#0C447C;line-height:1.65;">
+    <strong>If you are in danger:</strong> National Domestic Violence Hotline: <strong>1-800-799-7233</strong> or text START to 88788. Tech Safety resources: <strong>techsafety.org</strong>. If concerned about your device being monitored, use a safe device to make contact.
+  </div>
+  <div class="actor-hdr"><div class="actor-avatar">IP</div><div style="flex:1;">
+    <div style="font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gc);margin-bottom:3px;">Social threat actor</div>
+    <div class="actor-hdr-name">${A.name}</div><div class="actor-hdr-sub">${A.sub}</div>
+    <div class="score-chips">
+      <span class="score-chip" style="background:#FCEBEB;color:#A32D2D;">Technical: ${SCORES.t}/99</span>
+      <span class="score-chip" style="background:#E6F1FB;color:#0C447C;">Social: ${SCORES.s}/99</span>
+      <span class="score-chip" style="background:${cc}22;color:${cc};">Combined: ${SCORES.co}/99 — ${sc(SCORES.co)}</span>
+    </div>
+  </div></div>
+  ${renderContent()}
+  <div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
+</script>
+</body>
+</html>
