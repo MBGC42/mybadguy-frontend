@@ -1,0 +1,99 @@
+/* MyBadGuy — base.css
+   Shared across: index, scan, dashboard, actor pages, sources
+   Variables without --gc/--ghbg/--ghtc (those are set per actor by actor.js)
+*/
+
+:root {
+  --navy:  #0f172a;
+  --mid:   #1a2744;
+  --lift:  #1e2d4a;
+  --cyan:  #22d3ee;
+  --lcyan: #e0f9fd;
+  --slate: #f1f5f9;
+  --muted: #94a3b8;
+  --dim:   #475569;
+  --green: #22c55e;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--navy);
+  color: var(--slate);
+  min-height: 100vh;
+}
+
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Navigation ─────────────────────────────────────────── */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .85rem 1.5rem;
+  border-bottom: 1px solid rgba(34,211,238,.1);
+  background: rgba(15,23,42,.95);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.nav-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slate);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-back {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 99px;
+  transition: color .15s;
+}
+.btn-back:hover { color: var(--slate); text-decoration: none; }
+
+.btn-rescan {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 99px;
+  background: var(--lcyan);
+  color: var(--navy);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity .15s;
+}
+.btn-rescan:hover { opacity: .88; text-decoration: none; }
+
+/* ── Attribution footer ──────────────────────────────────── */
+.attribution {
+  text-align: center;
+  font-size: 10px;
+  color: var(--dim);
+  padding: .75rem;
+  border-top: 1px solid rgba(255,255,255,.04);
+  margin-top: 1.5rem;
+}
