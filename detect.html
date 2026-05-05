@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyBadGuy device detection — see yourself through the eyes of threat actors.">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="robots" content="noindex">
+  <title>MyBadGuy — Start your detection</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+
+  <style>
+    :root {
+      --navy:  #0f172a;
+      --mid:   #1a2744;
+      --lift:  #1e2d4a;
+      --cyan:  #22d3ee;
+      --lcyan: #e0f9fd;
+      --slate: #f1f5f9;
+      --muted: #94a3b8;
+      --dim:   #475569;
+      --red:   #E24B4A;
+      --amber: #EF9F27;
+      --blue:  #378ADD;
+      --green: #22c55e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--navy);
+      color: var(--slate);
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .85rem 1.5rem;
+      border-bottom: 1px solid rgba(34,211,238,.1);
+      background: rgba(15,23,42,.95);
+      backdrop-filter: blur(12px);
+      flex-shrink: 0;
+    }
+    .hdr-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .hdr-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate);
+    }
+    .hdr-steps { display: flex; gap: 5px; align-items: center; }
+    .step-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      transition: background .3s;
+    }
+    .step-dot.active { background: var(--cyan); }
+    .step-dot.done   { background: rgba(34,211,238,.4); }
+
+    /* ── MAIN AREA ── */
+    #app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      min-height: 0;
+    }
+    .screen {
+      width: 100%;
+      max-width: 520px;
+      animation: fadeUp .35s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCAN ANIMATION ── */
+    .scan-eye-wrap {
+      position: relative;
+      width: 200px;
+      height: 120px;
+      margin: 0 auto 2rem;
+    }
+    .scan-line {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      animation: scanDown 1.8s ease-in-out infinite;
+    }
+    @keyframes scanDown {
+      0%   { top: 0;    opacity: .8; }
+      100% { top: 100%; opacity: 0; }
+    }
+    .scan-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid var(--cyan);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .scan-ring-1 { width: 230px; height: 138px; animation: ringPulse 2s ease-out infinite; }
+    .scan-ring-2 { width: 270px; height: 162px; animation: ringPulse 2s ease-out infinite .5s; }
+    @keyframes ringPulse {
+      0%   { opacity: .3; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0;  transform: translate(-50%, -50%) scale(1.1); }
+    }
+    .scan-status {
+      text-align: center;
+      font-size: 12px;
+      color: var(--cyan);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      min-height: 18px;
+      transition: opacity .25s;
+    }
+
+    /* ── DEVICE CARD ── */
+    .device-card {
+      background: var(--lift);
+      border: 1px solid rgba(34,211,238,.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .device-icon-wrap {
+      width: 68px; height: 68px;
+      border-radius: 14px;
+      background: rgba(34,211,238,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 30px;
+      line-height: 1;
+    }
+    .device-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: .25rem;
+    }
+    .device-meta { font-size: 14px; color: var(--muted); margin-bottom: .85rem; }
+    .patch-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+    .patch-warn {
+      margin-top: .9rem;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(226,75,74,.07);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      line-height: 1.55;
+      text-align: left;
+    }
+
+    /* ── DEVICE CORRECTION ── */
+    .dtype-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .dtype-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: .85rem .4rem;
+      border-radius: 12px;
+      background: var(--lcyan);
+      color: var(--navy);
+      border: 1.5px solid rgba(34,211,238,.35);
+      cursor: pointer;
+      transition: all .15s;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .dtype-card:hover { background: #c8f5fb; border-color: var(--cyan); }
+    .dtype-card.sel   { background: var(--cyan); border-color: var(--cyan); }
+    .dtype-card .di   { font-size: 22px; line-height: 1; }
+
+    .ver-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      max-height: 340px;
+      overflow-y: auto;
+      margin-bottom: 1.25rem;
+      padding-right: 2px;
+    }
+    .ver-card {
+      padding: .7rem .9rem;
+      border-radius: 10px;
+      background: var(--lcyan);
+      border: 1.5px solid rgba(34,211,238,.35);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: left;
+    }
+    .ver-card:hover { background: #c8f5fb; border-color: var(--cyan); }
+    .ver-card.sel   { background: var(--cyan); border-color: var(--cyan); }
+    .ver-label { font-size: 13px; font-weight: 600; color: var(--navy); display: block; margin-bottom: 1px; }
+    .ver-note  { font-size: 10px; display: block; margin-bottom: 1px; }
+    .ver-date  { font-size: 10px; color: #475569; display: block; font-style: italic; }
+    .ver-card.sel .ver-note,
+    .ver-card.sel .ver-date { color: rgba(15,23,42,.6); }
+
+    /* ── PROFILE QUESTIONS ── */
+    .q-progress {
+      height: 3px;
+      background: rgba(255,255,255,.08);
+      border-radius: 99px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .q-progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--cyan);
+      transition: width .4s ease;
+    }
+    .q-block { margin-bottom: 1.75rem; }
+    .q-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate);
+      margin-bottom: .85rem;
+      line-height: 1.35;
+    }
+    .q-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .q-pill {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: 99px;
+      background: var(--lcyan);
+      color: var(--navy);
+      border: 1.5px solid rgba(34,211,238,.35);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .q-pill:hover { background: #c8f5fb; border-color: var(--cyan); }
+    .q-pill.sel   { background: var(--cyan); border-color: var(--cyan); font-weight: 700; }
+    .age-row { display: flex; align-items: center; gap: 12px; }
+    .age-row input[type=range] { flex: 1; accent-color: var(--cyan); }
+    .age-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cyan);
+      min-width: 36px;
+      text-align: right;
+    }
+    .age-range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    /* ── CALCULATING ── */
+    .calc-ring {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 2px solid rgba(34,211,238,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 0 auto 1.5rem;
+    }
+    .calc-ring::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESULTS ── */
+    .score-hero {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: var(--lift);
+      border-radius: 16px;
+      padding: 1.4rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .score-ring {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 3px solid;
+    }
+    .score-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-of { font-size: 10px; opacity: .6; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+    .score-detail h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: .3rem; }
+    .score-detail p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    .actor-list {
+      background: var(--lift);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(255,255,255,.05);
+      margin-bottom: 1.25rem;
+    }
+    .actor-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .45rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .actor-row:last-child { border-bottom: none; }
+    .actor-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .actor-name { font-size: 13px; width: 160px; flex-shrink: 0; }
+    .actor-bar-wrap { flex: 1; height: 5px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden; }
+    .actor-bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+    .actor-score { font-size: 13px; font-weight: 500; min-width: 28px; text-align: right; }
+
+    .wins-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: .65rem;
+    }
+    .win-card {
+      background: var(--lift);
+      border-radius: 10px;
+      padding: .85rem 1rem;
+      margin-bottom: 7px;
+      display: flex;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+    .win-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(34,211,238,.15);
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .win-title  { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .win-where  { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 5px; }
+    .win-chips  { display: flex; gap: 4px; flex-wrap: wrap; }
+    .win-chip   { font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+
+    /* ── SAVE ── */
+    .save-card {
+      background: var(--lift);
+      border: 1px solid rgba(34,211,238,.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .save-id-display {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: var(--cyan);
+      background: rgba(34,211,238,.07);
+      border: 1px solid rgba(34,211,238,.18);
+      border-radius: 10px;
+      padding: .85rem 1.25rem;
+      margin: 1rem 0;
+      word-break: break-word;
+      letter-spacing: .03em;
+      line-height: 1.7;
+    }
+    .pin-row { display: flex; gap: 8px; justify-content: center; margin: .65rem 0 1rem; }
+    .pin-box {
+      width: 44px; height: 52px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.05);
+      border: 1.5px solid rgba(255,255,255,.15);
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--slate);
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .pin-box:focus { border-color: var(--cyan); }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 32px;
+      border-radius: 99px;
+      background: var(--lcyan);
+      color: var(--navy);
+      border: none;
+      cursor: pointer;
+      outline: none;
+      -webkit-appearance: none;
+      transition: background .15s, transform .15s;
+    }
+    .btn-primary:hover   { background: #c8f5fb; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .3; cursor: default; transform: none; }
+
+    .btn-outline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 24px;
+      border-radius: 99px;
+      background: #ffffff;
+      color: var(--navy);
+      border: 1.5px solid var(--cyan);
+      cursor: pointer;
+      outline: none;
+      transition: background .15s, transform .15s;
+    }
+    .btn-outline:hover { background: var(--lcyan); transform: translateY(-1px); }
+
+    .btn-ghost {
+      font-size: 13px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 14px;
+      outline: none;
+      transition: color .15s;
+    }
+    .btn-ghost:hover { color: var(--slate); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── UTILITIES ── */
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: .6rem;
+    }
+    .sec-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+    .info-box {
+      background: rgba(34,211,238,.05);
+      border: 1px solid rgba(34,211,238,.14);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: left;
+      margin-bottom: 1.25rem;
+    }
+    .error-msg {
+      background: rgba(226,75,74,.1);
+      border: 1px solid rgba(226,75,74,.25);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      font-size: 12px;
+      color: var(--red);
+      margin-top: .75rem;
+      display: none;
+    }
+
+    /* scrollbar for version grid */
+    .ver-grid::-webkit-scrollbar { width: 4px; }
+    .ver-grid::-webkit-scrollbar-track { background: transparent; }
+    .ver-grid::-webkit-scrollbar-thumb { background: rgba(34,211,238,.2); border-radius: 2px; }
+
+    @media (max-width: 480px) {
+      .dtype-grid { grid-template-columns: repeat(3, 1fr); }
+      .ver-grid   { grid-template-columns: 1fr; }
+      .actor-name { width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <a href="/" class="hdr-brand" aria-label="MyBadGuy home">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
+    <span class="hdr-name">MyBadGuy</span>
+  </a>
+  <div class="hdr-steps" id="stepDots" aria-label="Scan progress" role="progressbar" aria-valuemin="0" aria-valuemax="6"></div>
+</header>
+
+<main id="app" role="main"></main>
+
+<script>
+'use strict';
+
+// ── CONFIG ──────────────────────────────────────────────
+const API = 'https://api.mybadguy.com';
+
+// ── STATE ───────────────────────────────────────────────
+let ST = 0;        // current step 0-6
+let CQ = 0;        // current question screen 0|1
+let DV = {};       // detected device
+let TV = {};       // temp device for correction
+let SC = [];       // computed scores
+let SID = '';      // generated scan ID
+let PR = {         // profile answers
+  age:35, fin:1, tech:1, iso:1, sm:1,
+  role:0, pub:0,  mdm:0, home:1, usage:0
+};
+
+// ── DEVICE TYPE DEFINITIONS ──────────────────────────────
+const DTYPES = [
+  { id:'iphone',  lb:'iPhone',  ic:'📱', os:'iOS' },
+  { id:'ipad',    lb:'iPad',    ic:'🟦', os:'iPadOS' },
+  { id:'android', lb:'Android', ic:'🤖', os:'Android' },
+  { id:'mac',     lb:'Mac',     ic:'💻', os:'macOS' },
+  { id:'windows', lb:'Windows', ic:'🖥',  os:'Windows' },
+];
+
+// ── BUILD VERSIONS ───────────────────────────────────────
+const BUILDS = {
+  iphone: [
+    {v:'26.4.1',l:'iOS 26.4.1',p:'current',n:'Latest — fully patched',d:'Apr 2026'},
+    {v:'26.4',  l:'iOS 26.4',  p:'current',n:'Current',               d:'Mar 2026'},
+    {v:'26.3.2',l:'iOS 26.3.2',p:'behind', n:'2 unpatched CVEs',      d:'Feb 2026'},
+    {v:'26.3',  l:'iOS 26.3',  p:'behind', n:'6 unpatched CVEs',      d:'Jan 2026'},
+    {v:'26.2',  l:'iOS 26.2',  p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
+    {v:'26.1',  l:'iOS 26.1',  p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
+    {v:'26.0',  l:'iOS 26.0',  p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
+    {v:'18.4.1',l:'iOS 18.4.1',p:'outdated',n:'28 unpatched CVEs',    d:'Apr 16, 2025'},
+    {v:'18.4',  l:'iOS 18.4',  p:'outdated',n:'32 unpatched CVEs',    d:'Mar 31, 2025'},
+    {v:'18.3',  l:'iOS 18.3.x',p:'outdated',n:'38 unpatched CVEs',    d:'Jan–Mar 2025'},
+    {v:'18.2',  l:'iOS 18.2',  p:'outdated',n:'44 unpatched CVEs',    d:'Dec 11, 2024'},
+    {v:'18.1',  l:'iOS 18.0–18.1',p:'outdated',n:'58 unpatched CVEs', d:'Sep–Oct 2024'},
+    {v:'17',    l:'iOS 17.x',  p:'outdated',n:'82 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
+    {v:'16',    l:'iOS 16.x',  p:'outdated',n:'120 unpatched CVEs',   d:'Sep 2022–Sep 2023'},
+    {v:'15',    l:'iOS 15.x or older',p:'outdated',n:'180+ CVEs',     d:'Sep 2021 or earlier'},
+  ],
+  ipad: [
+    {v:'26.4.1',l:'iPadOS 26.4.1',p:'current',n:'Latest — fully patched',d:'Apr 2026'},
+    {v:'26.4',  l:'iPadOS 26.4',  p:'current',n:'Current',               d:'Mar 2026'},
+    {v:'26.3',  l:'iPadOS 26.3.x',p:'behind', n:'6 unpatched CVEs',      d:'Jan–Feb 2026'},
+    {v:'26.2',  l:'iPadOS 26.2',  p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
+    {v:'26.1',  l:'iPadOS 26.1',  p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
+    {v:'26.0',  l:'iPadOS 26.0',  p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
+    {v:'18.4',  l:'iPadOS 18.4.x',p:'outdated',n:'30 unpatched CVEs',   d:'Mar–Apr 2025'},
+    {v:'18.x',  l:'iPadOS 18.0–18.3',p:'outdated',n:'52 unpatched CVEs',d:'Sep–Mar 2025'},
+    {v:'17',    l:'iPadOS 17.x',  p:'outdated',n:'78 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
+    {v:'16',    l:'iPadOS 16.x',  p:'outdated',n:'112 unpatched CVEs',   d:'Sep 2022–Sep 2023'},
+    {v:'15',    l:'iPadOS 15.x or older',p:'outdated',n:'165+ CVEs',     d:'Sep 2021 or earlier'},
+  ],
+  android: [
+    {v:'15',l:'Android 15',          p:'current',n:'Latest — fully patched',d:'Oct 15, 2024'},
+    {v:'14',l:'Android 14',          p:'behind', n:'28 unpatched CVEs',    d:'Oct 4, 2023'},
+    {v:'13',l:'Android 13',          p:'outdated',n:'62 unpatched CVEs',   d:'Aug 15, 2022'},
+    {v:'12',l:'Android 12',          p:'outdated',n:'98 unpatched CVEs',   d:'Oct 4, 2021'},
+    {v:'11',l:'Android 11',          p:'outdated',n:'134 unpatched CVEs',  d:'Sep 8, 2020'},
+    {v:'10',l:'Android 10',          p:'outdated',n:'178 unpatched CVEs',  d:'Sep 3, 2019'},
+    {v:'9', l:'Android 9 or older',  p:'outdated',n:'224+ CVEs',           d:'Aug 6, 2018 or earlier'},
+  ],
+  mac: [
+    {v:'26.4.1',l:'macOS 26.4.1 Tahoe', p:'current',n:'Latest — fully patched',d:'Apr 2026'},
+    {v:'26.4',  l:'macOS 26.4 Tahoe',   p:'current',n:'Current',               d:'Mar 2026'},
+    {v:'26.3',  l:'macOS 26.3.x Tahoe', p:'behind', n:'6 unpatched CVEs',      d:'Jan–Feb 2026'},
+    {v:'26.2',  l:'macOS 26.2 Tahoe',   p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
+    {v:'26.1',  l:'macOS 26.1 Tahoe',   p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
+    {v:'26.0',  l:'macOS 26.0 Tahoe',   p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
+    {v:'15.4',  l:'macOS 15.4.x Sequoia',p:'outdated',n:'28 unpatched CVEs',   d:'Mar–Apr 2025'},
+    {v:'15.x',  l:'macOS 15.0–15.3',    p:'outdated',n:'48 unpatched CVEs',    d:'Sep–Mar 2025'},
+    {v:'14',    l:'macOS 14.x Sonoma',  p:'outdated',n:'92 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
+    {v:'13',    l:'macOS 13.x Ventura', p:'outdated',n:'136 unpatched CVEs',   d:'Oct 2022–Sep 2023'},
+    {v:'12',    l:'macOS 12.x or older',p:'outdated',n:'180+ CVEs',            d:'Oct 2021 or earlier'},
+  ],
+  windows: [
+    {v:'11-24H2',l:'Windows 11 24H2',          p:'current',n:'Latest — fully patched',d:'Oct 1, 2024'},
+    {v:'11-23H2',l:'Windows 11 23H2',          p:'behind', n:'28 unpatched CVEs',    d:'Oct 31, 2023'},
+    {v:'11-22H2',l:'Windows 11 22H2',          p:'outdated',n:'66 unpatched CVEs',   d:'Sep 20, 2022'},
+    {v:'11-21H2',l:'Windows 11 21H2',          p:'outdated',n:'104 unpatched CVEs',  d:'Oct 4, 2021'},
+    {v:'10-22H2',l:'Windows 10 22H2',          p:'outdated',n:'112 unpatched CVEs',  d:'Oct 18, 2022'},
+    {v:'10-21H2',l:'Windows 10 21H2',          p:'outdated',n:'186 unpatched CVEs',  d:'Nov 16, 2021'},
+    {v:'10-old', l:'Windows 10 21H1 or older', p:'outdated',n:'248+ CVEs',           d:'May 2021 or earlier'},
+  ],
+};
+
+// ── QUESTION SCREENS ─────────────────────────────────────
+const QSETS = [
+  { lb:'About you', pc:40, qs:[
+    { id:'age',  t:'How old are you?', ty:'slider' },
+    { id:'fin',  t:'Your financial situation?', ty:'pills',
+      o:['Struggling','Working class','Middle income','Doing well','High wealth'], v:[1,2,3,4,5] },
+    { id:'tech', t:'Tech comfort level?', ty:'pills',
+      o:['Not at all','Basic user','Moderate','Tech-savvy','Expert / IT'], v:[1,2,3,4,5] },
+    { id:'iso',  t:'How connected are you socially?', ty:'pills',
+      o:['Very isolated','Somewhat isolated','Active','Well connected','Community leader'], v:[1,2,3,4,5] },
+    { id:'sm',   t:'Social media activity?', ty:'pills',
+      o:['Never use it','Occasional','Regular','Heavy user','Influencer / public'], v:[1,2,3,4,5] },
+  ]},
+  { lb:'Your context', pc:80, qs:[
+    { id:'role', t:'Work-related data on this device?', ty:'pills',
+      o:['No work data','Some work apps','Work email & files','Sensitive / regulated','Executive / gov'], v:[0,1,2,3,4] },
+    { id:'pub',  t:'How public is your online presence?', ty:'pills',
+      o:['Very private','Low profile','Moderate','High visibility','Very public'], v:[0,1,2,3,4] },
+    { id:'mdm',  t:'How is this device used for work?', ty:'pills',
+      o:['Personal only','Work apps installed','Work email linked','Corporate account','MDM enrolled'], v:[0,1,2,3,4] },
+    { id:'home', t:'Where do you primarily live?', ty:'pills',
+      o:['Rural','Suburban','Urban','Dense urban'], v:[1,2,3,4] },
+    { id:'usage',t:'Where do you usually use your phone?', ty:'pills',
+      o:['Mostly at home','Work / commute','Often in public','Frequent travel','International'], v:[0,1,2,3,4] },
+  ]},
+];
+
+// ── SCORING ENGINE ────────────────────────────────────────
+function calcScores() {
+  const p  = PR;
+  const d  = DV;
+  const db = d.patch === 'current' ? 0 : d.patch === 'behind' ? 14 : 30;
+  const ph = d.type === 'iphone' || d.type === 'android';
+  const actors = [
+    { nm:'Device thief',     g:'financial',
+      t: Math.min(99, 38 + (ph?20:0) + p.usage*10 + p.home*6 + p.fin*8),
+      s: Math.min(99, 40 + p.usage*10 + p.home*6) },
+    { nm:'Cybercriminal',    g:'financial',
+      t: Math.min(99, 65 + p.fin*10 + (4-p.tech)*7 + db + p.usage*6),
+      s: Math.min(99, 58 + p.fin*8  + p.sm*6) },
+    { nm:'Data broker',      g:'technical',
+      t: Math.min(99, 42 + p.sm*10  + p.home*7 + p.usage*6),
+      s: Math.min(99, 38 + p.sm*10  + (4-p.tech)*5) },
+    { nm:'Insider threat',   g:'technical',
+      t: Math.min(99, 40 + p.mdm*18 + p.role*12 + db),
+      s: Math.min(99, 45 + p.mdm*14 + p.role*10) },
+    { nm:'Nation-state/APT', g:'technical',
+      t: Math.min(99, 30 + p.role*16 + p.pub*12 + p.usage*10 + db),
+      s: Math.min(99, 28 + p.role*14 + p.pub*10) },
+    { nm:'Partner abuser',   g:'social',
+      t: Math.min(99, 30 + p.iso*18 + (ph?12:0)),
+      s: Math.min(99, 42 + p.iso*18 + (4-p.tech)*8) },
+    { nm:'Elder scammer',    g:'social',
+      t: Math.min(99, 18 + (p.age>=65?42:p.age>=55?16:0) + (4-p.tech)*8),
+      s: Math.min(99, 28 + (p.age>=65?46:p.age>=55?18:0) + p.iso*12 + (4-p.tech)*10) },
+  ];
+  actors.forEach(a => { a.co = Math.round((a.t + a.s) / 2); });
+  actors.sort((a,b) => b.co - a.co);
+  return actors;
+}
+
+function getTopWins() {
+  const all = [
+    { t:'Enable Stolen Device Protection',
+      w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial', r:10 },
+    { t:'Enable two-factor authentication',
+      w:'Settings → [Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
+    { t:'Disable cross-app tracking',
+      w:'Settings → Privacy & Security → Tracking → Off', g:'technical', r:9 },
+    { t:'Update to the latest OS version',
+      w:'Settings → General → Software Update', g:'technical', r:9 },
+    { t:'Enable Silence Unknown Callers',
+      w:'Settings → Phone → Silence Unknown Callers → On', g:'social', r:8 },
+    { t:'Set all location to While Using or Never',
+      w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
+    { t:'Use Face ID in public — never enter passcode in view',
+      w:'Behavioral practice — unlock privately if Face ID fails', g:'financial', r:9 },
+    { t:'Use unique passwords for every account',
+      w:'Settings → Passwords → use built-in generator or 1Password', g:'financial', r:9 },
+  ];
+  const topG = SC.slice(0,3).map(a => a.g);
+  return all.filter(w => topG.includes(w.g)).slice(0,3);
+}
+
+// ── ID GENERATOR ─────────────────────────────────────────
+function genId() {
+  const words = ['ocean','violet','thunder','mercury','silver','falcon','ember',
+                 'cedar','lunar','drift','prism','cinder','vortex','haven',
+                 'nexus','cobalt','amber','cipher','delta','echo','frost',
+                 'glacier','horizon','indigo','jasper','kestrel','lantern'];
+  const pick = () => words[Math.floor(Math.random() * words.length)];
+  return `${pick()} · ${pick()} · ${pick()} · ${pick()}`;
+}
+
+// ── DEVICE DETECTION ─────────────────────────────────────
+function detectDevice() {
+  const ua = navigator.userAgent;
+  const pl = navigator.platform || '';
+  const tp = navigator.maxTouchPoints || 0;
+  let type = 'windows', os = 'Windows', major = '11', icon = '🖥';
+
+  if (/iPad/.test(ua) || (/Macintosh/.test(ua) && tp > 1)) {
+    type = 'ipad'; os = 'iPadOS'; icon = '🟦';
+    const m = ua.match(/CPU OS (\d+)/); if (m) major = m[1];
+  } else if (/iPhone/.test(ua)) {
+    type = 'iphone'; os = 'iOS'; icon = '📱';
+    const m = ua.match(/CPU iPhone OS (\d+)/); if (m) major = m[1];
+  } else if (/Android/.test(ua)) {
+    type = 'android'; os = 'Android'; icon = '🤖';
+    const m = ua.match(/Android (\d+)/); if (m) major = m[1];
+  } else if (/Macintosh|MacIntel/.test(pl) && tp === 0) {
+    type = 'mac'; os = 'macOS'; icon = '💻';
+    const m = ua.match(/Mac OS X (\d+)/);
+    if (m) major = m[1] === '10' ? '15' : m[1];
+  }
+
+  const CURR = { iphone:'26', ipad:'26', mac:'26', android:'15', windows:'11' };
+  const cur  = CURR[type] || '11';
+  const patch = parseInt(major) >= parseInt(cur) ? 'current'
+              : parseInt(major) >= parseInt(cur) - 1 ? 'behind'
+              : 'outdated';
+
+  const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
+  return { type, os, major, icon, patch, name: NAMES[type] || 'Device' };
+}
+
+// ── PROGRESS DOTS ─────────────────────────────────────────
+function renderDots() {
+  const el = document.getElementById('stepDots');
+  let h = '';
+  for (let i = 0; i < 6; i++) {
+    const cls = i === ST ? 'active' : i < ST ? 'done' : '';
+    h += `<div class="step-dot ${cls}" aria-hidden="true"></div>`;
+  }
+  el.innerHTML = h;
+  el.setAttribute('aria-valuenow', ST);
+}
+
+// ── STEP 0: SCAN ANIMATION ────────────────────────────────
+const CHECKS = [
+  'Reading device type…',
+  'Checking OS version…',
+  'Checking CVE database…',
+  'Analyzing patch status…',
+  'Profiling threat surface…',
+];
+
+function renderScan() {
+  document.getElementById('app').innerHTML = `
+    <div class="screen" style="text-align:center;">
+      <div class="scan-eye-wrap" aria-hidden="true">
+        <svg width="200" height="120" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(34,211,238,.18)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="2"/>
+          <circle cx="50" cy="30" r="9" fill="none" stroke="rgba(34,211,238,.35)" stroke-width="1.5"/>
+          <circle cx="50" cy="30" r="3.5" fill="rgba(34,211,238,.55)"/>
+        </svg>
+        <div class="scan-ring scan-ring-1"></div>
+        <div class="scan-ring scan-ring-2"></div>
+        <div class="scan-line"></div>
+      </div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:.6rem;">
+        Detecting your device
+      </h1>
+      <p class="scan-status" id="scanStatus" aria-live="polite">${CHECKS[0]}</p>
+    </div>`;
+
+  let idx = 0;
+  const iv = setInterval(() => {
+    idx++;
+    if (idx >= CHECKS.length) {
+      clearInterval(iv);
+      setTimeout(() => { DV = detectDevice(); ST = 1; render(); }, 300);
+      return;
+    }
+    const el = document.getElementById('scanStatus');
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(() => { if (el) { el.textContent = CHECKS[idx]; el.style.opacity = '1'; } }, 220);
+    }
+  }, 500);
+}
+
+// ── STEP 1: DEVICE CONFIRM ───────────────────────────────
+function renderDevice() {
+  const pc = DV.patch === 'current' ? '#22c55e' : DV.patch === 'behind' ? '#EF9F27' : '#E24B4A';
+  const pb = DV.patch === 'current' ? 'rgba(34,197,94,.12)' : DV.patch === 'behind' ? 'rgba(239,159,39,.12)' : 'rgba(226,75,74,.12)';
+  const pl = DV.patch === 'current' ? 'Up to date' : DV.patch === 'behind' ? 'Update available' : 'Outdated — scores elevated';
+  const warn = DV.patch !== 'current'
+    ? `<p class="patch-warn">Unpatched CVEs give threat actors open exploit windows. Your technical scores reflect this.</p>`
+    : '';
+
+  document.getElementById('app').innerHTML = `
+    <div class="screen">
+      <p class="eyebrow">Device detected</p>
+      <div class="device-card" role="region" aria-label="Detected device information">
+        <div class="device-icon-wrap" aria-hidden="true">${DV.icon}</div>
+        <h1 class="device-name">${DV.name}</h1>
+        <p class="device-meta">${DV.os} ${DV.major}</p>
+        <span class="patch-badge" style="background:${pb};color:${pc};">${pl}</span>
+        ${warn}
+      </div>
+      <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:1.25rem;">Is this your device?</p>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="ST=2;render()">Yes, continue →</button>
+        <button class="btn-outline" onclick="TV={};renderCorrect()">Correct it</button>
+      </div>
+    </div>`;
+}
+
+// ── DEVICE CORRECTION — STEP A: TYPE ─────────────────────
+function renderCorrect() {
+  renderDots();
+  const btns = DTYPES.map(dt => `
+    <div class="dtype-card${TV.type===dt.id?' sel':''}"
+         role="button" tabindex="0"
+         aria-pressed="${TV.type===dt.id}"
+         onclick="TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds()"
+         onkeydown="if(event.key==='Enter'){TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds()}"
+         aria-label="${dt.lb}">
+      <span class="di" aria-hidden="true">${dt.ic}</span>
+      <span>${dt.lb}</span>
+    </div>`).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="screen">
+      <p class="eyebrow">Correct your device</p>
+      <h1 class="sec-title">What type of device is this?</h1>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem;">
+        Select your device — we'll then ask for the exact build version.
+      </p>
+      <div class="dtype-grid" role="group" aria-label="Device type selection">${btns}</div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="ST=1;render()">← Back to detected device</button>
+      </div>
+    </div>`;
+}
+
+// ── DEVICE CORRECTION — STEP B: BUILD VERSION ────────────
+function renderCorrectBuilds() {
+  renderDots();
+  const builds = BUILDS[TV.type] || [];
+  const dt     = DTYPES.find(d => d.id === TV.type);
+  const NC = { current:'#22c55e', behind:'#EF9F27', outdated:'#E24B4A' };
+
+  const cards = builds.map(b => {
+    const sel = TV.build === b.v;
+    return `
+      <div class="ver-card${sel?' sel':''}"
+           role="button" tabindex="0"
+           aria-pressed="${sel}"
+           onclick="selectBuild('${b.v}','${b.p}')"
+           onkeydown="if(event.key==='Enter')selectBuild('${b.v}','${b.p}')"
+           aria-label="${b.l}, ${b.n}, released ${b.d}">
+        <span class="ver-label">${b.l}</span>
+        <span class="ver-note" style="color:${sel?'rgba(15,23,42,.65)':NC[b.p]};">${b.n}</span>
+        <span class="ver-date">Released ${b.d}</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="screen">
+      <p class="eyebrow">Correct your device</p>
+      <h1 class="sec-title">Which ${dt ? dt.os : 'OS'} version?</h1>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">
+        Check Settings → General → About for your exact build.
+      </p>
+      <div class="ver-grid" role="group" aria-label="OS version selection">${cards}</div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="renderCorrect()">← Change device type</button>
+        <button id="cfmBtn" class="btn-primary" ${TV.build?'':'disabled'} onclick="applyCorrection()">
+          Confirm →
+        </button>
+      </div>
+    </div>`;
+}
+
+function selectBuild(v, p) {
+  TV.build = v;
+  TV.major = v.split('.')[0].replace(/[^0-9]/g,'') || v;
+  TV.patch = p;
+  document.querySelectorAll('.ver-card').forEach(c => {
+    c.classList.remove('sel');
+    c.setAttribute('aria-pressed','false');
+  });
+  event.currentTarget.classList.add('sel');
+  event.currentTarget.setAttribute('aria-pressed','true');
+  const btn = document.getElementById('cfmBtn');
+  if (btn) btn.disabled = false;
+}
+
+function applyCorrection() {
+  const dt = DTYPES.find(d => d.id === TV.type);
+  const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
+  DV = { type:TV.type, os:TV.os, major:TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
+  ST = 1;
+  render();
+}
+
+// ── STEPS 2-3: PROFILE QUESTIONS ─────────────────────────
+function renderQuestions() {
+  const qs = QSETS[CQ];
+  let h = `
+    <div class="screen">
+      <p class="eyebrow">${qs.lb}</p>
+      <div class="q-progress" role="progressbar" aria-valuenow="${qs.pc}" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion ${qs.pc}%">
+        <div class="q-progress-fill" style="width:${qs.pc}%"></div>
+      </div>`;
+
+  qs.qs.forEach(q => {
+    const cur = PR[q.id] !== undefined ? PR[q.id] : (q.id==='age'?35:q.v?q.v[0]:0);
+    h += `<div class="q-block">`;
+    h += `<p class="q-label" id="q-${q.id}">${q.t}</p>`;
+
+    if (q.ty === 'slider') {
+      h += `
+        <div class="age-row" role="group" aria-labelledby="q-${q.id}">
+          <input type="range" min="13" max="85" value="${cur}" step="1"
+                 aria-label="Age" aria-valuemin="13" aria-valuemax="85" aria-valuenow="${cur}"
+                 oninput="PR.age=+this.value;document.getElementById('ageVal').textContent=this.value;this.setAttribute('aria-valuenow',this.value)">
+          <span class="age-val" id="ageVal" aria-live="polite">${cur}</span>
+        </div>
+        <div class="age-range-labels" aria-hidden="true"><span>13</span><span>85+</span></div>`;
+    } else {
+      h += `<div class="q-pills" role="group" aria-labelledby="q-${q.id}">`;
+      q.o.forEach((o, i) => {
+        const v   = q.v[i];
+        const sel = cur === v;
+        h += `
+          <button class="q-pill${sel?' sel':''}"
+                  aria-pressed="${sel}"
+                  onclick="PR['${q.id}']=${v};this.closest('.q-pills').querySelectorAll('.q-pill').forEach(p=>{p.classList.remove('sel');p.setAttribute('aria-pressed','false')});this.classList.add('sel');this.setAttribute('aria-pressed','true')"
+          >${o}</button>`;
+      });
+      h += `</div>`;
+    }
+    h += `</div>`;
+  });
+
+  h += `
+      <div class="btn-row">
+        ${CQ > 0 ? `<button class="btn-ghost" onclick="CQ=0;ST=2;render()">← Back</button>` : ''}
+        <button class="btn-primary" onclick="${CQ===0 ? 'CQ=1;ST=3;render()' : 'ST=4;render()'}">
+          ${CQ === 0 ? 'Continue →' : 'Calculate my risk →'}
+        </button>
+      </div>
+    </div>`;
+
+  document.getElementById('app').innerHTML = h;
+}
+
+// ── STEP 4: CALCULATING ───────────────────────────────────
+function renderCalc() {
+  document.getElementById('app').innerHTML = `
+    <div class="screen" style="text-align:center;">
+      <div class="calc-ring" aria-hidden="true">
+        <svg width="50" height="30" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(34,211,238,.3)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(34,211,238,.4)" stroke-width="3"/>
+          <circle cx="50" cy="30" r="7" fill="rgba(34,211,238,.5)"/>
+        </svg>
+      </div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:.5rem;">
+        Calculating your risk profile
+      </h1>
+      <p style="font-size:13px;color:var(--muted);" aria-live="polite">
+        Matching your profile against 7 threat actor models…
+      </p>
+    </div>`;
+  setTimeout(() => { SC = calcScores(); ST = 5; render(); }, 2000);
+}
+
+// ── STEP 5: RESULTS ───────────────────────────────────────
+function renderResults() {
+  const overall = Math.round(SC.reduce((s,a) => s + a.co, 0) / SC.length);
+  const rc = overall >= 70 ? '#E24B4A' : overall >= 45 ? '#EF9F27' : '#22c55e';
+  const rl = overall >= 70 ? 'High risk profile' : overall >= 45 ? 'Elevated risk profile' : 'Lower risk profile';
+  const rd = overall >= 70
+    ? 'Several threat actors have strong interest in your profile. Start with the quick wins below.'
+    : overall >= 45
+    ? 'Some threat actors find your profile moderately attractive. A few targeted changes will meaningfully reduce your exposure.'
+    : 'Your profile is less attractive to most threat actors. These quick wins close the remaining gaps.';
+
+  const GC = { technical:'#E24B4A', social:'#378ADD', financial:'#EF9F27' };
+  const wins = getTopWins();
+
+  let actorRows = SC.map(a => `
+    <div class="actor-row">
+      <div class="actor-dot" style="background:${GC[a.g]}" aria-hidden="true"></div>
+      <span class="actor-name">${a.nm}</span>
+      <div class="actor-bar-wrap" role="presentation">
+        <div class="actor-bar-fill" style="width:${a.co}%;background:${GC[a.g]}"></div>
+      </div>
+      <span class="actor-score" style="color:${GC[a.g]}" aria-label="Score ${a.co} out of 99">${a.co}</span>
+    </div>`).join('');
+
+  let winCards = wins.map((w,i) => `
+    <div class="win-card">
+      <div class="win-num" aria-hidden="true">${i+1}</div>
+      <div>
+        <p class="win-title">${w.t}</p>
+        <p class="win-where">${w.w}</p>
+        <div class="win-chips">
+          <span class="win-chip" style="background:rgba(34,211,238,.1);color:var(--cyan)">Risk: ${w.r}/10</span>
+          <span class="win-chip" style="background:rgba(34,197,94,.1);color:var(--green)">Impact: None</span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="screen" style="padding-bottom:2rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <p class="eyebrow" style="margin:0;">Your risk profile</p>
+        <p style="font-size:11px;color:var(--muted);">${DV.name} · ${DV.os} ${DV.major}</p>
+      </div>
+
+      <div class="score-hero" role="region" aria-label="Overall risk score">
+        <div class="score-ring" style="border-color:${rc}" aria-label="Risk score ${overall} out of 99">
+          <span class="score-num" style="color:${rc}">${overall}</span>
+          <span class="score-of">of 99</span>
+        </div>
+        <div>
+          <h1 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:.3rem;">${rl}</h1>
+          <p style="font-size:13px;color:var(--muted);line-height:1.55;">${rd}</p>
+        </div>
+      </div>
+
+      <p class="eyebrow" style="margin:.75rem 0 .5rem;">Threat actor scores</p>
+      <div class="actor-list" role="list" aria-label="Threat actor scores ranked by interest in your profile">
+        ${actorRows}
+      </div>
+
+      <p class="wins-title">Top quick wins — zero usage impact</p>
+      ${winCards}
+
+      <div class="btn-row" style="margin-top:1.5rem;">
+        <button class="btn-primary" onclick="goToDashboard()">Full plan →</button>
+        <button class="btn-outline" onclick="SID=genId();ST=6;render()">Save results</button>
+        <button class="btn-ghost" onclick="window.location.href='/'">← Home</button>
+      </div>
+      <p style="text-align:center;margin-top:1rem;font-size:11px;color:var(--dim);">
+        All calculations happen in your browser · Scores update as new CVEs are published
+      </p>
+    </div>`;
+}
+
+// ── STEP 6: SAVE ─────────────────────────────────────────
+function renderSave() {
+  if (!SID) SID = genId();
+  document.getElementById('app').innerHTML = `
+    <div class="screen">
+      <div class="save-card">
+        <h1 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:.4rem;">
+          Save your results
+        </h1>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">
+          This is your private ID. Only you have this phrase — we cannot see it.
+        </p>
+        <div class="save-id-display" aria-label="Your private ID phrase">${SID}</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:.65rem;">Choose a 4-digit PIN:</p>
+        <div class="pin-row" role="group" aria-label="4-digit PIN entry">
+          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+                 aria-label="PIN digit 1" oninput="moveFocus(this,0)">
+          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+                 aria-label="PIN digit 2" oninput="moveFocus(this,1)">
+          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+                 aria-label="PIN digit 3" oninput="moveFocus(this,2)">
+          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+                 aria-label="PIN digit 4" oninput="moveFocus(this,3)">
+        </div>
+        <div class="info-box">
+          No recovery flow. If you lose your ID, start a fresh detection. We cannot access
+          your data — and that's the point.
+        </div>
+        <div id="saveError" class="error-msg" role="alert">
+          Something went wrong saving your results. Please try again.
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="doSave()">
+          Save and confirm →
+        </button>
+        <div style="margin-top:.65rem;">
+          <button class="btn-ghost" style="font-size:12px;" onclick="ST=5;render()">
+            Skip — view results without saving
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function moveFocus(el, idx) {
+  if (el.value.length === 1) {
+    const boxes = [...document.querySelectorAll('.pin-box')];
+    if (idx < 3) boxes[idx + 1].focus();
+    else el.blur();
+  }
+}
+
+// ── SAVE TO API ───────────────────────────────────────────
+async function doSave() {
+  const pin = [...document.querySelectorAll('.pin-box')].map(b => b.value).join('');
+  if (pin.length < 4) {
+    document.querySelector('.pin-box').focus();
+    return;
+  }
+
+  const btn = document.querySelector('.save-card .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  try {
+    const resp = await fetch(`${API}/api/scan/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scan_id: SID,
+        pin,
+        device: {
+          type:  DV.type,
+          os:    DV.os,
+          major: DV.major,
+          patch: DV.patch,
+        },
+        profile: {
+          age_range:        PR.age,
+          financial_status: PR.fin,
+          tech_skill:       PR.tech,
+          social_isolation: PR.iso,
+          social_media_use: PR.sm,
+          job_data:         PR.role,
+          public_profile:   PR.pub,
+          mdm_level:        PR.mdm,
+          home_environment: PR.home,
+          usage_context:    PR.usage,
+        },
+      }),
+    });
+
+    if (!resp.ok) throw new Error(`API returned ${resp.status}`);
+
+    // Success — show confirmation
+    document.getElementById('app').innerHTML = `
+      <div class="screen" style="text-align:center;">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(34,211,238,.12);border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+            <path d="M5 13l6 6L21 7" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:.5rem;">Results saved</h1>
+        <p style="font-size:13px;color:var(--muted);max-width:300px;margin:0 auto 1.5rem;line-height:1.65;">
+          Return with your ID and PIN anytime to track completed remediations and see new threats.
+        </p>
+        <div class="save-id-display" aria-label="Your private ID: ${SID}">${SID}</div>
+        <p style="font-size:11px;color:var(--dim);margin-bottom:1.5rem;">
+          Store this phrase somewhere safe — a password manager, a note, or a photo.
+        </p>
+        <button class="btn-primary" onclick="goToDashboard()">View my full plan →</button>
+      </div>`;
+
+  } catch (err) {
+    console.error('Save failed:', err);
+    const errEl = document.getElementById('saveError');
+    if (errEl) errEl.style.display = 'block';
+    if (btn) { btn.disabled = false; btn.textContent = 'Save and confirm →'; }
+  }
+}
+
+// ── SESSION PROFILE BUILDER ───────────────────────────────
+// Maps detect.html state (PR + DV) into the format dashboard.html and
+// actor pages read from sessionStorage. Called before any navigation
+// to dashboard.html or an actor detail page.
+function buildProfile() {
+  // Copy all 10 profile slider values
+  const profile = { ...PR };
+
+  // Default all device flags off
+  profile.ip = false; profile.iosV = 1;
+  profile.id = false; profile.ipadV = 1;
+  profile.an = false; profile.anV  = 1;
+  profile.mc = false; profile.mcV  = 1;
+  profile.wn = false; profile.wnV  = 1;
+
+  // Map patch status to a version index in dashboard's version arrays
+  // current → idx 1 (latest), behind → idx 3, outdated → idx 6
+  const vIdx = DV.patch === 'current' ? 1 : DV.patch === 'behind' ? 3 : 6;
+
+  if (DV.type === 'iphone')  { profile.ip = true; profile.iosV  = vIdx; }
+  if (DV.type === 'ipad')    { profile.id = true; profile.ipadV = vIdx; }
+  if (DV.type === 'android') { profile.an = true; profile.anV   = vIdx; }
+  if (DV.type === 'mac')     { profile.mc = true; profile.mcV   = vIdx; }
+  if (DV.type === 'windows') { profile.wn = true; profile.wnV   = vIdx; }
+
+  return profile;
+}
+
+function goToDashboard() {
+  sessionStorage.setItem('mbg_profile', JSON.stringify(buildProfile()));
+  window.location.href = 'dashboard.html';
+}
+
+// ── ROUTER ────────────────────────────────────────────────
+function render() {
+  renderDots();
+  CQ = ST === 3 ? 1 : 0;
+
+  if      (ST === 0) renderScan();
+  else if (ST === 1) renderDevice();
+  else if (ST === 2) { CQ = 0; renderQuestions(); }
+  else if (ST === 3) { CQ = 1; renderQuestions(); }
+  else if (ST === 4) renderCalc();
+  else if (ST === 5) renderResults();
+  else if (ST === 6) renderSave();
+}
+
+// ── BOOT ─────────────────────────────────────────────────
+render();
+</script>
+
+</body>
+</html>

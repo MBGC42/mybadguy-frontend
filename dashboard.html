@@ -115,8 +115,8 @@
     <span class="nav-name">MyBadGuy</span>
   </a>
   <div class="nav-right">
-    <a href="scan.html" class="btn-back">← Back to scan</a>
-    <a href="scan.html" class="btn-rescan">New scan →</a>
+    <a href="detect.html" class="btn-back">← Back to detection</a>
+    <a href="detect.html" class="btn-rescan">New detection →</a>
   </div>
 </nav>
 
@@ -126,7 +126,7 @@
 'use strict';
 
 // ── LOAD PROFILE ──────────────────────────────────────────
-// Reads from sessionStorage if set by scan.html, otherwise uses defaults
+// Reads from sessionStorage if set by detect.html, otherwise uses defaults
 let PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
   age:42, fin:3, tech:2, iso:2, sm:2,
   role:1, pub:1, mdm:1, home:2, usage:1,
