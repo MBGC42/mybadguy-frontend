@@ -321,6 +321,37 @@
   line-height: 1.6;
 }
 
+/* ── Actor color themes (set via body class from actor.js) ── */
+body.theme-red   { --gc: #E24B4A; --ghbg: #FCEBEB; --ghtc: #791F1F; }
+body.theme-blue  { --gc: #378ADD; --ghbg: #E6F1FB; --ghtc: #0C447C; }
+body.theme-amber { --gc: #EF9F27; --ghbg: #FAEEDA; --ghtc: #633806; }
+
+/* ── Avatar color variants ───────────────────────────────── */
+.av-cyan   { background: #D1ECF1; color: #0C447C; }
+.av-amber  { background: #FFF3CD; color: #854F0B; }
+.av-purple { background: #E2D9F3; color: #3C3489; }
+.av-grey   { background: #F1EFE8; color: #444441; }
+.av-orange { background: #FDE8D8; color: #712B13; }
+.av-green  { background: #EAF3DE; color: #27500A; }
+.av-red    { background: #F8D7DA; color: #791F1F; }
+
+/* ── Utility layout (replaces inline styles in JS) ───────── */
+.panel-title-flex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.panel-title-score {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.rem-error-note {
+  margin-top: .5rem;
+  font-size: 11px;
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 560px) {
   .ideal-grid,
