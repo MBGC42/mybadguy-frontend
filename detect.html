@@ -628,11 +628,25 @@ function buildVersionCards(platform) {
 
     let label;
     if (platform === 'windows') {
-      // Extract Windows major (11 or 10) from cycle like '11-26h1-e' or '10-21h2-lts'
+      // Extract Windows major (11 or 10) and edition from cycle
+      // e.g. '11-26h1-e' → 'Windows 11 Pro — 26H1'
+      //      '11-25h2-w' → 'Windows 11 Home — 25H2'
+      //      '10-21h2-e-lts' → 'Windows 10 Pro LTS — 21H2'
+      //      '10-21h2-iot-lts' → 'Windows 10 IoT — 21H2'
       const winMajor = v.cycle.startsWith('11') ? 'Windows 11' : 'Windows 10';
-      const buildTag = v.cycle.replace(/^1[01]-/,'').toUpperCase().replace(/-/g,' ');
-      label = `${winMajor} — ${buildTag}`;
-      if (v.latest_version) label += ` (${v.latest_version})`;
+      const cycleLower = v.cycle.toLowerCase();
+      const edition = cycleLower.includes('iot') ? 'IoT'
+                    : cycleLower.endsWith('-e-lts') || cycleLower.endsWith('-e') ? 'Pro'
+                    : cycleLower.endsWith('-w') ? 'Home'
+                    : '';
+      const lts = cycleLower.includes('lts') && !cycleLower.includes('iot') ? ' LTS' : '';
+      // Extract build tag e.g. '26h1' → '26H1'
+      const buildMatch = v.cycle.match(/(\d+h\d+)/i);
+      const buildTag = buildMatch ? buildMatch[1].toUpperCase() : v.cycle;
+      label = edition
+        ? `${winMajor} ${edition}${lts} — ${buildTag}`
+        : `${winMajor}${lts} — ${buildTag}`;
+      if (v.latest_version) label += ` (build ${v.latest_version})`;
     } else {
       label = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
     }
@@ -1228,10 +1242,11 @@ async function doSave() {
         scan_id: SID,
         pin,
         device: {
-          type:  DV.type,
-          os:    DV.os,
-          major: DV.major,
-          patch: DV.patch,
+          type:         DV.type,
+          os:           DV.os,
+          major:        DV.major,
+          patch:        DV.patch,
+          full_version: DV.fullVersion || DV.major,
         },
         profile: {
           age_range:        PR.age,
