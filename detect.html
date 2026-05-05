@@ -596,19 +596,31 @@ async function fetchOsVersions(platform) {
 function versionToPatchStatus(fullVersion, platform) {
   const data = OSV[platform];
   if (!data || !data.versions || !data.versions.length) return 'behind';
+  // Compare on major version number only (e.g. '26' from '26.4.2')
   const major = String(parseInt(fullVersion) || fullVersion.split('.')[0]);
-  const cycle = data.versions.find(v => String(v.cycle) === major);
-  if (!cycle)               return 'outdated'; // very old, not in DB
-  if (!cycle.is_supported)  return 'outdated'; // EOL
+  // Try exact cycle match first, then numeric match
+  const cycle = data.versions.find(v => String(v.cycle) === major)
+             || data.versions.find(v => String(Math.floor(parseFloat(v.cycle))) === major);
+  if (!cycle)               return 'outdated'; // very old or not tracked
+  if (!cycle.is_supported)  return 'outdated'; // vendor EOL
   if (cycle.is_current)     return 'current';
-  return 'behind';
+  return 'behind';                             // supported but not latest cycle
 }
 
 function buildVersionCards(platform) {
   const data = OSV[platform];
   if (!data || !data.versions || !data.versions.length) return [];
   const prefix = { iphone:'iOS', ipad:'iPadOS', android:'Android', mac:'macOS', windows:'Windows' }[platform] || '';
-  return data.versions.map(v => {
+
+  // Sort: current first, then other supported (by cycle desc), then EOL (by cycle desc)
+  // parseFloat handles '26', '15', '14', '10.15' etc correctly
+  const sorted = [...data.versions].sort((a, b) => {
+    if (a.is_current !== b.is_current)   return b.is_current - a.is_current;
+    if (a.is_supported !== b.is_supported) return b.is_supported - a.is_supported;
+    return parseFloat(b.cycle) - parseFloat(a.cycle);
+  });
+
+  return sorted.map(v => {
     const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
     const display = v.latest_version || v.cycle;
     const label   = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
@@ -859,8 +871,8 @@ function renderCorrect() {
     <div class="dtype-card${TV.type===dt.id?' sel':''}"
          role="button" tabindex="0"
          aria-pressed="${TV.type===dt.id}"
-         onclick="TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds()"
-         onkeydown="if(event.key==='Enter'){TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds()}"
+         onclick="TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds().catch(console.error)"
+         onkeydown="if(event.key==='Enter'){TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds().catch(console.error)}"
          aria-label="${dt.lb}">
       <span class="di" aria-hidden="true">${dt.ic}</span>
       <span>${dt.lb}</span>
@@ -881,8 +893,15 @@ function renderCorrect() {
 }
 
 // ── DEVICE CORRECTION — STEP B: BUILD VERSION ────────────
-function renderCorrectBuilds() {
+async function renderCorrectBuilds() {
   renderDots();
+  // Show loading state while fetching if not already cached
+  if (!OSV[TV.type]) {
+    document.getElementById('app').innerHTML = `<div class="screen" style="text-align:center;padding:3rem 1rem;">
+      <div class="rem-spinner" style="width:24px;height:24px;border:2px solid rgba(255,255,255,.1);border-top-color:#22d3ee;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem;"></div>
+      <p style="color:var(--muted);font-size:14px;">Loading version data…</p></div>`;
+    await fetchOsVersions(TV.type);
+  }
   const builds = buildVersionCards(TV.type);
   const dt     = DTYPES.find(d => d.id === TV.type);
   const NC = { current:'#22c55e', behind:'#EF9F27', outdated:'#E24B4A' };
