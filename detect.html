@@ -568,6 +568,7 @@ let PR = {         // profile answers
   age:35, fin:1, tech:1, iso:1, sm:1,
   role:0, pub:0,  mdm:0, home:1, usage:0
 };
+let OSV = {};      // os_versions API cache keyed by platform
 
 // ── DEVICE TYPE DEFINITIONS ──────────────────────────────
 const DTYPES = [
@@ -578,70 +579,48 @@ const DTYPES = [
   { id:'windows', lb:'Windows', ic:'🖥',  os:'Windows' },
 ];
 
-// ── BUILD VERSIONS ───────────────────────────────────────
-const BUILDS = {
-  iphone: [
-    {v:'26.4.1',l:'iOS 26.4.1',p:'current',n:'Latest — fully patched',d:'Apr 2026'},
-    {v:'26.4',  l:'iOS 26.4',  p:'current',n:'Current',               d:'Mar 2026'},
-    {v:'26.3.2',l:'iOS 26.3.2',p:'behind', n:'2 unpatched CVEs',      d:'Feb 2026'},
-    {v:'26.3',  l:'iOS 26.3',  p:'behind', n:'6 unpatched CVEs',      d:'Jan 2026'},
-    {v:'26.2',  l:'iOS 26.2',  p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
-    {v:'26.1',  l:'iOS 26.1',  p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
-    {v:'26.0',  l:'iOS 26.0',  p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
-    {v:'18.4.1',l:'iOS 18.4.1',p:'outdated',n:'28 unpatched CVEs',    d:'Apr 16, 2025'},
-    {v:'18.4',  l:'iOS 18.4',  p:'outdated',n:'32 unpatched CVEs',    d:'Mar 31, 2025'},
-    {v:'18.3',  l:'iOS 18.3.x',p:'outdated',n:'38 unpatched CVEs',    d:'Jan–Mar 2025'},
-    {v:'18.2',  l:'iOS 18.2',  p:'outdated',n:'44 unpatched CVEs',    d:'Dec 11, 2024'},
-    {v:'18.1',  l:'iOS 18.0–18.1',p:'outdated',n:'58 unpatched CVEs', d:'Sep–Oct 2024'},
-    {v:'17',    l:'iOS 17.x',  p:'outdated',n:'82 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
-    {v:'16',    l:'iOS 16.x',  p:'outdated',n:'120 unpatched CVEs',   d:'Sep 2022–Sep 2023'},
-    {v:'15',    l:'iOS 15.x or older',p:'outdated',n:'180+ CVEs',     d:'Sep 2021 or earlier'},
-  ],
-  ipad: [
-    {v:'26.4.1',l:'iPadOS 26.4.1',p:'current',n:'Latest — fully patched',d:'Apr 2026'},
-    {v:'26.4',  l:'iPadOS 26.4',  p:'current',n:'Current',               d:'Mar 2026'},
-    {v:'26.3',  l:'iPadOS 26.3.x',p:'behind', n:'6 unpatched CVEs',      d:'Jan–Feb 2026'},
-    {v:'26.2',  l:'iPadOS 26.2',  p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
-    {v:'26.1',  l:'iPadOS 26.1',  p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
-    {v:'26.0',  l:'iPadOS 26.0',  p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
-    {v:'18.4',  l:'iPadOS 18.4.x',p:'outdated',n:'30 unpatched CVEs',   d:'Mar–Apr 2025'},
-    {v:'18.x',  l:'iPadOS 18.0–18.3',p:'outdated',n:'52 unpatched CVEs',d:'Sep–Mar 2025'},
-    {v:'17',    l:'iPadOS 17.x',  p:'outdated',n:'78 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
-    {v:'16',    l:'iPadOS 16.x',  p:'outdated',n:'112 unpatched CVEs',   d:'Sep 2022–Sep 2023'},
-    {v:'15',    l:'iPadOS 15.x or older',p:'outdated',n:'165+ CVEs',     d:'Sep 2021 or earlier'},
-  ],
-  android: [
-    {v:'15',l:'Android 15',          p:'current',n:'Latest — fully patched',d:'Oct 15, 2024'},
-    {v:'14',l:'Android 14',          p:'behind', n:'28 unpatched CVEs',    d:'Oct 4, 2023'},
-    {v:'13',l:'Android 13',          p:'outdated',n:'62 unpatched CVEs',   d:'Aug 15, 2022'},
-    {v:'12',l:'Android 12',          p:'outdated',n:'98 unpatched CVEs',   d:'Oct 4, 2021'},
-    {v:'11',l:'Android 11',          p:'outdated',n:'134 unpatched CVEs',  d:'Sep 8, 2020'},
-    {v:'10',l:'Android 10',          p:'outdated',n:'178 unpatched CVEs',  d:'Sep 3, 2019'},
-    {v:'9', l:'Android 9 or older',  p:'outdated',n:'224+ CVEs',           d:'Aug 6, 2018 or earlier'},
-  ],
-  mac: [
-    {v:'26.4.1',l:'macOS 26.4.1 Tahoe', p:'current',n:'Latest — fully patched',d:'Apr 2026'},
-    {v:'26.4',  l:'macOS 26.4 Tahoe',   p:'current',n:'Current',               d:'Mar 2026'},
-    {v:'26.3',  l:'macOS 26.3.x Tahoe', p:'behind', n:'6 unpatched CVEs',      d:'Jan–Feb 2026'},
-    {v:'26.2',  l:'macOS 26.2 Tahoe',   p:'behind', n:'9 unpatched CVEs',      d:'Dec 2025'},
-    {v:'26.1',  l:'macOS 26.1 Tahoe',   p:'outdated',n:'14 unpatched CVEs',    d:'Oct 2025'},
-    {v:'26.0',  l:'macOS 26.0 Tahoe',   p:'outdated',n:'20 unpatched CVEs',    d:'Sep 16, 2025'},
-    {v:'15.4',  l:'macOS 15.4.x Sequoia',p:'outdated',n:'28 unpatched CVEs',   d:'Mar–Apr 2025'},
-    {v:'15.x',  l:'macOS 15.0–15.3',    p:'outdated',n:'48 unpatched CVEs',    d:'Sep–Mar 2025'},
-    {v:'14',    l:'macOS 14.x Sonoma',  p:'outdated',n:'92 unpatched CVEs',    d:'Sep 2023–Sep 2024'},
-    {v:'13',    l:'macOS 13.x Ventura', p:'outdated',n:'136 unpatched CVEs',   d:'Oct 2022–Sep 2023'},
-    {v:'12',    l:'macOS 12.x or older',p:'outdated',n:'180+ CVEs',            d:'Oct 2021 or earlier'},
-  ],
-  windows: [
-    {v:'11-24H2',l:'Windows 11 24H2',          p:'current',n:'Latest — fully patched',d:'Oct 1, 2024'},
-    {v:'11-23H2',l:'Windows 11 23H2',          p:'behind', n:'28 unpatched CVEs',    d:'Oct 31, 2023'},
-    {v:'11-22H2',l:'Windows 11 22H2',          p:'outdated',n:'66 unpatched CVEs',   d:'Sep 20, 2022'},
-    {v:'11-21H2',l:'Windows 11 21H2',          p:'outdated',n:'104 unpatched CVEs',  d:'Oct 4, 2021'},
-    {v:'10-22H2',l:'Windows 10 22H2',          p:'outdated',n:'112 unpatched CVEs',  d:'Oct 18, 2022'},
-    {v:'10-21H2',l:'Windows 10 21H2',          p:'outdated',n:'186 unpatched CVEs',  d:'Nov 16, 2021'},
-    {v:'10-old', l:'Windows 10 21H1 or older', p:'outdated',n:'248+ CVEs',           d:'May 2021 or earlier'},
-  ],
-};
+// ── OS VERSIONS (API-driven) ────────────────────────────────
+// Fetched from /api/os-versions/:platform during detection animation.
+// Replaces the previous hardcoded BUILDS table.
+
+async function fetchOsVersions(platform) {
+  if (OSV[platform]) return OSV[platform];
+  try {
+    const r = await fetch(`${API}/api/os-versions/${platform}`);
+    if (!r.ok) throw new Error(r.status);
+    OSV[platform] = await r.json();
+  } catch (_) { OSV[platform] = { versions:[], current:null, supported:0 }; }
+  return OSV[platform];
+}
+
+function versionToPatchStatus(fullVersion, platform) {
+  const data = OSV[platform];
+  if (!data || !data.versions || !data.versions.length) return 'behind';
+  const major = String(parseInt(fullVersion) || fullVersion.split('.')[0]);
+  const cycle = data.versions.find(v => String(v.cycle) === major);
+  if (!cycle)               return 'outdated'; // very old, not in DB
+  if (!cycle.is_supported)  return 'outdated'; // EOL
+  if (cycle.is_current)     return 'current';
+  return 'behind';
+}
+
+function buildVersionCards(platform) {
+  const data = OSV[platform];
+  if (!data || !data.versions || !data.versions.length) return [];
+  const prefix = { iphone:'iOS', ipad:'iPadOS', android:'Android', mac:'macOS', windows:'Windows' }[platform] || '';
+  return data.versions.map(v => {
+    const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
+    const display = v.latest_version || v.cycle;
+    const label   = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
+    const note    = v.is_current   ? 'Latest — fully patched'
+                  : v.is_supported ? 'Security patches available'
+                  :                  'End of life — no security patches';
+    const date    = v.release_date
+      ? new Date(v.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'})
+      : '';
+    return { v: display, cycle: v.cycle, l: label, p: patch, n: note, d: date };
+  });
+}
 
 // ── QUESTION SCREENS ─────────────────────────────────────
 const QSETS = [
@@ -742,31 +721,41 @@ function detectDevice() {
   const ua = navigator.userAgent;
   const pl = navigator.platform || '';
   const tp = navigator.maxTouchPoints || 0;
-  let type = 'windows', os = 'Windows', major = '11', icon = '🖥';
+  let type = 'windows', os = 'Windows', major = '11', fullVersion = '', icon = '🖥';
 
   if (/iPad/.test(ua) || (/Macintosh/.test(ua) && tp > 1)) {
     type = 'ipad'; os = 'iPadOS'; icon = '🟦';
-    const m = ua.match(/CPU OS (\d+)/); if (m) major = m[1];
+    const m = ua.match(/CPU OS (\d+[_\d]*)/);
+    if (m) { fullVersion = m[1].replace(/_/g,'.'); major = m[1].split('_')[0]; }
   } else if (/iPhone/.test(ua)) {
     type = 'iphone'; os = 'iOS'; icon = '📱';
-    const m = ua.match(/CPU iPhone OS (\d+)/); if (m) major = m[1];
+    const m = ua.match(/CPU iPhone OS (\d+[_\d]*)/);
+    if (m) { fullVersion = m[1].replace(/_/g,'.'); major = m[1].split('_')[0]; }
   } else if (/Android/.test(ua)) {
     type = 'android'; os = 'Android'; icon = '🤖';
-    const m = ua.match(/Android (\d+)/); if (m) major = m[1];
+    const m = ua.match(/Android (\d+(?:\.\d+)?)/);
+    if (m) { fullVersion = m[1]; major = m[1].split('.')[0]; }
   } else if (/Macintosh|MacIntel/.test(pl) && tp === 0) {
     type = 'mac'; os = 'macOS'; icon = '💻';
-    const m = ua.match(/Mac OS X (\d+)/);
-    if (m) major = m[1] === '10' ? '15' : m[1];
+    const m = ua.match(/Mac OS X (\d+[_\d]*)/);
+    if (m) {
+      const parts = m[1].split('_');
+      if (parts[0] === '10') {
+        // Intel era UA: 10_15_7 means macOS minor version is parts[1]
+        major = parts[1] || '15';
+        fullVersion = major + (parts[2] ? '.' + parts[2] : '');
+      } else {
+        major = parts[0]; fullVersion = parts.join('.');
+      }
+    }
   }
+  // Windows: UA always says NT 10.0 for both Win10 and Win11
+  // User must self-select via the correction flow
+  if (type === 'windows') fullVersion = 'Windows';
 
-  const CURR = { iphone:'26', ipad:'26', mac:'26', android:'15', windows:'11' };
-  const cur  = CURR[type] || '11';
-  const patch = parseInt(major) >= parseInt(cur) ? 'current'
-              : parseInt(major) >= parseInt(cur) - 1 ? 'behind'
-              : 'outdated';
-
+  const patch = versionToPatchStatus(fullVersion || major, type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
-  return { type, os, major, icon, patch, name: NAMES[type] || 'Device' };
+  return { type, os, major, fullVersion: fullVersion || major, icon, patch, name: NAMES[type] || 'Device' };
 }
 
 // ── PROGRESS DOTS ─────────────────────────────────────────
@@ -815,7 +804,17 @@ function renderScan() {
     idx++;
     if (idx >= CHECKS.length) {
       clearInterval(iv);
-      setTimeout(() => { DV = detectDevice(); ST = 1; render(); }, 300);
+      setTimeout(async () => {
+        // Quick-detect platform type so we can pre-fetch OS versions during animation
+        const _ua = navigator.userAgent, _tp = navigator.maxTouchPoints||0;
+        let _pt = 'windows';
+        if (/iPad/.test(_ua)||(/Macintosh/.test(_ua)&&_tp>1)) _pt='ipad';
+        else if (/iPhone/.test(_ua))  _pt='iphone';
+        else if (/Android/.test(_ua)) _pt='android';
+        else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
+        await fetchOsVersions(_pt);
+        DV = detectDevice(); ST = 1; render();
+      }, 300);
       return;
     }
     const el = document.getElementById('scanStatus');
@@ -841,7 +840,7 @@ function renderDevice() {
       <div class="device-card" role="region" aria-label="Detected device information">
         <div class="device-icon-wrap" aria-hidden="true">${DV.icon}</div>
         <h1 class="device-name">${DV.name}</h1>
-        <p class="device-meta">${DV.os} ${DV.major}</p>
+        <p class="device-meta">${DV.os} ${DV.fullVersion || DV.major}</p>
         <span class="patch-badge" style="background:${pb};color:${pc};">${pl}</span>
         ${warn}
       </div>
@@ -884,7 +883,7 @@ function renderCorrect() {
 // ── DEVICE CORRECTION — STEP B: BUILD VERSION ────────────
 function renderCorrectBuilds() {
   renderDots();
-  const builds = BUILDS[TV.type] || [];
+  const builds = buildVersionCards(TV.type);
   const dt     = DTYPES.find(d => d.id === TV.type);
   const NC = { current:'#22c55e', behind:'#EF9F27', outdated:'#E24B4A' };
 
@@ -922,6 +921,7 @@ function renderCorrectBuilds() {
 
 function selectBuild(v, p) {
   TV.build = v;
+  TV.fullVersion = v;
   TV.major = v.split('.')[0].replace(/[^0-9]/g,'') || v;
   TV.patch = p;
   document.querySelectorAll('.ver-card').forEach(c => {
@@ -937,7 +937,7 @@ function selectBuild(v, p) {
 function applyCorrection() {
   const dt = DTYPES.find(d => d.id === TV.type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
-  DV = { type:TV.type, os:TV.os, major:TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
+  DV = { type:TV.type, os:TV.os, major:TV.major, fullVersion:TV.fullVersion||TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
   ST = 1;
   render();
 }
@@ -1215,6 +1215,9 @@ async function doSave() {
 function buildProfile() {
   // Copy all 10 profile slider values
   const profile = { ...PR };
+
+  // Store full OS version string for display and scoring
+  profile.deviceFullVersion = DV.fullVersion || DV.major;
 
   // Default all device flags off
   profile.ip = false; profile.iosV = 1;
