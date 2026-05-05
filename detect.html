@@ -942,14 +942,22 @@ async function renderCorrectBuilds() {
       </div>`;
   }).join('');
 
-  // Platform-specific instructions for finding OS version
-  const versionHint = TV.type === 'windows'
-    ? 'Settings → System → About to find your Windows version and build.'
-    : TV.type === 'mac'
-    ? 'Apple menu → About This Mac for your exact version.'
-    : TV.type === 'android'
-    ? 'Settings → About phone → Software information.'
-    : 'Settings → General → About for your exact build.';
+  // Platform-specific step-by-step instructions
+  const VERSION_STEPS = {
+    iphone:  ['Open <strong>Settings</strong>', 'Tap <strong>General</strong>', 'Tap <strong>About</strong>', 'Look for <strong>Software Version</strong>'],
+    ipad:    ['Open <strong>Settings</strong>', 'Tap <strong>General</strong>', 'Tap <strong>About</strong>', 'Look for <strong>Software Version</strong>'],
+    android: ['Open <strong>Settings</strong>', 'Scroll down and tap <strong>About phone</strong>', 'Tap <strong>Software information</strong>', 'Look for <strong>Android version</strong>'],
+    mac:     ['Click the <strong>ἴE Apple menu</strong> (top-left corner)', 'Click <strong>About This Mac</strong>', 'Your macOS version is shown at the top'],
+    windows: ['Click <strong>Start</strong>', 'Click <strong>Settings</strong> (gear icon)', 'Click <strong>System</strong>', 'Click <strong>About</strong>', 'Look for <strong>Windows 11</strong> or <strong>Windows 10</strong> and the version number (e.g. 24H2)'],
+  };
+
+  const steps = VERSION_STEPS[TV.type] || VERSION_STEPS.iphone;
+  const stepsHtml = steps.map((s, i) =>
+    `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;">
+       <span style="flex-shrink:0;width:18px;height:18px;border-radius:50%;background:rgba(34,211,238,.15);color:#22d3ee;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">${i+1}</span>
+       <span style="font-size:12px;color:var(--muted);line-height:1.5;">${s}</span>
+     </div>`
+  ).join('');
 
   const eyebrow = TV.type === 'windows' ? 'Windows version' : 'Correct your device';
   const heading = TV.type === 'windows'
@@ -960,9 +968,12 @@ async function renderCorrectBuilds() {
     <div class="screen">
       <p class="eyebrow">${eyebrow}</p>
       <h1 class="sec-title">${heading}</h1>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">
-        Check ${versionHint}
-      </p>
+      <details style="margin-bottom:1rem;background:rgba(34,211,238,.05);border:.5px solid rgba(34,211,238,.15);border-radius:8px;padding:.6rem .85rem;">
+        <summary style="font-size:12px;font-weight:500;color:#22d3ee;cursor:pointer;user-select:none;list-style:none;">
+          How to find your version &darr;
+        </summary>
+        <div style="margin-top:.65rem;">${stepsHtml}</div>
+      </details>
       <div class="ver-grid" role="group" aria-label="OS version selection">${cards}</div>
       <div class="btn-row">
         <button class="btn-ghost" onclick="renderCorrect()">← Change device type</button>
