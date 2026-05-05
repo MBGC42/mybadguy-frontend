@@ -613,52 +613,81 @@ function buildVersionCards(platform) {
   const data = OSV[platform];
   if (!data || !data.versions || !data.versions.length) return [];
   const prefix = { iphone:'iOS', ipad:'iPadOS', android:'Android', mac:'macOS', windows:'Windows' }[platform] || '';
+  const cards = [];
 
-  // Sort: current first, then other supported (by cycle desc), then EOL (by cycle desc)
-  // parseFloat handles '26', '15', '14', '10.15' etc correctly
+  if (platform === 'windows') {
+    // Windows: filter to consumer editions only (skip IoT and LTS)
+    // Show Home (-w) and Pro (-e) editions, exclude -iot-lts, -e-lts, -iot
+    const consumer = data.versions.filter(v =>
+      !v.cycle.includes('iot') && !v.cycle.includes('lts')
+    );
+    const sorted = [...consumer].sort((a, b) => {
+      if (a.is_current !== b.is_current)    return b.is_current - a.is_current;
+      if (a.is_supported !== b.is_supported) return b.is_supported - a.is_supported;
+      return parseFloat(b.cycle) - parseFloat(a.cycle);
+    });
+    sorted.forEach(v => {
+      const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
+      const cycleLower = v.cycle.toLowerCase();
+      const edition = cycleLower.endsWith('-e') ? 'Pro' : cycleLower.endsWith('-w') ? 'Home' : '';
+      const buildMatch = v.cycle.match(/(\d+h\d+)/i);
+      const buildTag   = buildMatch ? buildMatch[1].toUpperCase() : v.cycle;
+      const winMajor   = v.cycle.startsWith('11') ? 'Windows 11' : 'Windows 10';
+      const label = edition ? `${winMajor} ${edition} — ${buildTag}` : `${winMajor} — ${buildTag}`;
+      const note  = v.is_current   ? 'Latest — fully patched'
+                  : v.is_supported ? 'Security patches available'
+                  :                  'End of life — no security patches';
+      const date  = v.release_date
+        ? new Date(v.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) : '';
+      cards.push({ v: v.latest_version || v.cycle, cycle: v.cycle, l: label, p: patch, n: note, d: date });
+    });
+    return cards;
+  }
+
+  // iOS, iPadOS, macOS, Android
+  // For supported cycles that have point releases, expand them.
+  // For EOL cycles, show one entry per cycle.
+  const pointReleases = data.point_releases || [];
+  const supportedCycles = new Set(data.versions.filter(v => v.is_supported).map(v => v.cycle));
+
+  // Sort cycles: current first, supported, then EOL
   const sorted = [...data.versions].sort((a, b) => {
-    if (a.is_current !== b.is_current)   return b.is_current - a.is_current;
+    if (a.is_current !== b.is_current)    return b.is_current - a.is_current;
     if (a.is_supported !== b.is_supported) return b.is_supported - a.is_supported;
     return parseFloat(b.cycle) - parseFloat(a.cycle);
   });
 
-  return sorted.map(v => {
-    const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
-    const display = v.latest_version || v.cycle;
+  sorted.forEach(v => {
+    const prs = pointReleases.filter(pr => pr.major_cycle === v.cycle);
 
-    let label;
-    if (platform === 'windows') {
-      // Extract Windows major (11 or 10) and edition from cycle
-      // e.g. '11-26h1-e' → 'Windows 11 Pro — 26H1'
-      //      '11-25h2-w' → 'Windows 11 Home — 25H2'
-      //      '10-21h2-e-lts' → 'Windows 10 Pro LTS — 21H2'
-      //      '10-21h2-iot-lts' → 'Windows 10 IoT — 21H2'
-      const winMajor = v.cycle.startsWith('11') ? 'Windows 11' : 'Windows 10';
-      const cycleLower = v.cycle.toLowerCase();
-      const edition = cycleLower.includes('iot') ? 'IoT'
-                    : cycleLower.endsWith('-e-lts') || cycleLower.endsWith('-e') ? 'Pro'
-                    : cycleLower.endsWith('-w') ? 'Home'
-                    : '';
-      const lts = cycleLower.includes('lts') && !cycleLower.includes('iot') ? ' LTS' : '';
-      // Extract build tag e.g. '26h1' → '26H1'
-      const buildMatch = v.cycle.match(/(\d+h\d+)/i);
-      const buildTag = buildMatch ? buildMatch[1].toUpperCase() : v.cycle;
-      label = edition
-        ? `${winMajor} ${edition}${lts} — ${buildTag}`
-        : `${winMajor}${lts} — ${buildTag}`;
-      if (v.latest_version) label += ` (build ${v.latest_version})`;
+    if (v.is_supported && prs.length > 0) {
+      // Expand into individual point releases
+      prs.forEach((pr, idx) => {
+        const isLatest = pr.is_latest === 1;
+        const patch    = isLatest && v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
+        const label    = `${prefix} ${pr.version}`;
+        const note     = isLatest && v.is_current ? 'Latest — fully patched'
+                       : v.is_supported           ? 'Security patches available'
+                       :                            'End of life — no security patches';
+        const date     = pr.release_date
+          ? new Date(pr.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) : '';
+        cards.push({ v: pr.version, cycle: v.cycle, l: label, p: patch, n: note, d: date });
+      });
     } else {
-      label = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
+      // Single entry for this cycle (EOL or no point release data yet)
+      const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
+      const display = v.latest_version || v.cycle;
+      const label   = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
+      const note    = v.is_current   ? 'Latest — fully patched'
+                    : v.is_supported ? 'Security patches available'
+                    :                  'End of life — no security patches';
+      const date    = v.release_date
+        ? new Date(v.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) : '';
+      cards.push({ v: display, cycle: v.cycle, l: label, p: patch, n: note, d: date });
     }
-
-    const note    = v.is_current   ? 'Latest — fully patched'
-                  : v.is_supported ? 'Security patches available'
-                  :                  'End of life — no security patches';
-    const date    = v.release_date
-      ? new Date(v.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'})
-      : '';
-    return { v: display, cycle: v.cycle, l: label, p: patch, n: note, d: date };
   });
+
+  return cards;
 }
 
 // ── QUESTION SCREENS ─────────────────────────────────────
