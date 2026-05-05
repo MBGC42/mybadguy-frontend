@@ -987,7 +987,10 @@ async function renderCorrectBuilds() {
 function selectBuild(v, p) {
   TV.build = v;
   TV.fullVersion = v;
-  TV.major = v.split('.')[0].replace(/[^0-9]/g,'') || v;
+  // For Windows cycles like '11-26h1-e', extract '11' as major
+  // For normal versions like '26.4.2', extract '26'
+  const numMatch = v.match(/^(\d+)/);
+  TV.major = numMatch ? numMatch[1] : v;
   TV.patch = p;
   document.querySelectorAll('.ver-card').forEach(c => {
     c.classList.remove('sel');
@@ -1003,7 +1006,8 @@ function applyCorrection() {
   const dt = DTYPES.find(d => d.id === TV.type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
   DV = { type:TV.type, os:TV.os, major:TV.major, fullVersion:TV.fullVersion||TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
-  ST = 1;
+  // Windows auto-skips ST=1 (renderDevice), so go straight to questions
+  ST = DV.type === 'windows' ? 2 : 1;
   render();
 }
 
