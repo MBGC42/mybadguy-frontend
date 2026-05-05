@@ -585,8 +585,10 @@ const DTYPES = [
 
 async function fetchOsVersions(platform) {
   if (OSV[platform]) return OSV[platform];
+  // iphone data is stored under 'ios' slug in the API — alias it
+  const urlPlatform = platform === 'iphone' ? 'ios' : platform;
   try {
-    const r = await fetch(`${API}/api/os-versions/${platform}`);
+    const r = await fetch(`${API}/api/os-versions/${urlPlatform}`);
     if (!r.ok) throw new Error(r.status);
     OSV[platform] = await r.json();
   } catch (_) { OSV[platform] = { versions:[], current:null, supported:0 }; }
@@ -623,7 +625,18 @@ function buildVersionCards(platform) {
   return sorted.map(v => {
     const patch   = v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
     const display = v.latest_version || v.cycle;
-    const label   = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
+
+    let label;
+    if (platform === 'windows') {
+      // Extract Windows major (11 or 10) from cycle like '11-26h1-e' or '10-21h2-lts'
+      const winMajor = v.cycle.startsWith('11') ? 'Windows 11' : 'Windows 10';
+      const buildTag = v.cycle.replace(/^1[01]-/,'').toUpperCase().replace(/-/g,' ');
+      label = `${winMajor} — ${buildTag}`;
+      if (v.latest_version) label += ` (${v.latest_version})`;
+    } else {
+      label = v.latest_version ? `${prefix} ${v.latest_version}` : v.label || `${prefix} ${v.cycle}`;
+    }
+
     const note    = v.is_current   ? 'Latest — fully patched'
                   : v.is_supported ? 'Security patches available'
                   :                  'End of life — no security patches';
@@ -839,6 +852,14 @@ function renderScan() {
 
 // ── STEP 1: DEVICE CONFIRM ───────────────────────────────
 function renderDevice() {
+  // Windows: browser UA always reports NT 10.0 — we cannot detect version or build.
+  // Skip the confirm card and go straight to the version picker.
+  if (DV.type === 'windows') {
+    TV = { type: 'windows', os: 'Windows' };
+    renderCorrectBuilds().catch(console.error);
+    return;
+  }
+
   const pc = DV.patch === 'current' ? '#22c55e' : DV.patch === 'behind' ? '#EF9F27' : '#E24B4A';
   const pb = DV.patch === 'current' ? 'rgba(34,197,94,.12)' : DV.patch === 'behind' ? 'rgba(239,159,39,.12)' : 'rgba(226,75,74,.12)';
   const pl = DV.patch === 'current' ? 'Up to date' : DV.patch === 'behind' ? 'Update available' : 'Outdated — scores elevated';
@@ -921,12 +942,26 @@ async function renderCorrectBuilds() {
       </div>`;
   }).join('');
 
+  // Platform-specific instructions for finding OS version
+  const versionHint = TV.type === 'windows'
+    ? 'Settings → System → About to find your Windows version and build.'
+    : TV.type === 'mac'
+    ? 'Apple menu → About This Mac for your exact version.'
+    : TV.type === 'android'
+    ? 'Settings → About phone → Software information.'
+    : 'Settings → General → About for your exact build.';
+
+  const eyebrow = TV.type === 'windows' ? 'Windows version' : 'Correct your device';
+  const heading = TV.type === 'windows'
+    ? 'Which version of Windows are you running?'
+    : `Which ${dt ? dt.os : 'OS'} version?`;
+
   document.getElementById('app').innerHTML = `
     <div class="screen">
-      <p class="eyebrow">Correct your device</p>
-      <h1 class="sec-title">Which ${dt ? dt.os : 'OS'} version?</h1>
+      <p class="eyebrow">${eyebrow}</p>
+      <h1 class="sec-title">${heading}</h1>
       <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">
-        Check Settings → General → About for your exact build.
+        Check ${versionHint}
       </p>
       <div class="ver-grid" role="group" aria-label="OS version selection">${cards}</div>
       <div class="btn-row">
