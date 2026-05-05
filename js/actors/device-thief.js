@@ -2,8 +2,7 @@
 const ACTOR_ID = 'thief';
 const A = {
   name:'Opportunistic device thief', sub:'Street theft, device resale, and payment fraud',
-  gc:'#EF9F27', ghbg:'#FAEEDA', ghtc:'#633806',
-  avBg:'#F1EFE8', avTc:'#444441', init:'OT', catLabel:'Financial threat actor',
+  colorClass:'theme-amber', avClass:'av-grey', init:'OT', catLabel:'Financial threat actor',
   tBase:35, sBase:45,
   cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
   ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90},

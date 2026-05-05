@@ -2,8 +2,7 @@
 const ACTOR_ID = 'apt';
 const A = {
   name:'Nation-state / APT', sub:'Espionage & intelligence collection',
-  gc:'#E24B4A', ghbg:'#FCEBEB', ghtc:'#791F1F',
-  avBg:'#D1ECF1', avTc:'#0C447C', init:'NS', catLabel:'Technical threat actor',
+  colorClass:'theme-red', avClass:'av-cyan', init:'NS', catLabel:'Technical threat actor',
   tBase:97, sBase:52,
   cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
   ds:{ip:.95,id:.75,an:.85,mc:.80,wn:.90}, mdmW:.90, lw:{home:.10,usage:.85},

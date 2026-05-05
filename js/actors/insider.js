@@ -2,8 +2,7 @@
 const ACTOR_ID = 'insider';
 const A = {
   name:'Insider threat', sub:'Organizational access abuse',
-  gc:'#E24B4A', ghbg:'#FCEBEB', ghtc:'#791F1F',
-  avBg:'#EAF3DE', avTc:'#27500A', init:'IT', catLabel:'Technical threat actor',
+  colorClass:'theme-red', avClass:'av-green', init:'IT', catLabel:'Technical threat actor',
   tBase:55, sBase:62,
   cf:{age:.1,fin:.3,tech:.2,iso:.2,pub:.4,sm:.3,role:.75},
   ds:{ip:.8,id:.7,an:.75,mc:.85,wn:.88}, mdmW:.95, lw:{home:.15,usage:.35},

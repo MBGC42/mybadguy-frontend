@@ -2,8 +2,7 @@
 const ACTOR_ID = 'broker';
 const A = {
   name:'Data broker / adtech', sub:'Passive behavioral data harvesting',
-  gc:'#E24B4A', ghbg:'#FCEBEB', ghtc:'#791F1F',
-  avBg:'#E2D9F3', avTc:'#3C3489', init:'DB', catLabel:'Technical threat actor',
+  colorClass:'theme-red', avClass:'av-purple', init:'DB', catLabel:'Technical threat actor',
   tBase:42, sBase:35,
   cf:{age:.3,fin:.7,tech:-.2,iso:.1,pub:.5,sm:.85,role:.2},
   ds:{ip:.7,id:.8,an:.75,mc:.55,wn:.60}, mdmW:.10, lw:{home:.55,usage:.30},

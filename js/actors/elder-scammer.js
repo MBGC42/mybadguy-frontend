@@ -2,8 +2,7 @@
 const ACTOR_ID = 'scammer';
 const A = {
   name:'Elder-targeting scammer', sub:'Fraud through authority impersonation',
-  gc:'#378ADD', ghbg:'#E6F1FB', ghtc:'#0C447C',
-  avBg:'#FDE8D8', avTc:'#712B13', init:'ES', catLabel:'Social threat actor',
+  colorClass:'theme-blue', avClass:'av-orange', init:'ES', catLabel:'Social threat actor',
   tBase:22, sBase:88,
   cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
   ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05},

@@ -2,8 +2,7 @@
 const ACTOR_ID = 'stalker';
 const A = {
   name:'Intimate-partner abuser', sub:'Surveillance & control through technology',
-  gc:'#378ADD', ghbg:'#E6F1FB', ghtc:'#0C447C',
-  avBg:'#F8D7DA', avTc:'#791F1F', init:'IP', catLabel:'Social threat actor',
+  colorClass:'theme-blue', avClass:'av-red', init:'IP', catLabel:'Social threat actor',
   tBase:58, sBase:90,
   cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
   ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10},

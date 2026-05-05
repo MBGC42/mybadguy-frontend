@@ -2,8 +2,7 @@
 const ACTOR_ID = 'cybercriminal';
 const A = {
   name:'Cybercriminal', sub:'Financial gain through fraud and account takeover',
-  gc:'#EF9F27', ghbg:'#FAEEDA', ghtc:'#633806',
-  avBg:'#FFF3CD', avTc:'#854F0B', init:'CC', catLabel:'Financial threat actor',
+  colorClass:'theme-amber', avClass:'av-amber', init:'CC', catLabel:'Financial threat actor',
   tBase:78, sBase:72,
   cf:{age:.6,fin:.9,tech:-.7,iso:.5,pub:.3,sm:.7,role:.2},
   ds:{ip:.85,id:.55,an:.80,mc:.70,wn:.75}, mdmW:.35, lw:{home:.35,usage:.45},
