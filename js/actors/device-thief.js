@@ -7,7 +7,7 @@ const A = {
   cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
   ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90},
   na:['tech','iso','pub','sm','role','mdm'],
-  bio:'Street-level criminal operating in high-density urban environments — bars, nightclubs, transit platforms, tourist areas, concerts. The attack is physical and fast: observe the passcode, grab the device, then immediately use that knowledge to lock the Apple ID, disable Find My, change the Apple ID password, drain Apple Pay and linked bank accounts — all within the first 15 minutes. Stolen Device Protection (iOS 17.3+) was Apple's direct response. iPhones command the highest resale value ($200–600 on gray markets), making them the primary target.',
+  bio:'Street-level criminal operating in high-density urban environments — bars, nightclubs, transit platforms, tourist areas, concerts. The attack is physical and fast: observe the passcode, grab the device, then immediately use that knowledge to lock the Apple ID, disable Find My, change the Apple ID password, drain Apple Pay and linked bank accounts — all within the first 15 minutes. Stolen Device Protection (iOS 17.3+) was Apple’s direct response. iPhones command the highest resale value ($200–600 on gray markets), making them the primary target.',
   whyIdeal:'The thief targets a moment and an environment — not a person. The ideal target is visibly distracted in a high-risk public environment, using a high-value iPhone, who entered their passcode recently within line of sight.',
   ideal:[
     {key:'age',    l:'Age',             v:'18–40 — heaviest public device use; bars, transit, events'},

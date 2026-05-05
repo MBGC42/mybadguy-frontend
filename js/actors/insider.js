@@ -7,7 +7,7 @@ const A = {
   cf:{age:.1,fin:.3,tech:.2,iso:.2,pub:.4,sm:.3,role:.75},
   ds:{ip:.8,id:.7,an:.75,mc:.85,wn:.88}, mdmW:.95, lw:{home:.15,usage:.35},
   na:[],
-  bio:'Employee, contractor, IT administrator, or service technician with legitimate access. This actor does not need to break in — they are already inside. Repair technicians cloning device data while it's "being serviced," family plan holders reading SMS messages, carrier employees pulling location history on behalf of a third party, or corporate IT staff accessing executive communications. The defining characteristic is trusted access combined with motivation: personal grievance, financial incentive, coercion, or simple curiosity.',
+  bio:'Employee, contractor, IT administrator, or service technician with legitimate access. This actor does not need to break in — they are already inside. Repair technicians cloning device data while it’s "being serviced," family plan holders reading SMS messages, carrier employees pulling location history on behalf of a third party, or corporate IT staff accessing executive communications. The defining characteristic is trusted access combined with motivation: personal grievance, financial incentive, coercion, or simple curiosity.',
   whyIdeal:'The insider already has a foot in the door. The ideal target hands over their device trustingly, without the security awareness to detect silent data extraction or the technical knowledge to audit what was accessed.',
   ideal:[
     {key:'age',    l:'Age',             v:'25–55 — peak career / device handover frequency'},

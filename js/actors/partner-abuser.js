@@ -7,7 +7,7 @@ const A = {
   cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
   ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10},
   na:['role','mdm'],
-  bio:'This actor is typically known to the victim — an ex-partner, current spouse, family member, or caregiver. Physical proximity and emotional leverage provide access that most hackers cannot buy at any price. Apple's own ecosystem is frequently weaponized: shared iCloud accounts expose messages, photos, and location; Find My is coerced as a "condition of trust"; Screen Time controls are used to restrict who the victim can contact. If you believe you may be experiencing this, support is available at the National Domestic Violence Hotline: 1-800-799-7233 or thehotline.org.',
+  bio:'This actor is typically known to the victim — an ex-partner, current spouse, family member, or caregiver. Physical proximity and emotional leverage provide access that most hackers cannot buy at any price. Apple’s own ecosystem is frequently weaponized: shared iCloud accounts expose messages, photos, and location; Find My is coerced as a "condition of trust"; Screen Time controls are used to restrict who the victim can contact. If you believe you may be experiencing this, support is available at the National Domestic Violence Hotline: 1-800-799-7233 or thehotline.org.',
   whyIdeal:'Physical proximity and emotional coercion eliminate the need for technical sophistication. The ideal target is financially or emotionally dependent, isolated from their support network, and unaware of what is happening to their device.',
   ideal:[
     {key:'age',    l:'Age',             v:'18–45 — peak intimate-partner violence demographic'},

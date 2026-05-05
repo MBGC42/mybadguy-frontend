@@ -37,6 +37,6 @@ const A = {
     {l:'Urgent "account will be closed" message',v:74},{l:'Romance / pig-butchering investment scam',v:75},
     {l:'Fraudulent investment scheme on social platforms',v:70},{l:'Gift card / crypto payment luring',v:72},
     {l:'Dating app financial manipulation',v:68},{l:'Social media account impersonation',v:68},
-    {l:'Phishing via compromised contact's message',v:65},{l:'Fake prize / lottery notification',v:60},
+    {l:'Phishing via compromised contact’s message',v:65},{l:'Fake prize / lottery notification',v:60},
   ],
 };

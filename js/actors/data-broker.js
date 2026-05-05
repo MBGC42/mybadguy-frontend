@@ -7,7 +7,7 @@ const A = {
   cf:{age:.3,fin:.7,tech:-.2,iso:.1,pub:.5,sm:.85,role:.2},
   ds:{ip:.7,id:.8,an:.75,mc:.55,wn:.60}, mdmW:.10, lw:{home:.55,usage:.30},
   na:['iso','role','mdm'],
-  bio:'Embeds data-harvesting SDKs inside legitimate apps downloaded by millions of users who have no idea the SDK exists. The app developer gets paid; the broker gets a comprehensive behavioral, location, and demographic profile that is sold to advertisers, insurers, political campaigns, and government agencies. Apple's App Tracking Transparency framework (2021) significantly reduced this actor's iOS reach, but cross-context aggregation from loyalty programs, email pixels, and browser fingerprinting continues at scale.',
+  bio:'Embeds data-harvesting SDKs inside legitimate apps downloaded by millions of users who have no idea the SDK exists. The app developer gets paid; the broker gets a comprehensive behavioral, location, and demographic profile that is sold to advertisers, insurers, political campaigns, and government agencies. Apple’s App Tracking Transparency framework (2021) significantly reduced this actor’s iOS reach, but cross-context aggregation from loyalty programs, email pixels, and browser fingerprinting continues at scale.',
   whyIdeal:'The broker wants volume and behavioral richness, not identity. A 28-year-old heavy social media user who grants location access to everything and uses 40 apps is worth far more than a cautious executive who uses three.',
   ideal:[
     {key:'age',    l:'Age',             v:'18–45 — heaviest app installation and usage'},

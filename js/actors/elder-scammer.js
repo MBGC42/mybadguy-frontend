@@ -7,7 +7,7 @@ const A = {
   cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
   ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05},
   na:['loc'],
-  bio:'Organized call centers — primarily in Southeast Asia, Eastern Europe, and West Africa — running Apple support impersonation, IRS/Social Security fraud, "grandparent emergency" scams, and cryptocurrency investment frauds targeting adults 65 and older. FBI IC3 data shows adults 60+ reported $4.8 billion in fraud losses in 2024 — the highest of any age group. This actor's primary weapon is not technology but psychology: manufactured fear, urgency, authority, and isolation from the support network that would otherwise intervene.',
+  bio:'Organized call centers — primarily in Southeast Asia, Eastern Europe, and West Africa — running Apple support impersonation, IRS/Social Security fraud, "grandparent emergency" scams, and cryptocurrency investment frauds targeting adults 65 and older. FBI IC3 data shows adults 60+ reported $4.8 billion in fraud losses in 2024 — the highest of any age group. This actor’s primary weapon is not technology but psychology: manufactured fear, urgency, authority, and isolation from the support network that would otherwise intervene.',
   whyIdeal:'The scammer hunts a psychology, not a demographic. Accumulated savings, cognitive changes, social isolation, deep trust in authority figures (IRS, Apple, law enforcement), and reduced familiarity with digital fraud patterns create a vulnerability that technical defenses alone cannot address.',
   ideal:[
     {key:'age',    l:'Age',             v:'65 and older — FBI IC3 highest-loss demographic'},
