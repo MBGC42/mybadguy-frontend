@@ -662,14 +662,19 @@ function buildVersionCards(platform) {
 
     if (v.is_supported && prs.length > 0) {
       // Expand into individual point releases
-      prs.forEach((pr, idx) => {
-        const isLatest = pr.is_latest === 1;
-        const patch    = isLatest && v.is_current ? 'current' : v.is_supported ? 'behind' : 'outdated';
-        const label    = `${prefix} ${pr.version}`;
-        const note     = isLatest && v.is_current ? 'Latest — fully patched'
-                       : v.is_supported           ? 'Security patches available'
-                       :                            'End of life — no security patches';
-        const date     = pr.release_date
+      // is_latest per cycle = latest build in that cycle
+      // current = is_latest AND the cycle itself is current (newest major)
+      prs.forEach(pr => {
+        const isLatestInCycle = pr.is_latest === 1;
+        const patch = isLatestInCycle && v.is_current ? 'current'
+                    : v.is_supported                  ? 'behind'
+                    :                                   'outdated';
+        const label = `${prefix} ${pr.version}`;
+        const note  = isLatestInCycle && v.is_current ? 'Latest — fully patched'
+                    : isLatestInCycle                  ? `Latest ${prefix} ${v.cycle} — older major version`
+                    : v.is_supported                   ? 'Older build — security patches available'
+                    :                                    'End of life — no security patches';
+        const date  = pr.release_date
           ? new Date(pr.release_date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) : '';
         cards.push({ v: pr.version, cycle: v.cycle, l: label, p: patch, n: note, d: date });
       });
