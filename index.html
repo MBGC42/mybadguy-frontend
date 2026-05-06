@@ -131,8 +131,25 @@
       border: none;
       outline: none;
       transition: background .15s, transform .15s;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .nav-cta:hover { background: #c8f5fb; transform: translateY(-1px); }
+    .nav-cta:hover { background: #c8f5fb; transform: translateY(-1px); text-decoration: none; }
+    .nav-return {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 20px;
+      border-radius: 99px;
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid rgba(255,255,255,.15);
+      outline: none;
+      transition: border-color .15s, color .15s, transform .15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-return:hover { border-color: rgba(255,255,255,.35); color: var(--slate); transform: translateY(-1px); text-decoration: none; }
 
     /* ── HERO ── */
     .hero {
@@ -533,9 +550,11 @@
     <a href="#how-it-works" class="nav-link" role="listitem">How it works</a>
     <a href="#threat-actors" class="nav-link" role="listitem">Threat actors</a>
     <a href="#save" class="nav-link" role="listitem">Save your results</a>
-    <a href="return.html" class="nav-link" role="listitem">Return to profile</a>
   </div>
-  <a href="detect.html" class="nav-cta" role="button">Start detection →</a>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="return.html" class="nav-return" role="button">← Return to profile</a>
+    <a href="detect.html" class="nav-cta" role="button">Start detection →</a>
+  </div>
 </nav>
 
 <!-- ── HERO ── -->
