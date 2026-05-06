@@ -674,7 +674,16 @@ function renderCalc() {
         Matching your profile against 7 threat actor models…
       </p>
     </div>`;
-  setTimeout(() => { SC = calcScores(); ST = 5; render(); }, 2000);
+  setTimeout(() => {
+    // Apply device flags and live patchScore to PR before scoring.
+    // buildProfile() sets ip/id/an/mc/wn flags and patchScore — without this
+    // the detect preview computes db=0 (no device boost) while dashboard gets
+    // the full profile, causing a score mismatch.
+    Object.assign(PR, buildProfile());
+    SC = calcScores();
+    ST = 5;
+    render();
+  }, 2000);
 }
 
 // ── STEP 5: RESULTS ───────────────────────────────────────
