@@ -927,8 +927,8 @@ function renderDevice() {
       </div>
       <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:1.25rem;">Is this your device?</p>
       <div class="btn-row">
-        <button class="btn-primary" onclick="ST=2;render()">Yes, continue →</button>
-        <button class="btn-outline" onclick="TV={};renderCorrect()">Correct it</button>
+        <button class="btn-primary" data-action="confirm-device">Yes, continue →</button>
+        <button class="btn-outline" data-action="correct-device">Correct it</button>
       </div>
     </div>`;
 }
@@ -940,8 +940,9 @@ function renderCorrect() {
     <div class="dtype-card${TV.type===dt.id?' sel':''}"
          role="button" tabindex="0"
          aria-pressed="${TV.type===dt.id}"
-         onclick="TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds().catch(console.error)"
-         onkeydown="if(event.key==='Enter'){TV.type='${dt.id}';TV.os='${dt.os}';renderCorrectBuilds().catch(console.error)}"
+         data-action="select-dtype"
+         data-type="${dt.id}"
+         data-os="${dt.os}"
          aria-label="${dt.lb}">
       <span class="di" aria-hidden="true">${dt.ic}</span>
       <span>${dt.lb}</span>
@@ -956,7 +957,7 @@ function renderCorrect() {
       </p>
       <div class="dtype-grid" role="group" aria-label="Device type selection">${btns}</div>
       <div class="btn-row">
-        <button class="btn-ghost" onclick="ST=1;render()">← Back to detected device</button>
+        <button class="btn-ghost" data-action="back-to-device">← Back to detected device</button>
       </div>
     </div>`;
 }
@@ -981,8 +982,9 @@ async function renderCorrectBuilds() {
       <div class="ver-card${sel?' sel':''}"
            role="button" tabindex="0"
            aria-pressed="${sel}"
-           onclick="selectBuild('${b.v}','${b.p}')"
-           onkeydown="if(event.key==='Enter')selectBuild('${b.v}','${b.p}')"
+           data-action="select-build"
+           data-v="${b.v}"
+           data-p="${b.p}"
            aria-label="${b.l}, ${b.n}, released ${b.d}">
         <span class="ver-label">${b.l}</span>
         <span class="ver-note" style="color:${sel?'rgba(15,23,42,.65)':NC[b.p]};">${b.n}</span>
@@ -1024,8 +1026,8 @@ async function renderCorrectBuilds() {
       </details>
       <div class="ver-grid" role="group" aria-label="OS version selection">${cards}</div>
       <div class="btn-row">
-        <button class="btn-ghost" onclick="renderCorrect()">← Change device type</button>
-        <button id="cfmBtn" class="btn-primary" ${TV.build?'':'disabled'} onclick="applyCorrection()">
+        <button class="btn-ghost" data-action="change-dtype">← Change device type</button>
+        <button id="cfmBtn" class="btn-primary" ${TV.build?'':'disabled'} data-action="confirm-build">
           Confirm →
         </button>
       </div>
@@ -1079,7 +1081,7 @@ function renderQuestions() {
         <div class="age-row" role="group" aria-labelledby="q-${q.id}">
           <input type="range" min="13" max="85" value="${cur}" step="1"
                  aria-label="Age" aria-valuemin="13" aria-valuemax="85" aria-valuenow="${cur}"
-                 oninput="PR.age=+this.value;document.getElementById('ageVal').textContent=this.value;this.setAttribute('aria-valuenow',this.value)">
+                 data-action="age-slider">
           <span class="age-val" id="ageVal" aria-live="polite">${cur}</span>
         </div>
         <div class="age-range-labels" aria-hidden="true"><span>13</span><span>85+</span></div>`;
@@ -1091,7 +1093,9 @@ function renderQuestions() {
         h += `
           <button class="q-pill${sel?' sel':''}"
                   aria-pressed="${sel}"
-                  onclick="PR['${q.id}']=${v};this.closest('.q-pills').querySelectorAll('.q-pill').forEach(p=>{p.classList.remove('sel');p.setAttribute('aria-pressed','false')});this.classList.add('sel');this.setAttribute('aria-pressed','true')"
+                  data-action="select-pill"
+                  data-qid="${q.id}"
+                  data-val="${v}"
           >${o}</button>`;
       });
       h += `</div>`;
@@ -1101,8 +1105,8 @@ function renderQuestions() {
 
   h += `
       <div class="btn-row">
-        ${CQ > 0 ? `<button class="btn-ghost" onclick="CQ=0;ST=2;render()">← Back</button>` : ''}
-        <button class="btn-primary" onclick="${CQ===0 ? 'CQ=1;ST=3;render()' : 'ST=4;render()'}">
+        ${CQ > 0 ? '<button class="btn-ghost" data-action="q-back">← Back</button>' : ''}
+        <button class="btn-primary" data-action="q-next">
           ${CQ === 0 ? 'Continue →' : 'Calculate my risk →'}
         </button>
       </div>
@@ -1196,9 +1200,9 @@ function renderResults() {
       ${winCards}
 
       <div class="btn-row" style="margin-top:1.5rem;">
-        <button class="btn-primary" onclick="goToDashboard()">Full plan →</button>
-        <button class="btn-outline" onclick="SID=genId();ST=6;render()">Save results</button>
-        <button class="btn-ghost" onclick="window.location.href='/'">← Home</button>
+        <button class="btn-primary" data-action="go-dashboard">Full plan →</button>
+        <button class="btn-outline" data-action="go-save">Save results</button>
+        <button class="btn-ghost" data-action="go-home">← Home</button>
       </div>
       <p style="text-align:center;margin-top:1rem;font-size:11px;color:var(--dim);">
         All calculations happen in your browser · Scores update as new CVEs are published
@@ -1222,13 +1226,13 @@ function renderSave() {
         <p style="font-size:12px;color:var(--muted);margin-bottom:.65rem;">Choose a 4-digit PIN:</p>
         <div class="pin-row" role="group" aria-label="4-digit PIN entry">
           <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
-                 aria-label="PIN digit 1" oninput="moveFocus(this,0)">
+                 aria-label="PIN digit 1" data-action="pin-input" data-idx="0">
           <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
-                 aria-label="PIN digit 2" oninput="moveFocus(this,1)">
+                 aria-label="PIN digit 2" data-action="pin-input" data-idx="1">
           <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
-                 aria-label="PIN digit 3" oninput="moveFocus(this,2)">
+                 aria-label="PIN digit 3" data-action="pin-input" data-idx="2">
           <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
-                 aria-label="PIN digit 4" oninput="moveFocus(this,3)">
+                 aria-label="PIN digit 4" data-action="pin-input" data-idx="3">
         </div>
         <div class="info-box">
           No recovery flow. If you lose your ID, start a fresh detection. We cannot access
@@ -1237,11 +1241,11 @@ function renderSave() {
         <div id="saveError" class="error-msg" role="alert">
           Something went wrong saving your results. Please try again.
         </div>
-        <button class="btn-primary" style="width:100%;" onclick="doSave()">
+        <button class="btn-primary" style="width:100%;" data-action="do-save">
           Save and confirm →
         </button>
         <div style="margin-top:.65rem;">
-          <button class="btn-ghost" style="font-size:12px;" onclick="ST=5;render()">
+          <button class="btn-ghost" style="font-size:12px;" data-action="skip-save">
             Skip — view results without saving
           </button>
         </div>
@@ -1315,7 +1319,7 @@ async function doSave() {
         <p style="font-size:11px;color:var(--dim);margin-bottom:1.5rem;">
           Store this phrase somewhere safe — a password manager, a note, or a photo.
         </p>
-        <button class="btn-primary" onclick="goToDashboard()">View my full plan →</button>
+        <button class="btn-primary" data-action="go-dashboard">View my full plan →</button>
       </div>`;
 
   } catch (err) {
@@ -1362,7 +1366,91 @@ function goToDashboard() {
   window.location.href = 'dashboard.html';
 }
 
-// ── ROUTER ────────────────────────────────────────────────
+// ── EVENT DELEGATION ─────────────────────────────────────
+// Replaces all inline onclick/oninput/onkeydown handlers.
+// CSP-compliant — no unsafe-inline in script-src needed.
+
+document.addEventListener('click', e => {
+  const el     = e.target.closest('[data-action]');
+  if (!el) return;
+  const action = el.dataset.action;
+
+  // Device confirm screen
+  if (action === 'confirm-device') { ST = 2; render(); return; }
+  if (action === 'correct-device') { TV = {}; renderCorrect(); return; }
+
+  // Device type selection
+  if (action === 'select-dtype') {
+    TV.type = el.dataset.type;
+    TV.os   = el.dataset.os;
+    renderCorrectBuilds().catch(console.error);
+    return;
+  }
+
+  // Version picker
+  if (action === 'select-build') {
+    selectBuild(el.dataset.v, el.dataset.p);
+    return;
+  }
+  if (action === 'change-dtype') { renderCorrect(); return; }
+  if (action === 'confirm-build') { applyCorrection(); return; }
+  if (action === 'back-to-device') { ST = 1; render(); return; }
+
+  // Profile questions
+  if (action === 'select-pill') {
+    const qid = el.dataset.qid;
+    const val = +el.dataset.val;
+    PR[qid] = val;
+    el.closest('.q-pills').querySelectorAll('.q-pill').forEach(p => {
+      p.classList.remove('sel');
+      p.setAttribute('aria-pressed', 'false');
+    });
+    el.classList.add('sel');
+    el.setAttribute('aria-pressed', 'true');
+    return;
+  }
+  if (action === 'q-back') { CQ = 0; ST = 2; render(); return; }
+  if (action === 'q-next') {
+    if (CQ === 0) { CQ = 1; ST = 3; render(); }
+    else          { ST = 4; render(); }
+    return;
+  }
+
+  // Results screen
+  if (action === 'go-dashboard') { goToDashboard(); return; }
+  if (action === 'go-save')      { SID = genId(); ST = 6; render(); return; }
+  if (action === 'go-home')      { window.location.href = '/'; return; }
+
+  // Save screen
+  if (action === 'do-save')   { doSave(); return; }
+  if (action === 'skip-save') { ST = 5; render(); return; }
+});
+
+// Keyboard support for role=button elements (dtype-card, ver-card)
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const role = el.getAttribute('role');
+  if (role === 'button') {
+    e.preventDefault();
+    el.click();
+  }
+});
+
+// Age slider — uses input event not click
+document.addEventListener('input', e => {
+  if (e.target.dataset.action === 'age-slider') {
+    PR.age = +e.target.value;
+    const lbl = document.getElementById('ageVal');
+    if (lbl) lbl.textContent = e.target.value;
+    e.target.setAttribute('aria-valuenow', e.target.value);
+    return;
+  }
+  if (e.target.dataset.action === 'pin-input') {
+    moveFocus(e.target, +e.target.dataset.idx);
+  }
+});
 function render() {
   renderDots();
   CQ = ST === 3 ? 1 : 0;
