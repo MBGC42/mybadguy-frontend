@@ -15,6 +15,7 @@ let PR = {         // profile answers
   role:0, pub:0,  mdm:0, home:1, usage:0
 };
 let OSV = {};      // os_versions API cache keyed by platform
+let CVE_STATS = {}; // cve-stats API cache keyed by platform
 
 // ── DEVICE TYPE DEFINITIONS ──────────────────────────────
 const DTYPES = [
@@ -39,6 +40,21 @@ async function fetchOsVersions(platform) {
     OSV[platform] = await r.json();
   } catch (_) { OSV[platform] = { versions:[], current:null, supported:0 }; }
   return OSV[platform];
+}
+
+async function fetchCveStats(platform) {
+  if (CVE_STATS[platform]) return CVE_STATS[platform];
+  try {
+    const r = await fetch(`${API}/api/cve-stats/${platform}`);
+    if (!r.ok) throw new Error(r.status);
+    CVE_STATS[platform] = await r.json();
+  } catch (_) {
+    // Fallback values if API unavailable — safe defaults
+    CVE_STATS[platform] = {
+      tiers: { current:{ps:0,wild:0}, behind:{ps:15,wild:3}, outdated:{ps:80,wild:20} }
+    };
+  }
+  return CVE_STATS[platform];
 }
 
 function versionToPatchStatus(fullVersion, platform) {
@@ -338,7 +354,7 @@ function renderScan() {
         else if (/iPhone/.test(_ua))  _pt='iphone';
         else if (/Android/.test(_ua)) _pt='android';
         else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
-        await fetchOsVersions(_pt);
+        await Promise.all([fetchOsVersions(_pt), fetchCveStats(_pt)]);
         DV = detectDevice(); ST = 1; render();
       }, 300);
       return;
@@ -822,8 +838,19 @@ function buildProfile() {
   profile.mc = false; profile.mcV  = 1;
   profile.wn = false; profile.wnV  = 1;
 
-  // Map patch status to a version index in dashboard's version arrays
-  // current → idx 1 (latest), behind → idx 3, outdated → idx 6
+  // Get live CVE stats for this platform — use actual patch score
+  const stats  = CVE_STATS[DV.type] || {};
+  const tiers  = stats.tiers || { current:{ps:0}, behind:{ps:15}, outdated:{ps:80} };
+  const tier   = DV.patch === 'current' ? 'current' : DV.patch === 'behind' ? 'behind' : 'outdated';
+  const livePs = tiers[tier]?.ps ?? 0;
+  const liveWild = tiers[tier]?.wild ?? 0;
+
+  // Store the actual patch score — replaces hardcoded version index tables in scoring.js
+  profile.patchScore = livePs;
+  profile.wildScore  = liveWild;
+  profile.patchTier  = tier;
+
+  // Keep legacy version indices for backward compatibility
   const vIdx = DV.patch === 'current' ? 1 : DV.patch === 'behind' ? 3 : 6;
 
   if (DV.type === 'iphone')  { profile.ip = true; profile.iosV  = vIdx; }
