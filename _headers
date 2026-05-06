@@ -28,3 +28,6 @@
 # ── Actor pages — strictest CSP (no unsafe-inline anywhere) ──
 /actors/*
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
+
+/return.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
