@@ -185,37 +185,90 @@ const QSETS = [
 ];
 
 // ── SCORING ENGINE ────────────────────────────────────────
-function calcScores() {
+// Uses calcScore() from scoring.js (loaded before detect.js in detect.html).
+// Actor configs are identical to the individual actor JS files so detect
+// preview scores and dashboard scores always match.
+// ── SCORING ENGINE ────────────────────────────────────────
+// calcScore() mirrors scoring.js exactly so detect preview and dashboard
+// scores always match. PR here is the detect.js live profile object.
+function calcScore(a) {
   const p  = PR;
-  const d  = DV;
-  const db = d.patch === 'current' ? 0 : d.patch === 'behind' ? 14 : 30;
-  const ph = d.type === 'iphone' || d.type === 'android';
-  const actors = [
-    { nm:'Device thief',     g:'financial',
-      t: Math.min(99, 38 + (ph?20:0) + p.usage*10 + p.home*6 + p.fin*8),
-      s: Math.min(99, 40 + p.usage*10 + p.home*6) },
-    { nm:'Cybercriminal',    g:'financial',
-      t: Math.min(99, 65 + p.fin*10 + (4-p.tech)*7 + db + p.usage*6),
-      s: Math.min(99, 58 + p.fin*8  + p.sm*6) },
-    { nm:'Data broker',      g:'technical',
-      t: Math.min(99, 42 + p.sm*10  + p.home*7 + p.usage*6),
-      s: Math.min(99, 38 + p.sm*10  + (4-p.tech)*5) },
-    { nm:'Insider threat',   g:'technical',
-      t: Math.min(99, 40 + p.mdm*18 + p.role*12 + db),
-      s: Math.min(99, 45 + p.mdm*14 + p.role*10) },
-    { nm:'Nation-state/APT', g:'technical',
-      t: Math.min(99, 30 + p.role*16 + p.pub*12 + p.usage*10 + db),
-      s: Math.min(99, 28 + p.role*14 + p.pub*10) },
-    { nm:'Partner abuser',   g:'social',
-      t: Math.min(99, 30 + p.iso*18 + (ph?12:0)),
-      s: Math.min(99, 42 + p.iso*18 + (4-p.tech)*8) },
-    { nm:'Elder scammer',    g:'social',
-      t: Math.min(99, 18 + (p.age>=65?42:p.age>=55?16:0) + (4-p.tech)*8),
-      s: Math.min(99, 28 + (p.age>=65?46:p.age>=55?18:0) + p.iso*12 + (4-p.tech)*10) },
-  ];
-  actors.forEach(a => { a.co = Math.round((a.t + a.s) / 2); });
-  actors.sort((a,b) => b.co - a.co);
-  return actors;
+  const ps = p.patchScore || 0;
+  const ws = p.wildScore  || 0;
+  const effectivePs = (ps - ws) + (ws * 1.5);
+
+  let platformWeight = 0;
+  if (p.ip) platformWeight = a.ds.ip;
+  if (p.id) platformWeight = a.ds.id;
+  if (p.an) platformWeight = a.ds.an;
+  if (p.mc) platformWeight = a.ds.mc;
+  if (p.wn) platformWeight = a.ds.wn;
+
+  const db = Math.round(effectivePs * platformWeight * 0.25);
+  const mb = Math.round(((p.mdm - 1) / 4) * a.mdmW * 22);
+
+  const hn = (p.home  - 1) / 3;
+  const un = (p.usage - 1) / 4;
+  const hc = a.lw.home < 0
+    ? Math.round((1 - hn) * Math.abs(a.lw.home) * 14)
+    : Math.round(hn * a.lw.home * 14);
+  const lb = Math.max(0, hc + Math.round(un * a.lw.usage * 18));
+
+  const f   = a.cf;
+  const an2 = p.age <= 25 ? (25 - p.age) / 12 : p.age >= 65 ? (p.age - 65) / 20 : 0;
+  const cb  = Math.round(
+    f.age  * (an2 * 12)        +
+    f.fin  * (p.fin  - 1) * 3  +
+    f.tech * (3 - p.tech) * 3  +
+    f.iso  * (p.iso  - 1) * 4  +
+    f.pub  * (p.pub  - 1) * 3  +
+    f.sm   * (p.sm   - 1) * 3  +
+    f.role * (p.role - 1) * 5
+  );
+
+  const t = Math.min(99, Math.max(1, a.tBase + Math.round(cb * .5) + db + mb + lb));
+  const s = Math.min(99, Math.max(1, a.sBase + Math.round(cb * .5)));
+  return { t, s, cb, db, mb, lb, co: Math.round((t + s) / 2) };
+}
+
+const ACTOR_CONFIGS = [
+  { nm:'Nation-state / APT',  g:'technical',
+    tBase:97, sBase:52,
+    cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
+    ds:{ip:.95,id:.75,an:.85,mc:.80,wn:.90}, mdmW:.90, lw:{home:.10,usage:.85} },
+  { nm:'Cybercriminal',       g:'financial',
+    tBase:78, sBase:72,
+    cf:{age:.6,fin:.9,tech:-.7,iso:.5,pub:.3,sm:.7,role:.2},
+    ds:{ip:.85,id:.55,an:.80,mc:.70,wn:.75}, mdmW:.35, lw:{home:.35,usage:.45} },
+  { nm:'Data broker',         g:'technical',
+    tBase:42, sBase:35,
+    cf:{age:.3,fin:.7,tech:-.2,iso:.1,pub:.5,sm:.85,role:.2},
+    ds:{ip:.7,id:.8,an:.75,mc:.55,wn:.60}, mdmW:.10, lw:{home:.55,usage:.30} },
+  { nm:'Insider threat',      g:'technical',
+    tBase:55, sBase:62,
+    cf:{age:.1,fin:.3,tech:.2,iso:.2,pub:.4,sm:.3,role:.75},
+    ds:{ip:.8,id:.7,an:.75,mc:.85,wn:.88}, mdmW:.95, lw:{home:.15,usage:.35} },
+  { nm:'Elder scammer',       g:'social',
+    tBase:22, sBase:88,
+    cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
+    ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05} },
+  { nm:'Partner abuser',      g:'social',
+    tBase:58, sBase:90,
+    cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
+    ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10} },
+  { nm:'Device thief',        g:'financial',
+    tBase:35, sBase:45,
+    cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
+    ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90} },
+];
+
+function calcScores() {
+  const results = ACTOR_CONFIGS.map(a => {
+    const r = calcScore(a); // uses scoring.js engine
+    return { nm:a.nm, g:a.g, t:r.t, s:r.s, co:r.co };
+  });
+  results.sort((a,b) => b.co - a.co);
+  return results;
 }
 
 function getTopWins() {
