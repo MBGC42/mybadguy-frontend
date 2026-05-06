@@ -480,7 +480,7 @@ async function renderCorrectBuilds() {
     </div>`;
 }
 
-function selectBuild(v, p) {
+function selectBuild(v, p, cardEl) {
   TV.build = v;
   TV.fullVersion = v;
   // For Windows cycles like '11-26h1-e', extract '11' as major
@@ -488,12 +488,16 @@ function selectBuild(v, p) {
   const numMatch = v.match(/^(\d+)/);
   TV.major = numMatch ? numMatch[1] : v;
   TV.patch = p;
+  // Clear selection on all cards
   document.querySelectorAll('.ver-card').forEach(c => {
     c.classList.remove('sel');
     c.setAttribute('aria-pressed','false');
   });
-  event.currentTarget.classList.add('sel');
-  event.currentTarget.setAttribute('aria-pressed','true');
+  // Apply selection to the clicked card via passed element (not event.currentTarget)
+  if (cardEl) {
+    cardEl.classList.add('sel');
+    cardEl.setAttribute('aria-pressed','true');
+  }
   const btn = document.getElementById('cfmBtn');
   if (btn) btn.disabled = false;
 }
@@ -835,7 +839,7 @@ document.addEventListener('click', e => {
 
   // Version picker
   if (action === 'select-build') {
-    selectBuild(el.dataset.v, el.dataset.p);
+    selectBuild(el.dataset.v, el.dataset.p, el);
     return;
   }
   if (action === 'change-dtype') { renderCorrect(); return; }
