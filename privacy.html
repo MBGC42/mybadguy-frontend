@@ -10,87 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
-  <style>
-    :root {
-      --navy:  #0f172a;
-      --mid:   #1a2744;
-      --lift:  #1e2d4a;
-      --cyan:  #22d3ee;
-      --lcyan: #e0f9fd;
-      --slate: #f1f5f9;
-      --muted: #94a3b8;
-      --dim:   #475569;
-      --green: #22c55e;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--slate); line-height: 1.6; }
-    a { color: var(--cyan); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* NAV */
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.5rem; border-bottom: 1px solid rgba(34,211,238,.1); background: rgba(15,23,42,.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
-    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .nav-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--slate); }
-    .btn-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 99px; transition: color .15s; }
-    .btn-back:hover { color: var(--slate); text-decoration: none; }
-
-    /* PAGE */
-    .page { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
-    .page-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin-bottom: .6rem; }
-    .page-title { font-family: 'Syne', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 700; color: var(--slate); margin-bottom: .75rem; letter-spacing: -.01em; }
-    .page-intro { font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 580px; margin-bottom: .5rem; }
-    .updated { font-size: 12px; color: var(--dim); margin-bottom: 3rem; }
-
-    /* SUMMARY CARDS */
-    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 3rem; }
-    .summary-card { background: var(--lift); border: .5px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1rem 1.1rem; }
-    .summary-icon { font-size: 18px; margin-bottom: .4rem; }
-    .summary-title { font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 3px; }
-    .summary-body { font-size: 12px; color: var(--muted); line-height: 1.55; }
-    .summary-card.yes { border-color: rgba(34,197,94,.2); background: rgba(34,197,94,.04); }
-    .summary-card.no  { border-color: rgba(226,75,74,.2);  background: rgba(226,75,74,.04); }
-    .summary-title.yes { color: #22c55e; }
-    .summary-title.no  { color: #E24B4A; }
-
-    /* SECTIONS */
-    .section { margin-bottom: 2.5rem; }
-    .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--slate); margin-bottom: .75rem; padding-bottom: .75rem; border-bottom: 1px solid rgba(255,255,255,.07); }
-    .prose { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
-    .prose strong { color: var(--slate); font-weight: 500; }
-
-    /* DATA TABLE */
-    .data-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 13px; }
-    .data-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); padding: .5rem .75rem; border-bottom: 1px solid rgba(255,255,255,.08); }
-    .data-table td { padding: .65rem .75rem; border-bottom: .5px solid rgba(255,255,255,.05); color: var(--muted); vertical-align: top; line-height: 1.55; }
-    .data-table td:first-child { color: var(--slate); font-weight: 500; white-space: nowrap; }
-    .data-table tr:last-child td { border-bottom: none; }
-
-    /* RIGHTS LIST */
-    .rights-list { list-style: none; margin-bottom: 1rem; }
-    .rights-list li { display: flex; gap: 10px; align-items: flex-start; padding: .65rem 0; border-bottom: .5px solid rgba(255,255,255,.05); font-size: 14px; color: var(--muted); line-height: 1.6; }
-    .rights-list li:last-child { border-bottom: none; }
-    .rights-list li::before { content: '→'; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
-    .rights-list strong { color: var(--slate); }
-
-    /* CALLOUT */
-    .callout { background: var(--mid); border: .5px solid rgba(34,211,238,.2); border-left: 3px solid var(--cyan); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--muted); line-height: 1.7; }
-    .callout strong { color: var(--slate); }
-
-    /* FOOTER */
-    .footer { border-top: 1px solid rgba(255,255,255,.06); padding: 2rem 1.5rem; }
-    .footer-inner { max-width: 720px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer-brand { display: flex; align-items: center; gap: 8px; }
-    .footer-wordmark { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); }
-    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .footer-link { font-size: 12px; color: var(--dim); transition: color .2s; }
-    .footer-link:hover { color: var(--muted); text-decoration: none; }
-    .nvd-attr { text-align: center; font-size: 10px; color: var(--dim); padding: .75rem; }
-
-    @media (max-width: 560px) {
-      .summary-grid { grid-template-columns: 1fr; }
-      .data-table td:first-child { white-space: normal; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
 

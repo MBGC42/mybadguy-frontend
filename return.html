@@ -11,81 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
-  <style>
-    :root {
-      --navy:  #0f172a;
-      --mid:   #1a2744;
-      --lift:  #1e2d4a;
-      --cyan:  #22d3ee;
-      --lcyan: #e0f9fd;
-      --slate: #f1f5f9;
-      --muted: #94a3b8;
-      --dim:   #475569;
-      --green: #22c55e;
-      --red:   #E24B4A;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--slate); min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* NAV */
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.5rem; border-bottom: 1px solid rgba(34,211,238,.1); background: rgba(15,23,42,.95); backdrop-filter: blur(12px); }
-    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .nav-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--slate); }
-    .btn-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 99px; transition: color .15s; }
-    .btn-back:hover { color: var(--slate); text-decoration: none; }
-
-    /* LAYOUT */
-    .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1.25rem; }
-    .card { background: var(--lift); border: .5px solid rgba(255,255,255,.07); border-radius: 20px; padding: 2rem 1.75rem; width: 100%; max-width: 420px; }
-
-    /* HEADER */
-    .card-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin-bottom: .5rem; }
-    .card-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: .4rem; }
-    .card-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 1.75rem; }
-
-    /* ID INPUT */
-    .field-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: .4rem; display: block; }
-    .id-input { width: 100%; background: var(--mid); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: .75rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--slate); outline: none; transition: border-color .15s; margin-bottom: 1.25rem; }
-    .id-input:focus { border-color: var(--cyan); }
-    .id-input::placeholder { color: var(--dim); }
-
-    /* PIN */
-    .pin-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; }
-    .pin-box { width: 56px; height: 64px; background: var(--mid); border: 1.5px solid rgba(255,255,255,.12); border-radius: 10px; font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: var(--cyan); text-align: center; outline: none; transition: border-color .15s; }
-    .pin-box:focus { border-color: var(--cyan); }
-
-    /* BUTTON */
-    .btn-primary { width: 100%; padding: .85rem; border-radius: 99px; background: var(--cyan); color: var(--navy); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: opacity .15s; }
-    .btn-primary:hover { opacity: .88; }
-    .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
-
-    /* STATUS */
-    .status-msg { display: none; font-size: 13px; text-align: center; margin-top: 1rem; line-height: 1.55; }
-    .status-msg.error { color: var(--red); }
-    .status-msg.loading { color: var(--muted); }
-
-    /* NEW THREATS BANNER */
-    .threats-banner { display: none; background: rgba(239,159,39,.08); border: .5px solid rgba(239,159,39,.25); border-radius: 10px; padding: .75rem 1rem; margin-top: 1rem; font-size: 13px; color: #EF9F27; line-height: 1.55; }
-
-    /* DIVIDER */
-    .divider { display: flex; align-items: center; gap: .75rem; margin: 1.5rem 0; }
-    .divider-line { flex: 1; height: .5px; background: rgba(255,255,255,.08); }
-    .divider-text { font-size: 12px; color: var(--dim); }
-
-    /* FRESH START */
-    .fresh-link { display: block; text-align: center; font-size: 13px; color: var(--muted); text-decoration: none; transition: color .15s; }
-    .fresh-link:hover { color: var(--cyan); }
-
-    /* FOOTER */
-    .footer { border-top: 1px solid rgba(255,255,255,.06); padding: 1.25rem 1.5rem; }
-    .footer-inner { max-width: 760px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer-brand { display: flex; align-items: center; gap: 8px; }
-    .footer-wordmark { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); }
-    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .footer-link { font-size: 12px; color: var(--dim); text-decoration: none; transition: color .2s; }
-    .footer-link:hover { color: var(--muted); }
-    .nvd-attr { text-align: center; font-size: 10px; color: var(--dim); padding: .5rem; }
-  </style>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/pages.css">
 </head>
 <body>
 
