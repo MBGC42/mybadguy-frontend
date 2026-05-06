@@ -775,13 +775,13 @@ function renderSave() {
         <div class="save-id-display" aria-label="Your private ID phrase">${SID}</div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:.65rem;">Choose a 4-digit PIN:</p>
         <div class="pin-row" role="group" aria-label="4-digit PIN entry">
-          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+          <input class="pin-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"
                  aria-label="PIN digit 1" data-action="pin-input" data-idx="0">
-          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+          <input class="pin-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"
                  aria-label="PIN digit 2" data-action="pin-input" data-idx="1">
-          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+          <input class="pin-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"
                  aria-label="PIN digit 3" data-action="pin-input" data-idx="2">
-          <input class="pin-box" maxlength="1" type="password" inputmode="numeric"
+          <input class="pin-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"
                  aria-label="PIN digit 4" data-action="pin-input" data-idx="3">
         </div>
         <div class="info-box">

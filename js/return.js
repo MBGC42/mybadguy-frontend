@@ -13,15 +13,22 @@ const threatsBanner = document.getElementById('threatsBanner');
 function getPin() { return pinBoxes.map(b => b.value).join(''); }
 
 function getScanId() {
-  // Normalise: trim whitespace, collapse multiple spaces/dots to ' · '
-  return scanIdEl.value.trim().toLowerCase().replace(/\s*[·•]\s*/g, ' · ');
+  // Normalise: accept any separator (space, dot, middot, comma, dash).
+  // Always convert to the canonical ' · ' format the API expects.
+  return scanIdEl.value.trim().toLowerCase()
+    .replace(/\s*[·•\.\-,_|/]+\s*/g, ' ')  // collapse any separator to a space
+    .replace(/\s+/g, ' ')                       // collapse multiple spaces
+    .split(' ')
+    .filter(Boolean)
+    .join(' · ');                            // join with ' · '
 }
 
 function validate() {
   const id  = getScanId();
   const pin = getPin();
-  const words = id.split(' · ');
-  const idOk  = words.length === 4 && words.every(w => /^[a-z]{3,12}$/.test(w));
+  // Accept 4 words separated by any whitespace or punctuation
+  const rawWords = scanIdEl.value.trim().toLowerCase().split(/[\s·•.,\-_|/]+/).filter(Boolean);
+  const idOk  = rawWords.length === 4 && rawWords.every(w => /^[a-z]{3,12}$/.test(w));
   const pinOk = /^\d{4}$/.test(pin);
   returnBtn.disabled = !(idOk && pinOk);
 }
