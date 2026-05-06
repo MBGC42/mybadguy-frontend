@@ -201,16 +201,14 @@ function render() {
     </div>
 
     <div class="ro-grid">
-      <div class="ro-section">Personal</div><div></div>
+      <div class="ro-section" style="grid-column:1/-1;">Personal</div>
       ${chip('Age', p.age)}
       ${chip('Financial', FIN_L[p.fin]||p.fin)}
       ${chip('Tech skill', TECH_L[p.tech]||p.tech)}
       ${chip('Social', ISO_L[p.iso]||p.iso)}
       ${chip('Social media', SM_L[p.sm]||p.sm)}
-    </div>
-    <div class="profile-divider" style="margin:.65rem 0;"></div>
-    <div class="ro-grid">
-      <div class="ro-section">Work &amp; context</div><div></div>
+      <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
+      <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
       ${chip('Job data', ROLE_L[p.role]||p.role)}
       ${chip('Public profile', PUB_L[p.pub]||p.pub)}
       ${chip('Work / MDM', MDM_L[p.mdm]||p.mdm)}
