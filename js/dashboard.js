@@ -209,11 +209,11 @@ function render() {
       ${chip('Social media', SM_L[p.sm]||p.sm)}
       <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
       <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
-      ${chip('Job data', ROLE_L[p.role]||p.role)}
-      ${chip('Public profile', PUB_L[p.pub]||p.pub)}
-      ${chip('Work / MDM', MDM_L[p.mdm]||p.mdm)}
-      ${chip('Home', HOME_L[p.home]||p.home)}
-      ${chip('Usage', USAGE_L[p.usage]||p.usage)}
+      ${chip('Job data', ROLE_L[p.role+1]||'No work data')}
+      ${chip('Public profile', PUB_L[p.pub+1]||'Very private')}
+      ${chip('Work / MDM', MDM_L[p.mdm+1]||'Personal only')}
+      ${chip('Home', HOME_L[p.home]||'Rural')}
+      ${chip('Usage', USAGE_L[p.usage+1]||'At home')}
     </div>
   </div>`;
 
