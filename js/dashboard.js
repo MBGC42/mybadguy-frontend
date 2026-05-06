@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 
 // ── LOAD PROFILE ──────────────────────────────────────────
 // Reads from sessionStorage if set by detect.html, otherwise uses defaults
@@ -11,14 +10,10 @@ let PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
   an:false, anV:1,
   mc:false, mcV:1,
   wn:false, wnV:1,
+  patchScore:0, wildScore:0, patchTier:'current',
 };
 
-// ── VERSION TABLES ────────────────────────────────────────
-const IOS_V    = [{v:'iOS 26.4.1',ps:0},{v:'iOS 26.4',ps:0},{v:'iOS 26.3.x',ps:6},{v:'iOS 26.2',ps:9},{v:'iOS 26.1',ps:14},{v:'iOS 26.0',ps:20},{v:'iOS 18.4.x',ps:32},{v:'iOS 18.3.x',ps:38},{v:'iOS 18.2',ps:44},{v:'iOS 17.x',ps:82}];
-const IPAD_V   = [{v:'iPadOS 26.4.1',ps:0},{v:'iPadOS 26.4',ps:0},{v:'iPadOS 26.3.x',ps:6},{v:'iPadOS 26.2',ps:9},{v:'iPadOS 26.0-26.1',ps:17},{v:'iPadOS 18.4.x',ps:30},{v:'iPadOS 18.x',ps:52},{v:'iPadOS 17.x',ps:78},{v:'iPadOS 16.x',ps:112}];
-const ANDROID_V= [{v:'Android 15',ps:0},{v:'Android 14',ps:28},{v:'Android 13',ps:62},{v:'Android 12',ps:98},{v:'Android 11',ps:134},{v:'Android 10',ps:178},{v:'Android 9',ps:224}];
-const MAC_V    = [{v:'macOS 26.4.1',ps:0},{v:'macOS 26.4',ps:0},{v:'macOS 26.3.x',ps:6},{v:'macOS 26.2',ps:9},{v:'macOS 26.0-26.1',ps:17},{v:'macOS 15.4.x',ps:28},{v:'macOS 15.x',ps:48},{v:'macOS 14.x',ps:92}];
-const WIN_V    = [{v:'Win 11 24H2',ps:0},{v:'Win 11 23H2',ps:28},{v:'Win 11 22H2',ps:66},{v:'Win 11 21H2',ps:104},{v:'Win 10 22H2',ps:112},{v:'Win 10 21H2',ps:186},{v:'Win 10 21H1',ps:248}];
+// Version tables replaced by live patchScore from /api/cve-stats/:platform
 
 // ── CHIP DISPLAY ──────────────────────────────────────────
 const FIN_L  =['','Struggling','Working class','Middle income','Affluent','High wealth'];
@@ -75,12 +70,15 @@ const ACTORS = [
 // ── SCORING ENGINE ────────────────────────────────────────
 function devBoost(a) {
   const p = PR;
+  const ps = p.patchScore || 0;
+  const ws = p.wildScore  || 0;
+  const effectivePs = (ps - ws) + (ws * 1.5);
   let b = 0;
-  if(p.ip) b += (IOS_V[p.iosV-1]?.ps||0) * a.ds.ip * 0.25;
-  if(p.id) b += (IPAD_V[p.ipadV-1]?.ps||0) * a.ds.id * 0.18;
-  if(p.an) b += (ANDROID_V[p.anV-1]?.ps||0) * a.ds.an * 0.22;
-  if(p.mc) b += (MAC_V[p.mcV-1]?.ps||0) * a.ds.mc * 0.16;
-  if(p.wn) b += (WIN_V[p.wnV-1]?.ps||0) * a.ds.wn * 0.20;
+  if (p.ip) b += effectivePs * a.ds.ip * 0.25;
+  if (p.id) b += effectivePs * a.ds.id * 0.18;
+  if (p.an) b += effectivePs * a.ds.an * 0.22;
+  if (p.mc) b += effectivePs * a.ds.mc * 0.16;
+  if (p.wn) b += effectivePs * a.ds.wn * 0.20;
   return Math.round(b);
 }
 function mdmBoost(a) { return Math.round(((PR.mdm-1)/4) * a.mdmW * 22); }

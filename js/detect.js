@@ -196,15 +196,13 @@ function calcScore(a) {
   const ps = p.patchScore || 0;
   const ws = p.wildScore  || 0;
   const effectivePs = (ps - ws) + (ws * 1.5);
-
-  let platformWeight = 0;
-  if (p.ip) platformWeight = a.ds.ip;
-  if (p.id) platformWeight = a.ds.id;
-  if (p.an) platformWeight = a.ds.an;
-  if (p.mc) platformWeight = a.ds.mc;
-  if (p.wn) platformWeight = a.ds.wn;
-
-  const db = Math.round(effectivePs * platformWeight * 0.25);
+  let db = 0;
+  if (p.ip) db += effectivePs * a.ds.ip * 0.25;
+  if (p.id) db += effectivePs * a.ds.id * 0.18;
+  if (p.an) db += effectivePs * a.ds.an * 0.22;
+  if (p.mc) db += effectivePs * a.ds.mc * 0.16;
+  if (p.wn) db += effectivePs * a.ds.wn * 0.20;
+  db = Math.round(db);
   const mb = Math.round(((p.mdm - 1) / 4) * a.mdmW * 22);
 
   const hn = (p.home  - 1) / 3;

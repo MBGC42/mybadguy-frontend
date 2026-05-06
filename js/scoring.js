@@ -20,26 +20,18 @@ const PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
 function calcScore(a) {
   const p = PR;
 
-  // Device boost — uses live CVE patch score instead of hardcoded arrays.
-  // patchScore = actual unpatched CVE count for the user's patch tier.
-  // wildScore  = of those, how many are confirmed in-wild (KEV/Apple).
-  // KEV CVEs count 1.5× — confirmed exploitation vs theoretical.
+  // Device boost — live CVE patch score with per-platform multipliers.
+  // wildScore CVEs counted 1.5× (confirmed in-wild exploitation vs theoretical).
   const ps = p.patchScore || 0;
   const ws = p.wildScore  || 0;
-  const effectivePs = (ps - ws) + (ws * 1.5); // wild CVEs weighted higher
-
-  // Actor platform weight determines how much CVEs matter for this actor type
-  // (APTs rely heavily on CVEs; elder scammers barely use them)
-  let platformWeight = 0;
-  if (p.ip) platformWeight = a.ds.ip;
-  if (p.id) platformWeight = a.ds.id;
-  if (p.an) platformWeight = a.ds.an;
-  if (p.mc) platformWeight = a.ds.mc;
-  if (p.wn) platformWeight = a.ds.wn;
-
-  // Scale: effectivePs of ~200 at full weight → db contribution ~50
-  // 200 × 0.25 (scale) × 1.0 (weight) = 50 — reasonable ceiling
-  const db = Math.round(effectivePs * platformWeight * 0.25);
+  const effectivePs = (ps - ws) + (ws * 1.5);
+  let db = 0;
+  if (p.ip) db += effectivePs * a.ds.ip * 0.25;
+  if (p.id) db += effectivePs * a.ds.id * 0.18;
+  if (p.an) db += effectivePs * a.ds.an * 0.22;
+  if (p.mc) db += effectivePs * a.ds.mc * 0.16;
+  if (p.wn) db += effectivePs * a.ds.wn * 0.20;
+  db = Math.round(db);
 
   const mb = Math.round(((p.mdm - 1) / 4) * a.mdmW * 22);
 
