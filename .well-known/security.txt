@@ -1,0 +1,5 @@
+Contact: mailto:support@mybadguy.com
+Expires: 2027-05-05T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://mybadguy.com/.well-known/security.txt
+Policy: https://mybadguy.com/privacy.html
