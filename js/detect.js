@@ -300,6 +300,8 @@ const CHECKS = [
 ];
 
 function renderScan() {
+  // Two-element crossfade: set new text on the HIDDEN element first,
+  // then swap opacities. Text never changes while visible — fixes iOS overlap.
   document.getElementById('app').innerHTML = `
     <div class="screen" style="text-align:center;">
       <div class="scan-eye-wrap" aria-hidden="true">
@@ -316,10 +318,15 @@ function renderScan() {
       <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:.6rem;">
         Detecting your device
       </h1>
-      <p class="scan-status" id="scanStatus" aria-live="polite">\${CHECKS[0]}</p>
+      <div class="scan-status-wrap" role="status" aria-live="polite">
+        <p class="scan-status" id="scanStatusA" style="opacity:1;">${CHECKS[0]}</p>
+        <p class="scan-status" id="scanStatusB" style="opacity:0;" aria-hidden="true"></p>
+      </div>
     </div>`;
 
   let idx = 0;
+  let active = 'A'; // which element is currently visible
+
   const iv = setInterval(() => {
     idx++;
     if (idx >= CHECKS.length) {
@@ -336,13 +343,30 @@ function renderScan() {
       }, 300);
       return;
     }
-    const el = document.getElementById('scanStatus');
-    if (el) {
-      el.style.opacity = '0';
-      setTimeout(() => { if (el) { el.textContent = CHECKS[idx]; el.style.opacity = '1'; } }, 220);
+    const elA = document.getElementById('scanStatusA');
+    const elB = document.getElementById('scanStatusB');
+    if (!elA || !elB) return;
+
+    if (active === 'A') {
+      // B is hidden — safely write new text then crossfade
+      elB.textContent = CHECKS[idx];
+      elB.removeAttribute('aria-hidden');
+      elA.setAttribute('aria-hidden', 'true');
+      elA.style.opacity = '0';
+      elB.style.opacity = '1';
+      active = 'B';
+    } else {
+      // A is hidden — safely write new text then crossfade
+      elA.textContent = CHECKS[idx];
+      elA.removeAttribute('aria-hidden');
+      elB.setAttribute('aria-hidden', 'true');
+      elB.style.opacity = '0';
+      elA.style.opacity = '1';
+      active = 'A';
     }
-  }, 500);
+  }, 600);
 }
+
 
 // ── STEP 1: DEVICE CONFIRM ───────────────────────────────
 function renderDevice() {
