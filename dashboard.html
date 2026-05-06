@@ -45,20 +45,18 @@
     /* PROFILE CARD */
     .profile-card{background:var(--lift);border:.5px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;}
     .profile-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
-    .profile-title-sub{font-size:11px;color:var(--muted);font-weight:400;}
-    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;}
-    .sl-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
-    .sl-label{font-size:12px;color:var(--muted);width:115px;flex-shrink:0;}
-    .sl-row input[type=range]{flex:1;accent-color:var(--cyan);}
-    .sl-chip{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;min-width:60px;text-align:center;}
-    .sl-sub{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);grid-column:1/-1;margin-top:4px;}
-    .profile-divider{grid-column:1/-1;height:.5px;background:rgba(255,255,255,.06);margin:4px 0;}
-    .dev-section{border-top:.5px solid rgba(255,255,255,.06);margin-top:.85rem;padding-top:.85rem;}
-    .dev-section-title{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
-    .dev-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
-    .dev-cb{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:500;min-width:76px;}
-    .dev-ver{font-size:11px;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;}
-    .dev-patch{font-size:11px;padding:2px 7px;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+    .update-pill{font-size:12px;font-weight:500;padding:5px 14px;border-radius:99px;background:rgba(34,211,238,.1);color:var(--cyan);border:.5px solid rgba(34,211,238,.25);text-decoration:none;transition:background .15s;white-space:nowrap;}
+    .update-pill:hover{background:rgba(34,211,238,.18);text-decoration:none;}
+    .dev-summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:1rem;padding-bottom:.85rem;border-bottom:.5px solid rgba(255,255,255,.06);}
+    .dev-name-badge{font-size:13px;font-weight:500;color:var(--slate);}
+    .dev-ver-badge{font-size:12px;padding:2px 9px;border-radius:99px;background:rgba(34,211,238,.1);color:var(--cyan);font-weight:500;}
+    .dev-patch-badge{font-size:12px;padding:2px 9px;border-radius:99px;font-weight:500;}
+    .ro-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;}
+    .ro-section{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);grid-column:1/-1;margin-bottom:2px;}
+    .ro-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;gap:8px;}
+    .ro-label{font-size:12px;color:var(--muted);}
+    .ro-val{font-size:12px;font-weight:500;color:var(--slate);text-align:right;}
+    .profile-divider{grid-column:1/-1;height:.5px;background:rgba(255,255,255,.06);}
 
     /* ACTOR GROUP */
     .group-block{margin-bottom:1.5rem;}
