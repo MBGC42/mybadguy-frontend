@@ -291,6 +291,14 @@ function renderDots() {
 
 // ── STEP 0: SCAN ANIMATION ────────────────────────────────
 
+const CHECKS = [
+  'Reading device type…',
+  'Checking OS version…',
+  'Checking CVE database…',
+  'Analyzing patch status…',
+  'Profiling threat surface…',
+];
+
 function renderScan() {
   document.getElementById('app').innerHTML = `
     <div class="screen" style="text-align:center;">
@@ -308,20 +316,32 @@ function renderScan() {
       <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:.6rem;">
         Detecting your device
       </h1>
-      <p class="scan-status" aria-live="polite">Reading device type…</p>
+      <p class="scan-status" id="scanStatus" aria-live="polite">\${CHECKS[0]}</p>
     </div>`;
 
-  // Pre-fetch OS version data then proceed to device confirm
-  setTimeout(async () => {
-    const _ua = navigator.userAgent, _tp = navigator.maxTouchPoints || 0;
-    let _pt = 'windows';
-    if (/iPad/.test(_ua) || (/Macintosh/.test(_ua) && _tp > 1)) _pt = 'ipad';
-    else if (/iPhone/.test(_ua))  _pt = 'iphone';
-    else if (/Android/.test(_ua)) _pt = 'android';
-    else if (/Macintosh|MacIntel/.test(navigator.platform || '') && _tp === 0) _pt = 'mac';
-    await fetchOsVersions(_pt);
-    DV = detectDevice(); ST = 1; render();
-  }, 1800);
+  let idx = 0;
+  const iv = setInterval(() => {
+    idx++;
+    if (idx >= CHECKS.length) {
+      clearInterval(iv);
+      setTimeout(async () => {
+        const _ua = navigator.userAgent, _tp = navigator.maxTouchPoints||0;
+        let _pt = 'windows';
+        if (/iPad/.test(_ua)||(/Macintosh/.test(_ua)&&_tp>1)) _pt='ipad';
+        else if (/iPhone/.test(_ua))  _pt='iphone';
+        else if (/Android/.test(_ua)) _pt='android';
+        else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
+        await fetchOsVersions(_pt);
+        DV = detectDevice(); ST = 1; render();
+      }, 300);
+      return;
+    }
+    const el = document.getElementById('scanStatus');
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(() => { if (el) { el.textContent = CHECKS[idx]; el.style.opacity = '1'; } }, 220);
+    }
+  }, 500);
 }
 
 // ── STEP 1: DEVICE CONFIRM ───────────────────────────────
