@@ -128,20 +128,6 @@ function sc(id, text, style) {
   const el = document.getElementById(id);
   if (el) { el.textContent = text; el.style.cssText = style; }
 }
-function updateChips() {
-  const p = PR;
-  function ageS(v){return v<=17||v>=65?'background:#FCEBEB;color:#A32D2D':v<=25||v>=55?'background:#FAEEDA;color:#854F0B':'background:#EAF3DE;color:#27500A';}
-  sc('c-age',  p.age,        ageS(p.age));
-  sc('c-fin',  FIN_L[p.fin],  FIN_S[p.fin]);
-  sc('c-tech', TECH_L[p.tech],TECH_S[p.tech]);
-  sc('c-iso',  ISO_L[p.iso],  ISO_S[p.iso]);
-  sc('c-sm',   SM_L[p.sm],    SM_S[p.sm]);
-  sc('c-role', ROLE_L[p.role],ROLE_S[p.role]);
-  sc('c-pub',  PUB_L[p.pub],  PUB_S[p.pub]);
-  sc('c-mdm',  MDM_L[p.mdm],  MDM_S[p.mdm]);
-  sc('c-home', HOME_L[p.home],HOME_S[p.home]);
-  sc('c-usage',USAGE_L[p.usage],USAGE_S[p.usage]);
-}
 
 // ── SAVE PROFILE TO SESSION ───────────────────────────────
 function saveProfile() {
@@ -190,63 +176,46 @@ function render() {
     </div>
   </div>`;
 
-  // ── PROFILE CARD ──────────────────────────────────────
+  // ── PROFILE CARD (read-only) ──────────────────────────
+  // Determine device display
+  const devName = p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
+  const devVer  = p.deviceFullVersion || (p.ip?IOS_V[p.iosV-1]?.v:p.id?IPAD_V[p.ipadV-1]?.v:p.an?ANDROID_V[p.anV-1]?.v:p.mc?MAC_V[p.mcV-1]?.v:p.wn?WIN_V[p.wnV-1]?.v:'') || '';
+  const patchTier = p.patchTier || (p.patchScore===0?'current':p.patchScore<30?'behind':'outdated');
+  const patchColor = patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
+  const patchLabel = patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
+  const patchBg    = patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
+
+  const chip = (label, val) => `<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
+
   h += `<div class="eyebrow" style="margin-top:.25rem;">Your profile</div>
   <div class="profile-card">
     <div class="profile-title">
-      <span>Consumer profile</span>
-      <span class="profile-title-sub">Adjust sliders to explore how your scores change</span>
+      <span>Detection profile</span>
+      <a href="detect.html" class="update-pill">Update profile →</a>
     </div>
-    <div class="profile-grid">
-      <div class="sl-sub">Personal</div><div></div>
-      <div class="sl-row"><span class="sl-label">Age</span><input type="range" min="13" max="85" value="${p.age}" oninput="PR.age=+this.value;updateChips();render()"><span class="sl-chip" id="c-age">${p.age}</span></div>
-      <div class="sl-row"><span class="sl-label">Financial status</span><input type="range" min="1" max="5" value="${p.fin}" oninput="PR.fin=+this.value;updateChips();render()"><span class="sl-chip" id="c-fin">${FIN_L[p.fin]}</span></div>
-      <div class="sl-row"><span class="sl-label">Tech skill</span><input type="range" min="1" max="5" value="${p.tech}" oninput="PR.tech=+this.value;updateChips();render()"><span class="sl-chip" id="c-tech">${TECH_L[p.tech]}</span></div>
-      <div class="sl-row"><span class="sl-label">Social isolation</span><input type="range" min="1" max="5" value="${p.iso}" oninput="PR.iso=+this.value;updateChips();render()"><span class="sl-chip" id="c-iso">${ISO_L[p.iso]}</span></div>
-      <div class="sl-row"><span class="sl-label">Social media</span><input type="range" min="1" max="5" value="${p.sm}" oninput="PR.sm=+this.value;updateChips();render()"><span class="sl-chip" id="c-sm">${SM_L[p.sm]}</span></div>
-      <div></div>
-      <div class="profile-divider"></div>
-      <div class="sl-sub">Work</div><div></div>
-      <div class="sl-row"><span class="sl-label">Job data</span><input type="range" min="1" max="5" value="${p.role}" oninput="PR.role=+this.value;updateChips();render()"><span class="sl-chip" id="c-role">${ROLE_L[p.role]}</span></div>
-      <div class="sl-row"><span class="sl-label">Public profile</span><input type="range" min="1" max="5" value="${p.pub}" oninput="PR.pub=+this.value;updateChips();render()"><span class="sl-chip" id="c-pub">${PUB_L[p.pub]}</span></div>
-      <div class="sl-row" style="grid-column:1/-1;"><span class="sl-label">Device / MDM</span><input type="range" min="1" max="5" value="${p.mdm}" oninput="PR.mdm=+this.value;updateChips();render()"><span class="sl-chip" id="c-mdm">${MDM_L[p.mdm]}</span></div>
-      <div class="profile-divider"></div>
-      <div class="sl-sub">Location</div><div></div>
-      <div class="sl-row"><span class="sl-label">Home environment</span><input type="range" min="1" max="4" value="${p.home}" oninput="PR.home=+this.value;updateChips();render()"><span class="sl-chip" id="c-home">${HOME_L[p.home]}</span></div>
-      <div class="sl-row"><span class="sl-label">Usage context</span><input type="range" min="1" max="5" value="${p.usage}" oninput="PR.usage=+this.value;updateChips();render()"><span class="sl-chip" id="c-usage">${USAGE_L[p.usage]}</span></div>
+
+    <div class="dev-summary">
+      <span class="dev-name-badge">${devName}</span>
+      ${devVer ? `<span class="dev-ver-badge">${devVer}</span>` : ''}
+      <span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}${p.patchScore>0?' · '+p.patchScore+' CVEs':''}</span>
     </div>
-    <div class="dev-section">
-      <div class="dev-section-title">Devices</div>
-      <div class="dev-row">
-        <label class="dev-cb"><input type="checkbox" ${p.ip?'checked':''} onchange="PR.ip=this.checked;render()"> iPhone</label>
-        <span class="dev-ver" style="background:#E6F1FB;color:#0C447C;${p.ip?'':'opacity:.4;'}">${IOS_V[p.iosV-1]?.v||'iOS'}</span>
-        <input type="range" min="1" max="${IOS_V.length}" value="${p.iosV}" ${p.ip?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.iosV=+this.value;render()">
-        <span class="dev-patch" style="background:${p.ip&&IOS_V[p.iosV-1]?.ps>0?'rgba(226,75,74,.12)':p.ip?'rgba(34,197,94,.12)':'var(--mid)'};color:${p.ip&&IOS_V[p.iosV-1]?.ps>0?'#E24B4A':p.ip?'#22c55e':'var(--dim)'};">${p.ip?(IOS_V[p.iosV-1]?.ps===0?'Current':IOS_V[p.iosV-1]?.ps+' CVEs'):'Off'}</span>
-      </div>
-      <div class="dev-row">
-        <label class="dev-cb"><input type="checkbox" ${p.id?'checked':''} onchange="PR.id=this.checked;render()"> iPad</label>
-        <span class="dev-ver" style="background:#EEEDFE;color:#3C3489;${p.id?'':'opacity:.4;'}">${IPAD_V[p.ipadV-1]?.v||'iPadOS'}</span>
-        <input type="range" min="1" max="${IPAD_V.length}" value="${p.ipadV}" ${p.id?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.ipadV=+this.value;render()">
-        <span class="dev-patch" style="background:${p.id&&IPAD_V[p.ipadV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.id&&IPAD_V[p.ipadV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.id?(IPAD_V[p.ipadV-1]?.ps===0?'Current':IPAD_V[p.ipadV-1]?.ps+' CVEs'):'Off'}</span>
-      </div>
-      <div class="dev-row">
-        <label class="dev-cb"><input type="checkbox" ${p.an?'checked':''} onchange="PR.an=this.checked;render()"> Android</label>
-        <span class="dev-ver" style="background:#EAF3DE;color:#27500A;${p.an?'':'opacity:.4;'}">${ANDROID_V[p.anV-1]?.v||'Android'}</span>
-        <input type="range" min="1" max="${ANDROID_V.length}" value="${p.anV}" ${p.an?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.anV=+this.value;render()">
-        <span class="dev-patch" style="background:${p.an&&ANDROID_V[p.anV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.an&&ANDROID_V[p.anV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.an?(ANDROID_V[p.anV-1]?.ps===0?'Current':ANDROID_V[p.anV-1]?.ps+' CVEs'):'Off'}</span>
-      </div>
-      <div class="dev-row">
-        <label class="dev-cb"><input type="checkbox" ${p.mc?'checked':''} onchange="PR.mc=this.checked;render()"> Mac</label>
-        <span class="dev-ver" style="background:#FAEEDA;color:#854F0B;${p.mc?'':'opacity:.4;'}">${MAC_V[p.mcV-1]?.v||'macOS'}</span>
-        <input type="range" min="1" max="${MAC_V.length}" value="${p.mcV}" ${p.mc?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.mcV=+this.value;render()">
-        <span class="dev-patch" style="background:${p.mc&&MAC_V[p.mcV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.mc&&MAC_V[p.mcV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.mc?(MAC_V[p.mcV-1]?.ps===0?'Current':MAC_V[p.mcV-1]?.ps+' CVEs'):'Off'}</span>
-      </div>
-      <div class="dev-row">
-        <label class="dev-cb"><input type="checkbox" ${p.wn?'checked':''} onchange="PR.wn=this.checked;render()"> Windows</label>
-        <span class="dev-ver" style="background:#F1EFE8;color:#444441;${p.wn?'':'opacity:.4;'}">${WIN_V[p.wnV-1]?.v||'Windows'}</span>
-        <input type="range" min="1" max="${WIN_V.length}" value="${p.wnV}" ${p.wn?'':'disabled'} style="flex:1;accent-color:var(--cyan);" oninput="PR.wnV=+this.value;render()">
-        <span class="dev-patch" style="background:${p.wn&&WIN_V[p.wnV-1]?.ps>0?'rgba(226,75,74,.12)':'var(--mid)'};color:${p.wn&&WIN_V[p.wnV-1]?.ps>0?'#E24B4A':'var(--dim)'};">${p.wn?(WIN_V[p.wnV-1]?.ps===0?'Current':WIN_V[p.wnV-1]?.ps+' CVEs'):'Off'}</span>
-      </div>
+
+    <div class="ro-grid">
+      <div class="ro-section">Personal</div><div></div>
+      ${chip('Age', p.age)}
+      ${chip('Financial', FIN_L[p.fin]||p.fin)}
+      ${chip('Tech skill', TECH_L[p.tech]||p.tech)}
+      ${chip('Social', ISO_L[p.iso]||p.iso)}
+      ${chip('Social media', SM_L[p.sm]||p.sm)}
+    </div>
+    <div class="profile-divider" style="margin:.65rem 0;"></div>
+    <div class="ro-grid">
+      <div class="ro-section">Work &amp; context</div><div></div>
+      ${chip('Job data', ROLE_L[p.role]||p.role)}
+      ${chip('Public profile', PUB_L[p.pub]||p.pub)}
+      ${chip('Work / MDM', MDM_L[p.mdm]||p.mdm)}
+      ${chip('Home', HOME_L[p.home]||p.home)}
+      ${chip('Usage', USAGE_L[p.usage]||p.usage)}
     </div>
   </div>`;
 
