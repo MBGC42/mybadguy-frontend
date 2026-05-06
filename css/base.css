@@ -97,3 +97,26 @@ a:hover { text-decoration: underline; }
   border-top: 1px solid rgba(255,255,255,.04);
   margin-top: 1.5rem;
 }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer { border-top: 1px solid rgba(255,255,255,.06); padding: 2rem 1.5rem; }
+.footer-inner { max-width: 720px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-brand { display: flex; align-items: center; gap: 8px; }
+.footer-wordmark { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); }
+.footer-tagline { font-size: 11px; color: var(--dim); }
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer-link { font-size: 12px; color: var(--dim); transition: color .2s; text-decoration: none; }
+.footer-link:hover { color: var(--muted); }
+.nvd-attr { text-align: center; font-size: 10px; color: var(--dim); padding: .75rem; }
+
+/* ── Content page layout (about, privacy, sources, return) ── */
+.page { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.page-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin-bottom: .6rem; }
+.page-title { font-family: 'Syne', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 700; color: var(--slate); margin-bottom: .75rem; letter-spacing: -.01em; }
+.page-intro { font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 580px; margin-bottom: .5rem; }
+.section { margin-bottom: 2.5rem; }
+.section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--slate); margin-bottom: .75rem; padding-bottom: .75rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+.prose { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
+.prose strong { color: var(--slate); font-weight: 500; }
+.callout { background: var(--mid); border: .5px solid rgba(34,211,238,.2); border-left: 3px solid var(--cyan); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--muted); line-height: 1.7; }
+.callout strong { color: var(--slate); }
