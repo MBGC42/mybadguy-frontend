@@ -338,8 +338,17 @@ function renderScan() {
     }
     const el = document.getElementById('scanStatus');
     if (el) {
+      // Use transitionend to guarantee text updates only after fade-out completes.
+      // Fixed setTimeout is unreliable on iOS where timers can be throttled.
+      const onFaded = () => {
+        el.removeEventListener('transitionend', onFaded);
+        el.textContent = CHECKS[idx];
+        // Force reflow so the browser registers the text change before fading back in
+        void el.offsetHeight;
+        el.style.opacity = '1';
+      };
+      el.addEventListener('transitionend', onFaded, { once: true });
       el.style.opacity = '0';
-      setTimeout(() => { if (el) { el.textContent = CHECKS[idx]; el.style.opacity = '1'; } }, 220);
     }
   }, 500);
 }
