@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyBadGuy privacy policy — what we collect, what we don't, and your rights.">
+  <meta name="theme-color" content="#0f172a">
+  <title>MyBadGuy — Privacy Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --navy:  #0f172a;
+      --mid:   #1a2744;
+      --lift:  #1e2d4a;
+      --cyan:  #22d3ee;
+      --lcyan: #e0f9fd;
+      --slate: #f1f5f9;
+      --muted: #94a3b8;
+      --dim:   #475569;
+      --green: #22c55e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--slate); line-height: 1.6; }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.5rem; border-bottom: 1px solid rgba(34,211,238,.1); background: rgba(15,23,42,.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--slate); }
+    .btn-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 99px; transition: color .15s; }
+    .btn-back:hover { color: var(--slate); text-decoration: none; }
+
+    /* PAGE */
+    .page { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    .page-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin-bottom: .6rem; }
+    .page-title { font-family: 'Syne', sans-serif; font-size: clamp(24px, 4vw, 34px); font-weight: 700; color: var(--slate); margin-bottom: .75rem; letter-spacing: -.01em; }
+    .page-intro { font-size: 15px; color: var(--muted); line-height: 1.75; max-width: 580px; margin-bottom: .5rem; }
+    .updated { font-size: 12px; color: var(--dim); margin-bottom: 3rem; }
+
+    /* SUMMARY CARDS */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 3rem; }
+    .summary-card { background: var(--lift); border: .5px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1rem 1.1rem; }
+    .summary-icon { font-size: 18px; margin-bottom: .4rem; }
+    .summary-title { font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 3px; }
+    .summary-body { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .summary-card.yes { border-color: rgba(34,197,94,.2); background: rgba(34,197,94,.04); }
+    .summary-card.no  { border-color: rgba(226,75,74,.2);  background: rgba(226,75,74,.04); }
+    .summary-title.yes { color: #22c55e; }
+    .summary-title.no  { color: #E24B4A; }
+
+    /* SECTIONS */
+    .section { margin-bottom: 2.5rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--slate); margin-bottom: .75rem; padding-bottom: .75rem; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .prose { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
+    .prose strong { color: var(--slate); font-weight: 500; }
+
+    /* DATA TABLE */
+    .data-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 13px; }
+    .data-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); padding: .5rem .75rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .data-table td { padding: .65rem .75rem; border-bottom: .5px solid rgba(255,255,255,.05); color: var(--muted); vertical-align: top; line-height: 1.55; }
+    .data-table td:first-child { color: var(--slate); font-weight: 500; white-space: nowrap; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* RIGHTS LIST */
+    .rights-list { list-style: none; margin-bottom: 1rem; }
+    .rights-list li { display: flex; gap: 10px; align-items: flex-start; padding: .65rem 0; border-bottom: .5px solid rgba(255,255,255,.05); font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .rights-list li:last-child { border-bottom: none; }
+    .rights-list li::before { content: '→'; color: var(--cyan); flex-shrink: 0; margin-top: 2px; }
+    .rights-list strong { color: var(--slate); }
+
+    /* CALLOUT */
+    .callout { background: var(--mid); border: .5px solid rgba(34,211,238,.2); border-left: 3px solid var(--cyan); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .callout strong { color: var(--slate); }
+
+    /* FOOTER */
+    .footer { border-top: 1px solid rgba(255,255,255,.06); padding: 2rem 1.5rem; }
+    .footer-inner { max-width: 720px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-brand { display: flex; align-items: center; gap: 8px; }
+    .footer-wordmark { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-link { font-size: 12px; color: var(--dim); transition: color .2s; }
+    .footer-link:hover { color: var(--muted); text-decoration: none; }
+    .nvd-attr { text-align: center; font-size: 10px; color: var(--dim); padding: .75rem; }
+
+    @media (max-width: 560px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .data-table td:first-child { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-brand">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
+    <span class="nav-name">MyBadGuy</span>
+  </a>
+  <a href="/" class="btn-back">← Home</a>
+</nav>
+
+<main class="page" id="main">
+
+  <p class="page-eyebrow">Legal</p>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-intro">
+    We built MyBadGuy to educate consumers about threats to their devices — not to become one ourselves.
+    This policy explains exactly what data we collect, why, and what we never do with it.
+  </p>
+  <p class="updated">Effective date: May 5, 2026 &nbsp;·&nbsp; Applies to mybadguy.com and api.mybadguy.com</p>
+
+  <!-- ── PLAIN ENGLISH SUMMARY ── -->
+  <div class="summary-grid" role="list" aria-label="Privacy at a glance">
+
+    <div class="summary-card yes" role="listitem">
+      <div class="summary-icon">✅</div>
+      <div class="summary-title yes">Always free</div>
+      <div class="summary-body">No subscription, no paywall, no premium tier that monetises your data.</div>
+    </div>
+
+    <div class="summary-card yes" role="listitem">
+      <div class="summary-icon">✅</div>
+      <div class="summary-title yes">No account required</div>
+      <div class="summary-body">We never ask for your name, email, phone number, or any identity information.</div>
+    </div>
+
+    <div class="summary-card yes" role="listitem">
+      <div class="summary-icon">✅</div>
+      <div class="summary-title yes">You control your data</div>
+      <div class="summary-body">If you save a scan, you can delete it instantly using your private ID and PIN.</div>
+    </div>
+
+    <div class="summary-card yes" role="listitem">
+      <div class="summary-icon">✅</div>
+      <div class="summary-title yes">No tracking</div>
+      <div class="summary-body">No advertising trackers, no fingerprinting, no cross-site tracking of any kind.</div>
+    </div>
+
+    <div class="summary-card no" role="listitem">
+      <div class="summary-icon">🚫</div>
+      <div class="summary-title no">We never sell your data</div>
+      <div class="summary-body">We do not sell, rent, share, or trade your information with any third party.</div>
+    </div>
+
+    <div class="summary-card no" role="listitem">
+      <div class="summary-icon">🚫</div>
+      <div class="summary-title no">We never access your device</div>
+      <div class="summary-body">We read only what your browser voluntarily shares — no files, contacts, or apps.</div>
+    </div>
+
+  </div>
+
+  <!-- ── SECTION 1: WHO WE ARE ── -->
+  <section class="section" aria-labelledby="s1">
+    <h2 class="section-title" id="s1">1. Who we are</h2>
+    <p class="prose">
+      MyBadGuy is a free consumer security awareness service operated at mybadguy.com.
+      We are not a security company, a data broker, or an analytics provider. We are an
+      educational tool that shows consumers how threat actors see their devices, and gives
+      them practical steps to reduce their exposure.
+    </p>
+    <p class="prose">
+      Questions about this policy can be directed to
+      <a href="mailto:support@mybadguy.com">support@mybadguy.com</a>.
+    </p>
+  </section>
+
+  <!-- ── SECTION 2: WHAT THE DETECTION READS ── -->
+  <section class="section" aria-labelledby="s2">
+    <h2 class="section-title" id="s2">2. What device detection reads</h2>
+    <p class="prose">
+      When you start a detection, your browser automatically provides a small set of technical
+      signals. We read these signals to identify your device type and operating system version.
+      <strong>We do not read anything beyond what your browser makes available without permission.</strong>
+    </p>
+
+    <table class="data-table" aria-label="Data read during detection">
+      <thead>
+        <tr>
+          <th>Signal</th>
+          <th>What we use it for</th>
+          <th>Stored?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>User-agent string</td>
+          <td>Device type, OS name, OS version</td>
+          <td>Device type, OS, and version only — no raw UA string</td>
+        </tr>
+        <tr>
+          <td>Touch point count</td>
+          <td>Distinguish iPad from Mac</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Platform string</td>
+          <td>Distinguish Mac from Windows</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>IP address</td>
+          <td>Rate limiting only — max 5 requests per minute</td>
+          <td>No — never written to the database</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="prose">
+      We do not read your location, microphone, camera, contacts, files, installed apps,
+      browsing history, clipboard, or any other device resource. No permissions are requested.
+    </p>
+  </section>
+
+  <!-- ── SECTION 3: PROFILE QUESTIONS ── -->
+  <section class="section" aria-labelledby="s3">
+    <h2 class="section-title" id="s3">3. Profile questions</h2>
+    <p class="prose">
+      The 10 profile questions ask about your general situation — age range, financial situation,
+      tech comfort, and how you use your device. These questions are intentionally generic.
+      <strong>We never ask for your name, address, employer, income, account numbers,
+      or any other personally identifying information.</strong>
+    </p>
+    <p class="prose">
+      Your answers are stored locally in your browser's session storage and used immediately
+      to compute your threat scores. If you choose not to save your results, this data
+      is deleted when you close the tab and never reaches our servers.
+    </p>
+  </section>
+
+  <!-- ── SECTION 4: SAVED SCANS ── -->
+  <section class="section" aria-labelledby="s4">
+    <h2 class="section-title" id="s4">4. Saved detection results</h2>
+    <p class="prose">
+      Saving your results is entirely optional. If you choose to save, we store the following
+      on our servers so you can return and track your progress over time.
+    </p>
+
+    <table class="data-table" aria-label="Data stored if you save your results">
+      <thead>
+        <tr>
+          <th>Data stored</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Private ID</td>
+          <td>A four-word random phrase that identifies your record. We generate it — you never choose it.</td>
+        </tr>
+        <tr>
+          <td>PIN (hashed)</td>
+          <td>A 4-digit PIN of your choosing, stored as a one-way cryptographic hash using PBKDF2-SHA256 with 100,000 iterations. We cannot recover your PIN.</td>
+        </tr>
+        <tr>
+          <td>Device type</td>
+          <td>e.g. iPhone, Android, Mac, Windows PC</td>
+        </tr>
+        <tr>
+          <td>OS name and version</td>
+          <td>e.g. iOS 26.4.2 — used to track patch status over time</td>
+        </tr>
+        <tr>
+          <td>Patch status</td>
+          <td>Current, behind, or outdated — derived from your OS version</td>
+        </tr>
+        <tr>
+          <td>Profile answers</td>
+          <td>The 10 numeric scores from your profile questions (e.g. age range: 35–44, financial status: 3/5). No free-text responses are stored.</td>
+        </tr>
+        <tr>
+          <td>Scan date</td>
+          <td>When you last ran a detection — used to flag new threats since your last visit</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>We never store:</strong> your name, email, phone number, IP address, location,
+      precise device identifiers (IMEI, serial number, advertising ID), or any information
+      that could identify you as an individual.
+    </div>
+
+    <p class="prose">
+      Your saved record is protected by your private ID and PIN together. Without both,
+      the record cannot be accessed, modified, or deleted — including by us.
+    </p>
+  </section>
+
+  <!-- ── SECTION 5: COOKIES AND TRACKING ── -->
+  <section class="section" aria-labelledby="s5">
+    <h2 class="section-title" id="s5">5. Cookies and tracking</h2>
+    <p class="prose">
+      MyBadGuy does not set any first-party cookies. We do not use advertising trackers,
+      analytics pixels, social media buttons, or any cross-site tracking technology.
+    </p>
+    <p class="prose">
+      Cloudflare provides our infrastructure and may process your IP address as part of
+      standard network operations (DDoS protection, TLS termination, routing). Cloudflare's
+      data processing is governed by their
+      <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+      We have configured Cloudflare Analytics in its privacy-first mode, which does not
+      use cookies or fingerprinting and does not share data with third parties.
+    </p>
+    <p class="prose">
+      Google Fonts is loaded from fonts.googleapis.com to render our typefaces. Google may
+      log the request IP address in accordance with their
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+      No cookies are set by this request.
+    </p>
+  </section>
+
+  <!-- ── SECTION 6: DATA RETENTION ── -->
+  <section class="section" aria-labelledby="s6">
+    <h2 class="section-title" id="s6">6. Data retention and deletion</h2>
+    <p class="prose">
+      Unsaved sessions leave no data on our servers. Browser session storage is cleared
+      when you close the tab.
+    </p>
+    <p class="prose">
+      Saved records are retained until you delete them. To delete your record permanently,
+      go to the detection page, enter your private ID and PIN, and choose Delete.
+      Deletion is immediate and irreversible — we have no way to recover a deleted record.
+    </p>
+    <p class="prose">
+      We reserve the right to delete inactive saved records after 24 months of no activity.
+      If we do so, we will have no way to notify you as we do not hold your contact details.
+    </p>
+  </section>
+
+  <!-- ── SECTION 7: YOUR RIGHTS ── -->
+  <section class="section" aria-labelledby="s7">
+    <h2 class="section-title" id="s7">7. Your rights</h2>
+    <p class="prose">
+      Regardless of where you are in the world, we honour the following rights. Because
+      we do not collect identity information, exercising most of these rights simply
+      requires your private ID and PIN.
+    </p>
+    <ul class="rights-list" aria-label="Your privacy rights">
+      <li><span><strong>Right to access.</strong> You can retrieve your saved record at any time using your private ID and PIN via the detection page.</span></li>
+      <li><span><strong>Right to deletion.</strong> You can permanently delete your saved record at any time using your private ID and PIN. No request to us is required.</span></li>
+      <li><span><strong>Right to portability.</strong> Your saved record is returned in JSON format when you retrieve it. You can copy and store it anywhere.</span></li>
+      <li><span><strong>Right to rectification.</strong> You can update your record by running a new detection and saving the updated results.</span></li>
+      <li><span><strong>Right to object.</strong> If you believe we are processing your data inappropriately, contact us at <a href="mailto:support@mybadguy.com">support@mybadguy.com</a>.</span></li>
+      <li><span><strong>California residents (CCPA/CPRA).</strong> We do not sell or share your personal information. There is nothing to opt out of. You may request confirmation of this in writing by emailing us.</span></li>
+      <li><span><strong>EU/UK residents (GDPR/UK GDPR).</strong> Our lawful basis for processing saved records is your explicit consent, given when you choose to save your results. You may withdraw consent at any time by deleting your record.</span></li>
+    </ul>
+  </section>
+
+  <!-- ── SECTION 8: DATA SECURITY ── -->
+  <section class="section" aria-labelledby="s8">
+    <h2 class="section-title" id="s8">8. Security</h2>
+    <p class="prose">
+      We take reasonable technical measures to protect data in transit and at rest.
+      All communication between your browser and our servers uses TLS 1.3 with HSTS enforced.
+      PINs are stored using PBKDF2-SHA256 with 100,000 iterations and a per-record salt —
+      they cannot be recovered even by us. Our API enforces rate limiting, strict input
+      validation, and Content Security Policy headers.
+    </p>
+    <p class="prose">
+      No internet-connected system is perfectly secure. In the unlikely event of a data breach
+      we will notify affected users as required by applicable law — though given that we hold
+      no contact information, notification may be limited to a prominent notice on this site.
+    </p>
+  </section>
+
+  <!-- ── SECTION 9: CHILDREN ── -->
+  <section class="section" aria-labelledby="s9">
+    <h2 class="section-title" id="s9">9. Children</h2>
+    <p class="prose">
+      MyBadGuy is available to users aged 13 and older. The minimum age selector in our
+      profile questions is 13. We do not knowingly collect data from children under 13.
+      If you believe a child under 13 has created a saved record, contact us at
+      <a href="mailto:support@mybadguy.com">support@mybadguy.com</a> and we will delete it promptly.
+    </p>
+  </section>
+
+  <!-- ── SECTION 10: THIRD PARTY DATA SOURCES ── -->
+  <section class="section" aria-labelledby="s10">
+    <h2 class="section-title" id="s10">10. Third-party data sources</h2>
+    <p class="prose">
+      Our threat intelligence database is built from publicly available government and
+      research datasets. We do not receive any personal data from these sources.
+      Data is fetched by our servers and stored in our own database — your browser
+      never contacts these third parties directly.
+    </p>
+    <p class="prose">
+      Sources include the NIST National Vulnerability Database, CISA Known Exploited
+      Vulnerabilities catalog, MITRE ATT&amp;CK, Microsoft Security Response Center,
+      endoflife.date, and PhishTank. See our
+      <a href="/sources.html">Data sources page</a> for the full list.
+    </p>
+  </section>
+
+  <!-- ── SECTION 11: CHANGES ── -->
+  <section class="section" aria-labelledby="s11">
+    <h2 class="section-title" id="s11">11. Changes to this policy</h2>
+    <p class="prose">
+      We may update this policy as the service evolves. The effective date at the top of
+      this page will reflect the most recent revision. Because we hold no contact
+      information, we cannot notify you directly — we will post changes here and,
+      for material changes, add a notice on the homepage.
+    </p>
+    <p class="prose">
+      Continued use of MyBadGuy after a policy change constitutes acceptance of the
+      updated terms. If you disagree with a change, you may delete your saved record
+      and discontinue use at any time.
+    </p>
+  </section>
+
+  <!-- ── SECTION 12: CONTACT ── -->
+  <section class="section" aria-labelledby="s12">
+    <h2 class="section-title" id="s12">12. Contact</h2>
+    <p class="prose">
+      For privacy questions, data requests, or to report a concern, contact us at
+      <a href="mailto:support@mybadguy.com">support@mybadguy.com</a>.
+      We aim to respond within 5 business days.
+    </p>
+    <p class="prose">
+      For security vulnerability reports, please follow responsible disclosure and
+      email <a href="mailto:support@mybadguy.com">support@mybadguy.com</a> with
+      details. We do not currently operate a public bug bounty programme.
+    </p>
+  </section>
+
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="22" height="13" viewBox="0 0 100 60" aria-hidden="true">
+        <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+        <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="50" cy="30" r="7" fill="#475569"/>
+        <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+      </svg>
+      <span class="footer-wordmark">MyBadGuy</span>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/"             class="footer-link">Home</a>
+      <a href="/about.html"   class="footer-link">About</a>
+      <a href="/sources.html" class="footer-link">Data sources</a>
+      <a href="/privacy.html" class="footer-link" aria-current="page">Privacy policy</a>
+      <a href="mailto:support@mybadguy.com" class="footer-link">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<p class="nvd-attr">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
+
+</body>
+</html>
