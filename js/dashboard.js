@@ -13,7 +13,12 @@ let PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
   patchScore:0, wildScore:0, patchTier:'current',
 };
 
-// Version tables replaced by live patchScore from /api/cve-stats/:platform
+// Version tables kept for slider display labels only — scoring uses live patchScore
+const IOS_V    = [{v:'iOS 26.4.2',ps:0},{v:'iOS 26.4',ps:0},{v:'iOS 26.3.x',ps:6},{v:'iOS 26.2',ps:9},{v:'iOS 26.1',ps:14},{v:'iOS 26.0',ps:20},{v:'iOS 18.4.x',ps:32},{v:'iOS 18.3.x',ps:38},{v:'iOS 18.2',ps:44},{v:'iOS 17.x',ps:82}];
+const IPAD_V   = [{v:'iPadOS 26.4.2',ps:0},{v:'iPadOS 26.4',ps:0},{v:'iPadOS 26.3.x',ps:6},{v:'iPadOS 26.2',ps:9},{v:'iPadOS 26.0-26.1',ps:17},{v:'iPadOS 18.4.x',ps:30},{v:'iPadOS 18.x',ps:52},{v:'iPadOS 17.x',ps:78},{v:'iPadOS 16.x',ps:112}];
+const ANDROID_V= [{v:'Android 16',ps:0},{v:'Android 15',ps:0},{v:'Android 14',ps:28},{v:'Android 13',ps:62},{v:'Android 12',ps:98},{v:'Android 11',ps:134},{v:'Android 10',ps:178}];
+const MAC_V    = [{v:'macOS 26.4.1',ps:0},{v:'macOS 26.4',ps:0},{v:'macOS 26.3.x',ps:6},{v:'macOS 26.2',ps:9},{v:'macOS 26.0-26.1',ps:17},{v:'macOS 15.4.x',ps:28},{v:'macOS 15.x',ps:48},{v:'macOS 14.x',ps:92}];
+const WIN_V    = [{v:'Win 11 26H1',ps:0},{v:'Win 11 25H2',ps:0},{v:'Win 11 24H2',ps:28},{v:'Win 11 23H2',ps:66},{v:'Win 10 22H2',ps:112},{v:'Win 10 21H2',ps:186},{v:'Win 10 older',ps:248}];
 
 // ── CHIP DISPLAY ──────────────────────────────────────────
 const FIN_L  =['','Struggling','Working class','Middle income','Affluent','High wealth'];
