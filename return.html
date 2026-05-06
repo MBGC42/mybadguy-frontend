@@ -110,16 +110,16 @@
 
     <label class="field-label" for="scanId">Your private ID</label>
     <input class="id-input" id="scanId" type="text"
-           placeholder="word · word · word · word"
+           placeholder="frost prism cobalt silver"
            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
            aria-label="Private ID phrase">
 
     <label class="field-label" for="pin1">Your PIN</label>
     <div class="pin-row" role="group" aria-label="4-digit PIN">
-      <input class="pin-box" id="pin1" maxlength="1" type="password" inputmode="numeric" aria-label="PIN digit 1" data-idx="0">
-      <input class="pin-box" id="pin2" maxlength="1" type="password" inputmode="numeric" aria-label="PIN digit 2" data-idx="1">
-      <input class="pin-box" id="pin3" maxlength="1" type="password" inputmode="numeric" aria-label="PIN digit 2" data-idx="2">
-      <input class="pin-box" id="pin4" maxlength="1" type="password" inputmode="numeric" aria-label="PIN digit 4" data-idx="3">
+      <input class="pin-box" id="pin1" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="PIN digit 1" data-idx="0">
+      <input class="pin-box" id="pin2" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="PIN digit 2" data-idx="1">
+      <input class="pin-box" id="pin3" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="PIN digit 2" data-idx="2">
+      <input class="pin-box" id="pin4" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="PIN digit 4" data-idx="3">
     </div>
 
     <button class="btn-primary" id="returnBtn" disabled>View my profile →</button>
