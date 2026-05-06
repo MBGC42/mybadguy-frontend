@@ -125,14 +125,20 @@
       0%   { opacity: .3; transform: translate(-50%, -50%) scale(1); }
       100% { opacity: 0;  transform: translate(-50%, -50%) scale(1.1); }
     }
+    .scan-status-wrap {
+      position: relative;
+      height: 18px;
+      margin-top: .5rem;
+    }
     .scan-status {
+      position: absolute;
+      width: 100%;
       text-align: center;
       font-size: 12px;
       color: var(--cyan);
       letter-spacing: .08em;
       text-transform: uppercase;
-      min-height: 18px;
-      transition: opacity .25s;
+      transition: opacity .3s ease;
     }
 
     /* ── DEVICE CARD ── */
