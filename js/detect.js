@@ -368,6 +368,15 @@ function detectDevice() {
         major = parts[0]; fullVersion = parts.join('.');
       }
     }
+    // UA only gives major.minor (e.g. 15.7) — patch digit is omitted by browsers.
+    // Enrich with latest_version from OSV if the cycle matches and has more detail.
+    const macData = OSV['mac'];
+    if (macData?.versions) {
+      const cycle = macData.versions.find(v => String(v.cycle) === major);
+      if (cycle?.latest_version && cycle.latest_version.startsWith(fullVersion)) {
+        fullVersion = cycle.latest_version;
+      }
+    }
   }
   // Windows: UA always says NT 10.0 for both Win10 and Win11
   // User must self-select via the correction flow
