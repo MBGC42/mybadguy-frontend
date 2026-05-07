@@ -362,7 +362,14 @@ function getTopWins() {
   };
 
   const wins = ALL[type] || ALL.iphone;
-  return wins.filter(w => topG.includes(w.g)).slice(0, 3);
+  return wins
+    .filter(w => topG.includes(w.g))
+    .filter(w => {
+      // Don't suggest updating the OS if already on latest
+      if (DV.patch === 'current' && w.t.toLowerCase().includes('update to the latest')) return false;
+      return true;
+    })
+    .slice(0, 3);
 }
 
 // ── ID GENERATOR ─────────────────────────────────────────
