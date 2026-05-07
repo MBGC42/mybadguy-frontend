@@ -60,15 +60,20 @@ async function fetchCveStats(platform) {
 function versionToPatchStatus(fullVersion, platform) {
   const data = OSV[platform];
   if (!data || !data.versions || !data.versions.length) return 'behind';
-  // Compare on major version number only (e.g. '26' from '26.4.2')
   const major = String(parseInt(fullVersion) || fullVersion.split('.')[0]);
-  // Try exact cycle match first, then numeric match
   const cycle = data.versions.find(v => String(v.cycle) === major)
              || data.versions.find(v => String(Math.floor(parseFloat(v.cycle))) === major);
   if (!cycle)               return 'outdated'; // very old or not tracked
   if (!cycle.is_supported)  return 'outdated'; // vendor EOL
-  if (cycle.is_current)     return 'current';
-  return 'behind';                             // supported but not latest cycle
+
+  // If user is on the latest point release of this cycle they are fully patched
+  // regardless of whether a newer major version exists.
+  // e.g. macOS 15.7.5 = fully patched on Sequoia even though macOS 26 exists.
+  if (cycle.latest_version && fullVersion === cycle.latest_version) return 'current';
+  if (cycle.is_current)     return 'current';  // newest major + no point release data
+
+  // On a supported but not-newest cycle AND behind within that cycle
+  return 'behind';
 }
 
 function buildVersionCards(platform) {
