@@ -780,7 +780,7 @@ function renderResults() {
         ${actorRows}
       </div>
 
-      <p class="wins-title">Top quick wins — zero usage impact</p>
+      <p class="wins-title">Top quick wins for your ${DV.name} — zero usage impact</p>
       ${winCards}
 
       <div class="btn-row" style="margin-top:1.5rem;">
