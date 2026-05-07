@@ -15,6 +15,7 @@ let PR = {         // profile answers
   role:0, pub:0,  mdm:0, home:1, usage:0
 };
 let OSV = {};      // os_versions API cache keyed by platform
+let DV_MAC_SILICON = null; // null=unknown, true=Apple Silicon, false=Intel
 let CVE_STATS = {}; // cve-stats API cache keyed by platform
 
 // ── DEVICE TYPE DEFINITIONS ──────────────────────────────
@@ -74,6 +75,31 @@ function versionToPatchStatus(fullVersion, platform) {
 
   // On a supported but not-newest cycle AND behind within that cycle
   return 'behind';
+}
+
+// Returns upgrade hint for supported-but-not-current cycles
+// e.g. macOS 15.7.5 → { available: 'macOS Tahoe 26.4.1', canUpgrade: true|false|null }
+function getUpgradeHint(platform, fullVersion) {
+  const data = OSV[platform];
+  if (!data?.versions?.length) return null;
+  const major = String(parseInt(fullVersion) || fullVersion.split('.')[0]);
+  const cycle = data.versions.find(v => String(v.cycle) === major);
+  if (!cycle || cycle.is_current) return null; // already on current major
+
+  const current = data.versions.find(v => v.is_current);
+  if (!current) return null;
+
+  // For Mac: check if Apple Silicon (can upgrade) or Intel (cannot)
+  let canUpgrade = null;
+  if (platform === 'mac') {
+    canUpgrade = DV_MAC_SILICON; // true/false/null
+  }
+
+  return {
+    available:  current.label || `macOS ${current.cycle}`,
+    version:    current.latest_version || current.cycle,
+    canUpgrade, // null = unknown, true = Apple Silicon, false = Intel
+  };
 }
 
 function buildVersionCards(platform) {
@@ -387,6 +413,24 @@ function detectDevice() {
   // User must self-select via the correction flow
   if (type === 'windows') fullVersion = 'Windows';
 
+  // macOS: detect Apple Silicon vs Intel via WebGL renderer string
+  // Used only to show upgrade hint — not stored anywhere
+  if (type === 'mac') {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (gl) {
+        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+        if (ext) {
+          const renderer = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || '';
+          // Apple Silicon reports "Apple M1", "Apple M2", "Apple M3", "Apple M4" etc
+          // Intel reports "Intel Iris", "AMD Radeon", "ANGLE (Intel" etc
+          DV_MAC_SILICON = /Apple M\d/i.test(renderer);
+        }
+      }
+    } catch (_) {}
+  }
+
   const patch = versionToPatchStatus(fullVersion || major, type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
   return { type, os, major, fullVersion: fullVersion || major, icon, patch, name: NAMES[type] || 'Device' };
@@ -500,6 +544,25 @@ function renderDevice() {
     ? `<p class="patch-warn">Unpatched CVEs give threat actors open exploit windows. Your technical scores reflect this.</p>`
     : '';
 
+  // Upgrade hint for fully patched but not on newest major (e.g. macOS 15.7.5 when 26 exists)
+  const hint  = getUpgradeHint(DV.type, DV.fullVersion || DV.major);
+  let upgradeNote = '';
+  if (hint) {
+    if (hint.canUpgrade === true) {
+      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+        You\u2019re fully patched on this version. ${hint.available} (${hint.version}) is available and your Mac supports it.
+      </p>`;
+    } else if (hint.canUpgrade === false) {
+      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+        You\u2019re fully patched on this version. ${hint.available} requires Apple Silicon \u2014 your Intel Mac is at its maximum supported OS.
+      </p>`;
+    } else {
+      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+        You\u2019re fully patched on this version. ${hint.available} (${hint.version}) is also available.
+      </p>`;
+    }
+  }
+
   document.getElementById('app').innerHTML = `
     <div class="screen">
       <p class="eyebrow">Device detected</p>
@@ -509,6 +572,7 @@ function renderDevice() {
         <p class="device-meta">${DV.os} ${DV.fullVersion || DV.major}</p>
         <span class="patch-badge" style="background:${pb};color:${pc};">${pl}</span>
         ${warn}
+        ${upgradeNote}
       </div>
       <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:1.25rem;">Is this your device?</p>
       <div class="btn-row">
