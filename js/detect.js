@@ -89,16 +89,24 @@ function getUpgradeHint(platform, fullVersion) {
   const current = data.versions.find(v => v.is_current);
   if (!current) return null;
 
-  // For Mac: check if Apple Silicon (can upgrade) or Intel (cannot)
+  // Platform-specific upgrade guidance
   let canUpgrade = null;
+  let upgradeNote = null;
+
   if (platform === 'mac') {
+    // Apple Silicon can upgrade; Intel cannot go past macOS 15
     canUpgrade = DV_MAC_SILICON; // true/false/null
+  } else if (platform === 'iphone' || platform === 'ipad') {
+    // Cannot determine model compatibility from browser — direct to Apple's page
+    canUpgrade = null;
+    upgradeNote = 'check';
   }
 
   return {
-    available:  current.label || `macOS ${current.cycle}`,
-    version:    current.latest_version || current.cycle,
-    canUpgrade, // null = unknown, true = Apple Silicon, false = Intel
+    available:   current.label || `${platform === 'ipad' ? 'iPadOS' : 'iOS'} ${current.cycle}`,
+    version:     current.latest_version || current.cycle,
+    canUpgrade,
+    upgradeNote,
   };
 }
 
@@ -548,16 +556,27 @@ function renderDevice() {
   const hint  = getUpgradeHint(DV.type, DV.fullVersion || DV.major);
   let upgradeNote = '';
   if (hint) {
+    const INFO_STYLE = 'background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);';
     if (hint.canUpgrade === true) {
-      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+      // Apple Silicon Mac — can upgrade
+      upgradeNote = `<p class="patch-warn" style="${INFO_STYLE}">
         You\u2019re fully patched on this version. ${hint.available} (${hint.version}) is available and your Mac supports it.
       </p>`;
     } else if (hint.canUpgrade === false) {
-      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+      // Intel Mac — cannot upgrade past macOS 15
+      upgradeNote = `<p class="patch-warn" style="${INFO_STYLE}">
         You\u2019re fully patched on this version. ${hint.available} requires Apple Silicon \u2014 your Intel Mac is at its maximum supported OS.
       </p>`;
+    } else if (hint.upgradeNote === 'check') {
+      // iPhone or iPad — can't determine model compatibility
+      const deviceWord = DV.type === 'ipad' ? 'iPad' : 'iPhone';
+      upgradeNote = `<p class="patch-warn" style="${INFO_STYLE}">
+        You\u2019re fully patched on this version. ${hint.available} (${hint.version}) is available \u2014
+        <a href="https://support.apple.com/en-us/105113" target="_blank" rel="noopener noreferrer" style="color:var(--cyan);">check if your ${deviceWord} is compatible</a>.
+      </p>`;
     } else {
-      upgradeNote = `<p class="patch-warn" style="background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);color:var(--muted);">
+      // Generic fallback
+      upgradeNote = `<p class="patch-warn" style="${INFO_STYLE}">
         You\u2019re fully patched on this version. ${hint.available} (${hint.version}) is also available.
       </p>`;
     }
