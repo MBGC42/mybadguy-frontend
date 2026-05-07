@@ -269,43 +269,38 @@ function render() {
   </div>`;
 
   // ── ACTOR GROUPS ──────────────────────────────────────
-  h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actors — ranked by your score</div>`;
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actors — tap any card for details and remediations</div>`;
   groups.forEach(g => {
-    const groupActors = ranked.filter(a=>a.g===g.id);
-    const avgScore = Math.round(groupActors.reduce((s,a)=>s+a.co,0)/groupActors.length);
+    const groupActors = ranked.filter(a => a.g === g.id);
+    if (!groupActors.length) return;
     h += `<div class="group-block">
       <div class="group-hdr" style="background:${g.hbg};border-left-color:${g.bc};">
         <span class="group-hdr-label" style="color:${g.htc};">${g.label}</span>
-        <span class="group-hdr-avg" style="color:${g.htc};">avg ${avgScore}/99</span>
-      </div>`;
+        <span class="group-hdr-avg" style="color:${g.htc};">${groupActors.length} actor${groupActors.length>1?'s':''}</span>
+      </div>
+      <div class="actor-grid">`;
     groupActors.forEach(a => {
-      const cc = scoreColor(a.co);
-      h += `<a class="actor-row" href="${a.page}" onclick="saveProfile()">
-        <div class="actor-avatar" style="background:${a.ab};color:${a.ac};">${a.ini}</div>
-        <div class="actor-info">
-          <div class="actor-name">${a.name}</div>
+      const cc  = scoreColor(a.co);
+      const cbg = a.co>=70?'rgba(226,75,74,.1)':a.co>=45?'rgba(239,159,39,.1)':'rgba(34,197,94,.1)';
+      const lbl = a.co>=70?'High':a.co>=45?'Medium':'Lower';
+      const isTop = a === ranked[0]; // highest overall actor gets accent border
+      h += `<a class="actor-card${isTop?' actor-card-top':''}" href="${a.page}"
+          style="${isTop?`border-color:${cc};border-width:2px;`:''}"
+          onclick="saveProfile()">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem;">
+            <div class="actor-avatar" style="background:${a.ab};color:${a.ac};">${a.ini}</div>
+            <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${cbg};color:${cc};font-weight:600;">${lbl}</span>
+          </div>
+          <div class="actor-score" style="color:${cc};">${a.co}</div>
+          <div class="actor-name" style="margin:.15rem 0 .1rem;">${a.name}</div>
           <div class="actor-sub">${a.sub}</div>
-        </div>
-        <div class="actor-bars">
-          <div class="bar-line">
-            <span class="bar-label" style="color:#A32D2D;">Technical</span>
-            <div class="bar-track"><div class="bar-fill" style="width:${a.sc.t}%;background:#E24B4A;"></div></div>
-            <span class="bar-val" style="color:#A32D2D;">${a.sc.t}</span>
+          <div style="margin-top:.75rem;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;">
+            <div style="height:100%;width:${a.co}%;background:${cc};border-radius:99px;"></div>
           </div>
-          <div class="bar-line">
-            <span class="bar-label" style="color:#185FA5;">Social</span>
-            <div class="bar-track"><div class="bar-fill" style="width:${a.sc.s}%;background:#378ADD;"></div></div>
-            <span class="bar-val" style="color:#185FA5;">${a.sc.s}</span>
-          </div>
-        </div>
-        <div class="actor-combo">
-          <span class="combo-score" style="color:${cc};">${a.co}</span>
-          <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${cc}22;color:${cc};font-weight:500;">${a.co>=70?'High':a.co>=45?'Medium':'Lower'}</span>
-        </div>
-        <span class="actor-arrow">→</span>
-      </a>`;
+          <div style="font-size:11px;color:#22d3ee;font-weight:500;margin-top:.65rem;text-align:center;">Tap for details →</div>
+        </a>`;
     });
-    h += `</div>`;
+    h += `</div></div>`;
   });
 
   // ── QUICK WINS ────────────────────────────────────────
