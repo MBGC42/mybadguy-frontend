@@ -145,9 +145,10 @@ async function renderReport(){
 
   let h='';
 
+  const displayVer = devVer ? `${devName} ${devVer}` : devName;
   h+=`<p class="eyebrow">Full report</p>
   <h1 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,30px);font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em;">
-    ${devName} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> overall
+    ${displayVer} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> overall
   </h1>
   <p style="font-size:13px;color:var(--muted);margin-bottom:1.75rem;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>`;
 
@@ -169,16 +170,26 @@ async function renderReport(){
     </div>
   </div>`;
 
-  h+=`<p class="eyebrow" style="margin-top:1.25rem;">Quick wins</p>
+  // ── ACTOR LINKS ───────────────────────────────────────
+  h += `<p class="eyebrow" style="margin-top:1.5rem;">Threat actor profiles</p>
   <div class="report-card">
-    <div class="report-card-hdr">
-      <span class="report-card-title">Top quick wins for your ${devName}</span>
-      <span class="report-card-sub">Zero usage impact</span>
-    </div>`;
-  wins.forEach((w,i)=>{
-    h+=`<div class="win-row"><div class="win-num">${i+1}</div><div><div class="win-title">${w.t}</div><div class="win-where">${w.w}</div></div></div>`;
-  });
-  h+='</div>';
+    <p style="font-size:12px;color:var(--muted);margin-bottom:.85rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
+      ${ranked.map(a => {
+        const cc  = scoreColor(a.co);
+        const cbg = a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
+        return `<a href="${a.page}" style="display:flex;align-items:center;gap:8px;padding:.6rem .85rem;border-radius:10px;border:.5px solid rgba(255,255,255,.08);background:${cbg};text-decoration:none;transition:border-color .15s;"
+          onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+          <div style="width:24px;height:24px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${a.ini}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:500;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+            <div style="font-size:10px;color:${cc};font-weight:600;">${a.co} / 99</div>
+          </div>
+          <span style="font-size:11px;color:var(--dim);">&rsaquo;</span>
+        </a>`;
+      }).join('')}
+    </div>
+  </div>`;
 
   // ── UNIFIED SORTED RECOMMENDATIONS ──────────────────
   // Collect all rems across all actors, tag with actor info, sort easy > medium > hard
@@ -248,26 +259,16 @@ async function renderReport(){
     h += '</div>';
   });
 
-  // ── ACTOR LINKS ───────────────────────────────────────
-  h += `<p class="eyebrow" style="margin-top:1.5rem;">Threat actor profiles</p>
+  h+=`<p class="eyebrow" style="margin-top:1.25rem;">Quick wins</p>
   <div class="report-card">
-    <p style="font-size:12px;color:var(--muted);margin-bottom:.85rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
-      ${ranked.map(a => {
-        const cc  = scoreColor(a.co);
-        const cbg = a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
-        return `<a href="${a.page}" style="display:flex;align-items:center;gap:8px;padding:.6rem .85rem;border-radius:10px;border:.5px solid rgba(255,255,255,.08);background:${cbg};text-decoration:none;transition:border-color .15s;"
-          onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-          <div style="width:24px;height:24px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${a.ini}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:12px;font-weight:500;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
-            <div style="font-size:10px;color:${cc};font-weight:600;">${a.co} / 99</div>
-          </div>
-          <span style="font-size:11px;color:var(--dim);">&rsaquo;</span>
-        </a>`;
-      }).join('')}
-    </div>
-  </div>`;
+    <div class="report-card-hdr">
+      <span class="report-card-title">Top quick wins for your ${devName}</span>
+      <span class="report-card-sub">Zero usage impact</span>
+    </div>`;
+  wins.forEach((w,i)=>{
+    h+=`<div class="win-row"><div class="win-num">${i+1}</div><div><div class="win-title">${w.t}</div><div class="win-where">${w.w}</div></div></div>`;
+  });
+  h+='</div>';
 
   h+='<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>';
 
