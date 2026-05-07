@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f172a">
+  <title>MyBadGuy — Full Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --navy:  #0f172a; --mid: #1a2744; --lift: #1e2d4a;
+      --cyan:  #22d3ee; --lcyan: #e0f9fd;
+      --slate: #f1f5f9; --muted: #94a3b8; --dim: #475569;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--slate); line-height: 1.6; }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1.5rem; border-bottom: 1px solid rgba(34,211,238,.1); background: rgba(15,23,42,.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
+    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--slate); }
+    .btn-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 99px; transition: color .15s; }
+    .btn-back:hover { color: var(--slate); text-decoration: none; }
+
+    .page { max-width: 680px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); margin-bottom: .5rem; }
+
+    /* REPORT CARDS */
+    .report-card { background: var(--lift); border: .5px solid rgba(255,255,255,.07); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 10px; }
+    .report-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: .65rem; }
+    .report-card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--slate); display: block; }
+    .report-card-sub { font-size: 11px; color: var(--muted); display: block; margin-top: 1px; }
+
+    /* DEVICE SUMMARY */
+    .dev-summary { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: .85rem; padding-bottom: .85rem; border-bottom: .5px solid rgba(255,255,255,.06); }
+    .dev-name-badge { font-size: 13px; font-weight: 600; color: var(--slate); }
+    .dev-ver-badge { font-size: 12px; padding: 3px 10px; border-radius: 99px; background: rgba(34,211,238,.1); color: var(--cyan); font-weight: 500; }
+    .dev-patch-badge { font-size: 12px; padding: 3px 10px; border-radius: 99px; font-weight: 500; }
+
+    /* PROFILE GRID */
+    .ro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+    .ro-section { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); grid-column: 1/-1; margin: 0 0 6px; padding-top: .65rem; }
+    .ro-row { display: flex; align-items: baseline; justify-content: space-between; padding: 5px 0; border-bottom: .5px solid rgba(255,255,255,.04); gap: 8px; }
+    .ro-label { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+    .ro-val { font-size: 12px; font-weight: 500; color: var(--slate); text-align: right; }
+    .profile-divider { height: .5px; background: rgba(255,255,255,.06); grid-column: 1/-1; margin: .5rem 0; }
+
+    /* QUICK WINS */
+    .win-row { display: flex; gap: 10px; padding: .55rem 0; border-bottom: .5px solid rgba(255,255,255,.04); }
+    .win-row:last-child { border-bottom: none; }
+    .win-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(34,211,238,.15); color: var(--cyan); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .win-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .win-where { font-size: 11px; color: var(--muted); font-style: italic; }
+
+    /* ACTOR CARDS */
+    .actor-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .rem-row { display: flex; align-items: flex-start; gap: 10px; padding: .55rem 0; border-bottom: .5px solid rgba(255,255,255,.04); }
+    .rem-row:last-child { border-bottom: none; }
+    .rem-num { width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
+    .spinner { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,.1); border-top-color: var(--cyan); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .attribution { text-align: center; font-size: 10px; color: var(--dim); padding: .75rem; border-top: 1px solid rgba(255,255,255,.04); margin-top: 1.5rem; }
+
+    @media (max-width: 560px) { .ro-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-brand">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
+    <span class="nav-name">MyBadGuy</span>
+  </a>
+  <a href="dashboard.html" class="btn-back">← Dashboard</a>
+</nav>
+
+<main class="page" id="main">
+  <div id="report">
+    <div class="loading">
+      <div class="spinner"></div>
+      Building your report…
+    </div>
+  </div>
+</main>
+
+<script src="/js/scoring.js"></script>
+<script src="/js/report.js"></script>
+</body>
+</html>
