@@ -150,7 +150,10 @@ async function renderReport(){
   <h1 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,30px);font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em;">
     ${displayVer} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> overall
   </h1>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:1.75rem;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>`;
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
+    <p style="font-size:13px;color:var(--muted);margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
+    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:99px;background:transparent;color:var(--slate);border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
+  </div>`;
 
   h+=`<p class="eyebrow">Detection</p>
   <div class="report-card">

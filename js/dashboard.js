@@ -301,13 +301,11 @@ function render() {
   });
 
   // ── FULL REPORT CTA ──────────────────────────────────
-  h += `<div class="eyebrow" style="margin-top:.25rem;">Full report</div>
-  <div style="background:var(--lift);border:.5px solid rgba(34,211,238,.2);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:.25rem;">Your complete threat report</div>
-      <div style="font-size:12px;color:var(--muted);">Detection summary · Quick wins · Recommendations for every threat actor</div>
-    </div>
-    <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 22px;border-radius:99px;background:var(--lcyan);color:var(--navy);text-decoration:none;white-space:nowrap;transition:opacity .15s;">View full report →</a>
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Actions</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;">
+    <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:var(--lcyan);color:var(--navy);text-decoration:none;transition:opacity .15s;white-space:nowrap;">View full report →</a>
+    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:transparent;color:var(--slate);border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
+    <a href="detect.html" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:99px;background:transparent;color:var(--muted);border:1.5px solid rgba(255,255,255,.08);text-decoration:none;white-space:nowrap;">New detection →</a>
   </div>`;
 
   h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
