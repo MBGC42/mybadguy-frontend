@@ -118,54 +118,7 @@ async function fetchRem(actorId, platform){
   } catch(_){ return null; }
 }
 
-function renderRemCards(data, actorId){
-  if(!data||!data.remediations||!data.remediations.length){
-    return '<p style="font-size:12px;color:var(--dim);margin-top:.65rem;font-style:italic;">No recommendations available.</p>';
-  }
-  const groups={1:[],2:[],3:[],4:[]};
-  data.remediations.forEach(r=>{(groups[r.priority]||groups[4]).push(r);});
-  const priLabels={1:'Critical - do these first',2:'High - do these next',3:'Medium - when you have time',4:'Additional'};
-  const priClass={1:'pri-hdr-1',2:'pri-hdr-2',3:'pri-hdr-3',4:'pri-hdr-3'};
-  const numClass={1:'rem-num-1',2:'rem-num-2',3:'rem-num-3',4:'rem-num-3'};
-  const diffClass={easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'};
-  const diffLabel={easy:'Easy',medium:'Medium',hard:'Hard'};
-  let h='', num=1;
-  [1,2,3,4].forEach(pri=>{
-    const items=groups[pri];
-    if(!items.length) return;
-    h+=`<div class="pri-group" style="margin-top:.75rem;">
-      <div class="pri-hdr ${priClass[pri]}">
-        <span class="pri-title">${priLabels[pri]}</span>
-        <span class="pri-count">${items.length} step${items.length>1?'s':''}</span>
-      </div>`;
-    items.forEach(r=>{
-      const dc=diffClass[r.difficulty]||'diff-easy';
-      const dl=diffLabel[r.difficulty]||'Easy';
-      const nc=numClass[pri];
-      const url=r.source_url||'#';
-      const lbl=r.source_label||'Source';
-      h+=`<div class="rem-card" data-rem="${actorId}-${num}">
-        <div class="rem-card-hdr">
-          <div class="rem-num ${nc}">${num++}</div>
-          <div class="rem-title-wrap">
-            <div class="rem-title">${r.title}</div>
-            <div class="rem-badges"><span class="rbadge ${dc}">${dl}</span></div>
-          </div>
-          <span class="rem-expand">&#9662;</span>
-        </div>
-        <div class="rem-body">
-          <div class="rem-action-label">Steps to take</div>
-          <div class="rem-action">${r.action}</div>
-          <div class="rem-why-label">Why this matters</div>
-          <div class="rem-why">${r.why||''}</div>
-          <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
-        </div>
-      </div>`;
-    });
-    h+='</div>';
-  });
-  return h;
-}
+
 
 async function renderReport(){
   const p=PR;
@@ -227,27 +180,73 @@ async function renderReport(){
   });
   h+='</div>';
 
-  h+=`<p class="eyebrow" style="margin-top:1.25rem;">Recommendations by threat actor</p>`;
-  ranked.forEach(a=>{
-    const cc=scoreColor(a.co);
-    const cbg=a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
-    const lbl=a.co>=70?'High interest':a.co>=45?'Moderate interest':'Lower interest';
-    h+=`<div class="report-card" style="border-left:3px solid ${cc};margin-bottom:10px;">
-      <div class="report-card-hdr">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${a.ini}</div>
-          <div><span class="report-card-title">${a.name}</span><span class="report-card-sub">${a.sub}</span></div>
+  // ── UNIFIED SORTED RECOMMENDATIONS ──────────────────
+  // Collect all rems across all actors, tag with actor info, sort easy > medium > hard
+  const diffOrder = {easy:0, medium:1, hard:2};
+  const allRems = [];
+  ranked.forEach(a => {
+    const data = REM[a.id];
+    if (!data || !data.remediations) return;
+    data.remediations.forEach(r => {
+      allRems.push({...r, actor: a});
+    });
+  });
+  // Sort: difficulty first (easy>medium>hard), then priority (1>2>3>4)
+  allRems.sort((a, b) => {
+    const da = diffOrder[a.difficulty] ?? 1;
+    const db = diffOrder[b.difficulty] ?? 1;
+    if (da !== db) return da - db;
+    return (a.priority || 4) - (b.priority || 4);
+  });
+
+  const diffGroups = {easy:[], medium:[], hard:[]};
+  allRems.forEach(r => { (diffGroups[r.difficulty] || diffGroups.medium).push(r); });
+
+  const diffLabels = {easy:'Easy wins', medium:'Medium effort', hard:'Harder steps'};
+  const diffPriClass = {easy:'pri-hdr-1', medium:'pri-hdr-2', hard:'pri-hdr-3'};
+  const numClass = {1:'rem-num-1', 2:'rem-num-2', 3:'rem-num-3', 4:'rem-num-3'};
+
+  h += `<p class="eyebrow" style="margin-top:1.25rem;">All recommendations</p>
+  <p style="font-size:12px;color:var(--dim);margin-bottom:1rem;">Sorted from easiest to hardest across all threat actors. Tap any card to expand.</p>`;
+
+  let globalNum = 1;
+  ['easy','medium','hard'].forEach(diff => {
+    const items = diffGroups[diff];
+    if (!items.length) return;
+    h += `<div class="pri-group" style="margin-bottom:6px;">
+      <div class="pri-hdr ${diffPriClass[diff]}">
+        <span class="pri-title">${diffLabels[diff]}</span>
+        <span class="pri-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
+      </div>`;
+    items.forEach(r => {
+      const a   = r.actor;
+      const nc  = numClass[r.priority] || 'rem-num-3';
+      const url = r.source_url   || '#';
+      const lbl = r.source_label || 'Source';
+      h += `<div class="rem-card" data-rem="all-${globalNum}">
+        <div class="rem-card-hdr">
+          <div class="rem-num ${nc}">${globalNum++}</div>
+          <div class="rem-title-wrap">
+            <div class="rem-title">${r.title}</div>
+            <div class="rem-badges">
+              <span class="rbadge" style="background:${a.ab};color:${a.ac};">${a.name}</span>
+            </div>
+          </div>
+          <span class="rem-expand">&#9662;</span>
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:${cc};line-height:1;">${a.co}</div>
-          <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${cbg};color:${cc};font-weight:600;">${lbl}</span>
+        <div class="rem-body">
+          <div class="rem-action-label">Steps to take</div>
+          <div class="rem-action">${r.action}</div>
+          <div class="rem-why-label">Why this matters</div>
+          <div class="rem-why">${r.why || ''}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:.5rem;">
+            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
+            <a href="${a.page}" class="rem-source" style="background:${a.ab}22;border-color:${a.ac}44;color:${a.ac};">${a.name} &rarr;</a>
+          </div>
         </div>
-      </div>
-      ${renderRemCards(REM[a.id],a.id)}
-      <div style="margin-top:.85rem;text-align:right;">
-        <a href="${a.page}" style="font-size:12px;color:var(--cyan);font-weight:500;">Full ${a.name} profile &rarr;</a>
-      </div>
-    </div>`;
+      </div>`;
+    });
+    h += '</div>';
   });
 
   h+='<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>';
