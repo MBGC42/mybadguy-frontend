@@ -5,19 +5,33 @@ const API = 'https://api.mybadguy.com';
 // ── ACTOR DEFINITIONS ─────────────────────────────────
 const ACTORS = [
   { id:'apt',          name:'Nation-state / APT',   sub:'Espionage & intelligence', page:'actors/apt.html',
-    g:'technical', gc:'#E24B4A', ab:'#D1ECF1', ac:'#0C447C', ini:'NS' },
+    g:'technical', gc:'#E24B4A', ab:'#D1ECF1', ac:'#0C447C', ini:'NS',
+    tBase:97, sBase:52, cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
+    ds:{ip:.95,id:.75,an:.85,mc:.80,wn:.90}, mdmW:.90, lw:{home:.10,usage:.85} },
   { id:'insider',      name:'Insider threat',        sub:'Org access abuse',         page:'actors/insider.html',
-    g:'technical', gc:'#E24B4A', ab:'#EAF3DE', ac:'#27500A', ini:'IT' },
+    g:'technical', gc:'#E24B4A', ab:'#EAF3DE', ac:'#27500A', ini:'IT',
+    tBase:55, sBase:62, cf:{age:.1,fin:.3,tech:.2,iso:.2,pub:.4,sm:.3,role:.75},
+    ds:{ip:.8,id:.7,an:.75,mc:.85,wn:.88}, mdmW:.95, lw:{home:.15,usage:.35} },
   { id:'broker',       name:'Data broker / adtech',  sub:'Passive data harvesting',  page:'actors/data-broker.html',
-    g:'technical', gc:'#E24B4A', ab:'#E2D9F3', ac:'#3C3489', ini:'DB' },
+    g:'technical', gc:'#E24B4A', ab:'#E2D9F3', ac:'#3C3489', ini:'DB',
+    tBase:42, sBase:35, cf:{age:.3,fin:.7,tech:-.2,iso:.1,pub:.5,sm:.85,role:.2},
+    ds:{ip:.7,id:.8,an:.75,mc:.55,wn:.60}, mdmW:.10, lw:{home:.55,usage:.30} },
   { id:'stalker',      name:'Partner abuser',        sub:'Control & surveillance',   page:'actors/partner-abuser.html',
-    g:'social',    gc:'#378ADD', ab:'#F8D7DA', ac:'#791F1F', ini:'IP' },
+    g:'social',    gc:'#378ADD', ab:'#F8D7DA', ac:'#791F1F', ini:'IP',
+    tBase:58, sBase:90, cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
+    ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10} },
   { id:'scammer',      name:'Elder scammer',         sub:'Fraud & impersonation',    page:'actors/elder-scammer.html',
-    g:'social',    gc:'#378ADD', ab:'#FDE8D8', ac:'#712B13', ini:'ES' },
+    g:'social',    gc:'#378ADD', ab:'#FDE8D8', ac:'#712B13', ini:'ES',
+    tBase:22, sBase:88, cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
+    ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05} },
   { id:'cybercriminal',name:'Cybercriminal',          sub:'Financial gain',           page:'actors/cybercriminal.html',
-    g:'financial', gc:'#EF9F27', ab:'#FFF3CD', ac:'#854F0B', ini:'CC' },
+    g:'financial', gc:'#EF9F27', ab:'#FFF3CD', ac:'#854F0B', ini:'CC',
+    tBase:78, sBase:72, cf:{age:.6,fin:.9,tech:-.7,iso:.5,pub:.3,sm:.7,role:.2},
+    ds:{ip:.85,id:.55,an:.80,mc:.70,wn:.75}, mdmW:.35, lw:{home:.35,usage:.45} },
   { id:'thief',        name:'Device thief',          sub:'Device theft & resale',    page:'actors/device-thief.html',
-    g:'financial', gc:'#EF9F27', ab:'#F1EFE8', ac:'#444441', ini:'OT' },
+    g:'financial', gc:'#EF9F27', ab:'#F1EFE8', ac:'#444441', ini:'OT',
+    tBase:35, sBase:45, cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
+    ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90} },
 ];
 
 // ── ACTOR WINS ────────────────────────────────────────
@@ -82,32 +96,10 @@ const HOME_L = ['','Rural','Suburban','Urban','Dense urban'];
 const USAGE_L= ['','At home','Mostly home','Mixed','Mostly public','Always public'];
 
 // ── SCORING ───────────────────────────────────────────
+// Uses calcScore() from scoring.js (loaded before report.js)
 function scoreColor(v) { return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
-
-function score(a) {
-  const p  = PR;
-  const ps = p.patchScore || 0;
-  const ws = p.wildScore  || 0;
-  const effectivePs = (ps - ws) + (ws * 1.5);
-  let db = 0;
-  if (p.ip) db += effectivePs * a.ds.ip * 0.25;
-  if (p.id) db += effectivePs * a.ds.id * 0.18;
-  if (p.an) db += effectivePs * a.ds.an * 0.22;
-  if (p.mc) db += effectivePs * a.ds.mc * 0.16;
-  if (p.wn) db += effectivePs * a.ds.wn * 0.20;
-  db = Math.round(db);
-  const mb = Math.round(((p.mdm-1)/4)*a.mdmW*22);
-  const hn=(p.home-1)/3, un=(p.usage-1)/4;
-  const hc=a.lw.home<0?Math.round((1-hn)*Math.abs(a.lw.home)*14):Math.round(hn*a.lw.home*14);
-  const lb=Math.max(0,hc+Math.round(un*a.lw.usage*18));
-  const f=a.cf, an2=p.age<=25?(25-p.age)/12:p.age>=65?(p.age-65)/20:0;
-  const cb=Math.round(f.age*(an2*12)+f.fin*(p.fin-1)*3+f.tech*(3-p.tech)*3+f.iso*(p.iso-1)*4+f.pub*(p.pub-1)*3+f.sm*(p.sm-1)*3+f.role*(p.role-1)*5);
-  const t=Math.min(99,Math.max(1,a.tBase+Math.round(cb*.5)+db+mb+lb));
-  const s=Math.min(99,Math.max(1,a.sBase+Math.round(cb*.5)));
-  return { t, s, cb, db, mb, lb, co:Math.round((t+s)/2) };
-}
-
-function combo(a) { return score(a).co; }
+function score(a)  { return calcScore(a); }
+function combo(a)  { return calcScore(a).co; }
 
 function getWins(ranked) {
   const p = PR;
@@ -280,4 +272,4 @@ async function renderReport() {
   document.getElementById('report').innerHTML = h;
 }
 
-renderReport();
+renderReport().catch(err => { console.error("Report error:", err); document.getElementById("report").innerHTML = `<div class="loading"><p>Error building report: ${err.message}</p><p style="margin-top:.75rem;"><a href="dashboard.html">← Back to dashboard</a></p></div>`; });
