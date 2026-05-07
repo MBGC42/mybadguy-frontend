@@ -108,19 +108,69 @@ function combo(a) { const s=score(a); return Math.round((s.t+s.s)/2); }
 function scoreColor(v) { return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
 
 // ── TOP QUICK WINS ────────────────────────────────────────
+const ACTOR_WINS = {
+  iphone: [
+    {t:'Enable Stolen Device Protection',        w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial'},
+    {t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial'},
+    {t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical'},
+    {t:'Update to the latest iOS',               w:'Settings → General → Software Update', g:'technical'},
+    {t:'Silence Unknown Callers',                w:'Settings → Phone → Silence Unknown Callers → On', g:'social'},
+    {t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical'},
+    {t:'Use Face ID in public',                  w:'Never enter your passcode where someone can watch', g:'financial'},
+    {t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial'},
+  ],
+  ipad: [
+    {t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial'},
+    {t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical'},
+    {t:'Update to the latest iPadOS',            w:'Settings → General → Software Update', g:'technical'},
+    {t:'Set a strong alphanumeric passcode',     w:'Settings → Face ID & Passcode → Change Passcode → Custom Alphanumeric', g:'financial'},
+    {t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical'},
+    {t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial'},
+    {t:'Enable iCloud Backup',                   w:'Settings → [Your Name] → iCloud → iCloud Backup → On', g:'technical'},
+  ],
+  android: [
+    {t:'Enable two-factor authentication',       w:'Google account → Security → 2-Step Verification', g:'financial'},
+    {t:'Update to the latest Android version',   w:'Settings → About phone → Software update', g:'technical'},
+    {t:'Use Google Play Protect',                w:'Google Play Store → Profile icon → Play Protect → turn On', g:'technical'},
+    {t:'Only install apps from Google Play',     w:'Settings → Apps → Special app access → Install unknown apps — deny all', g:'technical'},
+    {t:'Set a strong screen lock',               w:'Settings → Security → Screen lock → Password or PIN (6+ digits)', g:'financial'},
+    {t:'Review app permissions',                 w:'Settings → Privacy → Permission manager — revoke unnecessary access', g:'technical'},
+    {t:'Use unique passwords for every account', w:'Settings → Passwords & accounts or use Google Password Manager', g:'financial'},
+  ],
+  mac: [
+    {t:'Enable FileVault disk encryption',       w:'System Settings → Privacy & Security → FileVault → Turn On', g:'technical'},
+    {t:'Enable two-factor authentication',       w:'System Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial'},
+    {t:'Update to the latest macOS',             w:'System Settings → General → Software Update', g:'technical'},
+    {t:'Enable the Firewall',                    w:'System Settings → Network → Firewall → turn On', g:'technical'},
+    {t:'Lock screen when stepping away',         w:'System Settings → Lock Screen → Require password → Immediately', g:'financial'},
+    {t:'Review app privacy permissions',         w:'System Settings → Privacy & Security — review Camera, Microphone, Location', g:'technical'},
+    {t:'Use unique passwords for every account', w:'System Settings → Passwords → use the built-in generator', g:'financial'},
+  ],
+  windows: [
+    {t:'Enable BitLocker disk encryption',       w:'Start → Settings → Privacy & Security → Device Encryption → turn On', g:'technical'},
+    {t:'Enable two-factor authentication',       w:'Microsoft account → Security → Advanced security → Two-step verification', g:'financial'},
+    {t:'Keep Windows Update current',            w:'Start → Settings → Windows Update → Check for updates', g:'technical'},
+    {t:'Enable Windows Defender Firewall',       w:'Start → Settings → Privacy & Security → Windows Security → Firewall', g:'technical'},
+    {t:'Use unique passwords for every account', w:'Use Microsoft Edge built-in password manager or a dedicated password manager', g:'financial'},
+    {t:'Lock your screen when stepping away',    w:'Windows key + L to instantly lock', g:'financial'},
+    {t:'Review app permissions',                 w:'Start → Settings → Privacy & Security → App permissions — review Camera, Microphone, Location', g:'technical'},
+  ],
+};
+
 function getWins(ranked) {
-  const all = [
-    {t:'Enable Stolen Device Protection',     w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial'},
-    {t:'Enable two-factor authentication',    w:'Settings → [Name] → Password & Security → 2FA',           g:'financial'},
-    {t:'Disable cross-app tracking',          w:'Settings → Privacy & Security → Tracking → Off',           g:'technical'},
-    {t:'Update to latest OS version',         w:'Settings → General → Software Update',                     g:'technical'},
-    {t:'Enable Silence Unknown Callers',      w:'Settings → Phone → Silence Unknown Callers → On',          g:'social'},
-    {t:'Set all location to While Using or Never', w:'Settings → Privacy & Security → Location Services',   g:'technical'},
-    {t:'Use Face ID in public — never enter passcode in view', w:'Behavioral practice',                      g:'financial'},
-    {t:'Use unique passwords for every account',  w:'Settings → Passwords → use built-in generator',        g:'financial'},
-  ];
-  const topGroups = ranked.slice(0,3).map(a=>a.g);
-  return all.filter(w=>topGroups.includes(w.g)).slice(0,3);
+  const p = PR;
+  const type = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':p.wn?'windows':'iphone';
+  const all  = ACTOR_WINS[type] || ACTOR_WINS.iphone;
+  const topGroups = ranked.slice(0,3).map(a => a.g);
+  return all
+    .filter(w => topGroups.includes(w.g))
+    .filter(w => {
+      // Don't suggest updating the OS if already fully patched
+      if ((p.patchTier === 'current' || p.patchScore === 0) &&
+          w.t.toLowerCase().includes('update to the latest')) return false;
+      return true;
+    })
+    .slice(0, 3);
 }
 
 // ── PROFILE CHIP UPDATE ───────────────────────────────────
@@ -259,7 +309,7 @@ function render() {
   });
 
   // ── QUICK WINS ────────────────────────────────────────
-  h += `<div class="eyebrow" style="margin-top:.25rem;">Top quick wins — zero usage impact</div>
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Top quick wins for your ${devName} — zero usage impact</div>
   <div class="wins-card">`;
   wins.forEach((w,i) => {
     h += `<div class="win-row">
