@@ -198,7 +198,7 @@ function render() {
       <span class="dev-name-badge">${devName}</span>
       ${devVer ? `<span class="dev-ver-badge">${devVer}</span>` : ''}
       <span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>
-      ${p.patchScore > 0 ? `<span class="dev-name-badge" style="color:var(--muted);font-weight:400;">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>` : ''}
+      ${p.patchScore > 0 ? `<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>` : ''}
     </div>
 
     <div class="ro-grid">
