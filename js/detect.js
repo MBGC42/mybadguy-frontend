@@ -270,26 +270,60 @@ function calcScores() {
 }
 
 function getTopWins() {
-  const all = [
-    { t:'Enable Stolen Device Protection',
-      w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial', r:10 },
-    { t:'Enable two-factor authentication',
-      w:'Settings → [Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
-    { t:'Disable cross-app tracking',
-      w:'Settings → Privacy & Security → Tracking → Off', g:'technical', r:9 },
-    { t:'Update to the latest OS version',
-      w:'Settings → General → Software Update', g:'technical', r:9 },
-    { t:'Enable Silence Unknown Callers',
-      w:'Settings → Phone → Silence Unknown Callers → On', g:'social', r:8 },
-    { t:'Set all location to While Using or Never',
-      w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
-    { t:'Use Face ID in public — never enter passcode in view',
-      w:'Behavioral practice — unlock privately if Face ID fails', g:'financial', r:9 },
-    { t:'Use unique passwords for every account',
-      w:'Settings → Passwords → use built-in generator or 1Password', g:'financial', r:9 },
-  ];
-  const topG = SC.slice(0,3).map(a => a.g);
-  return all.filter(w => topG.includes(w.g)).slice(0,3);
+  const type = DV.type || 'iphone';
+  const topG  = SC.slice(0,3).map(a => a.g);
+
+  const ALL = {
+    iphone: [
+      { t:'Enable Stolen Device Protection',        w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial', r:10 },
+      { t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
+      { t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical', r:9 },
+      { t:'Update to the latest iOS',               w:'Settings → General → Software Update', g:'technical', r:9 },
+      { t:'Silence Unknown Callers',                w:'Settings → Phone → Silence Unknown Callers → On', g:'social', r:8 },
+      { t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
+      { t:'Use Face ID in public',                  w:'Never enter your passcode where someone can watch — if Face ID fails, move somewhere private', g:'financial', r:9 },
+      { t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial', r:9 },
+    ],
+    ipad: [
+      { t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
+      { t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical', r:9 },
+      { t:'Update to the latest iPadOS',            w:'Settings → General → Software Update', g:'technical', r:9 },
+      { t:'Set a strong alphanumeric passcode',     w:'Settings → Face ID & Passcode → Change Passcode → Passcode Options → Custom Alphanumeric', g:'financial', r:10 },
+      { t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
+      { t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial', r:9 },
+      { t:'Enable iCloud Backup',                   w:'Settings → [Your Name] → iCloud → iCloud Backup → On', g:'technical', r:8 },
+    ],
+    android: [
+      { t:'Enable two-factor authentication',       w:'Google account → Security → 2-Step Verification', g:'financial', r:9 },
+      { t:'Update to the latest Android version',   w:'Settings → About phone → Software update', g:'technical', r:9 },
+      { t:'Use Google Play Protect',                w:'Google Play Store → Profile icon → Play Protect → turn On', g:'technical', r:9 },
+      { t:'Only install apps from Google Play',     w:'Settings → Apps → Special app access → Install unknown apps — deny all', g:'technical', r:10 },
+      { t:'Set a strong screen lock',               w:'Settings → Security → Screen lock → Password or PIN (6+ digits)', g:'financial', r:10 },
+      { t:'Review app permissions',                 w:'Settings → Privacy → Permission manager — revoke unnecessary access', g:'technical', r:8 },
+      { t:'Use unique passwords for every account', w:'Settings → Passwords & accounts or use Google Password Manager', g:'financial', r:9 },
+    ],
+    mac: [
+      { t:'Enable FileVault disk encryption',       w:'System Settings → Privacy & Security → FileVault → Turn On', g:'technical', r:10 },
+      { t:'Enable two-factor authentication',       w:'System Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
+      { t:'Update to the latest macOS',             w:'System Settings → General → Software Update', g:'technical', r:9 },
+      { t:'Enable the Firewall',                    w:'System Settings → Network → Firewall → turn On', g:'technical', r:9 },
+      { t:'Lock screen when stepping away',         w:'System Settings → Lock Screen → Require password → Immediately', g:'financial', r:8 },
+      { t:'Review app privacy permissions',         w:'System Settings → Privacy & Security — review Camera, Microphone, Location', g:'technical', r:8 },
+      { t:'Use unique passwords for every account', w:'System Settings → Passwords → use the built-in generator', g:'financial', r:9 },
+    ],
+    windows: [
+      { t:'Enable BitLocker disk encryption',       w:'Start → Settings → Privacy & Security → Device Encryption → turn On', g:'technical', r:10 },
+      { t:'Enable two-factor authentication',       w:'Microsoft account → Security → Advanced security → Two-step verification', g:'financial', r:9 },
+      { t:'Keep Windows Update current',            w:'Start → Settings → Windows Update → Check for updates', g:'technical', r:9 },
+      { t:'Enable Windows Defender Firewall',       w:'Start → Settings → Privacy & Security → Windows Security → Firewall', g:'technical', r:9 },
+      { t:'Use unique passwords for every account', w:'Use Microsoft Edge built-in password manager or a dedicated password manager', g:'financial', r:9 },
+      { t:'Lock your screen when stepping away',    w:'Windows key + L to instantly lock — make it a habit', g:'financial', r:8 },
+      { t:'Review app permissions',                 w:'Start → Settings → Privacy & Security → App permissions — review Camera, Microphone, Location', g:'technical', r:8 },
+    ],
+  };
+
+  const wins = ALL[type] || ALL.iphone;
+  return wins.filter(w => topG.includes(w.g)).slice(0, 3);
 }
 
 // ── ID GENERATOR ─────────────────────────────────────────
