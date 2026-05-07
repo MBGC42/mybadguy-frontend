@@ -184,31 +184,6 @@ function saveProfile() {
   sessionStorage.setItem('mbg_profile', JSON.stringify(PR));
 }
 
-// ── REMEDIATIONS CACHE ───────────────────────────────
-let REM = {}; // actor_id → remediations array
-
-async function fetchRemediations(actorId, platform) {
-  if (REM[actorId]) return REM[actorId];
-  const plt = platform === 'iphone' ? 'ios'
-            : platform === 'ipad'   ? 'ipad'
-            : platform === 'android'? 'android'
-            : platform === 'mac'    ? 'mac'
-            : 'windows';
-  try {
-    const r = await fetch(`https://api.mybadguy.com/api/actor/${actorId}/remediations?platform=${plt}&limit=5`);
-    if (!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    REM[actorId] = d.remediations || [];
-  } catch (_) { REM[actorId] = []; }
-  return REM[actorId];
-}
-
-async function prefetchAllRemediations() {
-  const p = PR;
-  const platform = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
-  await Promise.all(ACTORS.map(a => fetchRemediations(a.id, platform)));
-}
-
 // ── MAIN RENDER ───────────────────────────────────────────
 function render() {
   saveProfile();
@@ -251,14 +226,44 @@ function render() {
     </div>
   </div>`;
 
-  // Device/patch vars needed throughout render
-  const devName = p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
-  const devVer  = p.deviceFullVersion || (p.ip?IOS_V[p.iosV-1]?.v:p.id?IPAD_V[p.ipadV-1]?.v:p.an?ANDROID_V[p.anV-1]?.v:p.mc?MAC_V[p.mcV-1]?.v:p.wn?WIN_V[p.wnV-1]?.v:'') || '';
+  // Device/patch vars
+  const devName   = p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
+  const devVer    = p.deviceFullVersion || (p.ip?IOS_V[p.iosV-1]?.v:p.id?IPAD_V[p.ipadV-1]?.v:p.an?ANDROID_V[p.anV-1]?.v:p.mc?MAC_V[p.mcV-1]?.v:p.wn?WIN_V[p.wnV-1]?.v:'') || '';
   const patchTier = p.patchTier || (p.patchScore===0?'current':p.patchScore<30?'behind':'outdated');
-  const patchColor = patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
-  const patchLabel = patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
-  const patchBg    = patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
+  const patchColor= patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
+  const patchLabel= patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
+  const patchBg   = patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
   const chip = (label, val) => `<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
+
+  // ── PROFILE CARD ──────────────────────────────────────
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Your profile</div>
+  <div class="profile-card">
+    <div class="profile-title">
+      <span>Detection profile</span>
+      <a href="detect.html" class="update-pill">Update profile →</a>
+    </div>
+    <div class="dev-summary">
+      <span class="dev-name-badge">${devName}</span>
+      ${devVer ? `<span class="dev-ver-badge">${devVer}</span>` : ''}
+      <span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>
+      ${p.patchScore > 0 ? `<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>` : ''}
+    </div>
+    <div class="ro-grid">
+      <div class="ro-section" style="grid-column:1/-1;">Personal</div>
+      ${chip('Age', p.age)}
+      ${chip('Financial', FIN_L[p.fin]||p.fin)}
+      ${chip('Tech skill', TECH_L[p.tech]||p.tech)}
+      ${chip('Social', ISO_L[p.iso]||p.iso)}
+      ${chip('Social media', SM_L[p.sm]||p.sm)}
+      <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
+      <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
+      ${chip('Job data', ROLE_L[p.role+1]||'No work data')}
+      ${chip('Public profile', PUB_L[p.pub+1]||'Very private')}
+      ${chip('Work / MDM', MDM_L[p.mdm+1]||'Personal only')}
+      ${chip('Home', HOME_L[p.home]||'Rural')}
+      ${chip('Usage', USAGE_L[p.usage+1]||'At home')}
+    </div>
+  </div>`;
 
   // ── ACTOR GROUPS ──────────────────────────────────────
   h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actors — tap any card for details and remediations</div>`;
@@ -295,102 +300,19 @@ function render() {
     h += `</div></div>`;
   });
 
-  // ── FULL REPORT ───────────────────────────────────────
-  h += `<div class="eyebrow" style="margin-top:.25rem;">Full report</div>`;
-
-  // Detection summary card
-  h += `<div class="report-card" style="margin-bottom:10px;">
-    <div class="report-card-hdr">
-      <span class="report-card-title">Detection summary</span>
+  // ── FULL REPORT CTA ──────────────────────────────────
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Full report</div>
+  <div style="background:var(--lift);border:.5px solid rgba(34,211,238,.2);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:.25rem;">Your complete threat report</div>
+      <div style="font-size:12px;color:var(--muted);">Detection summary · Quick wins · Recommendations for every threat actor</div>
     </div>
-    <div class="dev-summary" style="margin-bottom:.75rem;">
-      <span class="dev-name-badge">${devName}</span>
-      ${devVer ? `<span class="dev-ver-badge">${devVer}</span>` : ''}
-      <span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>
-      ${p.patchScore > 0 ? `<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>` : ''}
-    </div>
-    <div class="ro-grid">
-      <div class="ro-section" style="grid-column:1/-1;">Personal</div>
-      ${chip('Age', p.age)}
-      ${chip('Financial', FIN_L[p.fin]||p.fin)}
-      ${chip('Tech skill', TECH_L[p.tech]||p.tech)}
-      ${chip('Social', ISO_L[p.iso]||p.iso)}
-      ${chip('Social media', SM_L[p.sm]||p.sm)}
-      <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
-      <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
-      ${chip('Job data', ROLE_L[p.role+1]||'No work data')}
-      ${chip('Public profile', PUB_L[p.pub+1]||'Very private')}
-      ${chip('Work / MDM', MDM_L[p.mdm+1]||'Personal only')}
-      ${chip('Home', HOME_L[p.home]||'Rural')}
-      ${chip('Usage', USAGE_L[p.usage+1]||'At home')}
-    </div>
+    <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 22px;border-radius:99px;background:var(--lcyan);color:var(--navy);text-decoration:none;white-space:nowrap;transition:opacity .15s;">View full report →</a>
   </div>`;
-
-  // Quick wins
-  h += `<div class="report-card" style="margin-bottom:10px;">
-    <div class="report-card-hdr">
-      <span class="report-card-title">Top quick wins for your ${devName}</span>
-      <span class="report-card-sub">Zero usage impact</span>
-    </div>`;
-  wins.forEach((w,i) => {
-    h += `<div class="win-row">
-      <div class="win-num">${i+1}</div>
-      <div>
-        <div class="win-title">${w.t}</div>
-        <div class="win-where">${w.w}</div>
-      </div>
-    </div>`;
-  });
-  h += `</div>`;
-
-  // Per-actor report cards
-  ranked.forEach(a => {
-    const cc  = scoreColor(a.co);
-    const cbg = a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
-    const lbl = a.co>=70?'High interest':a.co>=45?'Moderate interest':'Lower interest';
-    const rems = REM[a.id] || [];
-
-    h += `<div class="report-card" style="margin-bottom:10px;border-left:3px solid ${cc};">
-      <div class="report-card-hdr">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="actor-avatar" style="background:${a.ab};color:${a.ac};width:28px;height:28px;font-size:11px;">${a.ini}</div>
-          <div>
-            <span class="report-card-title">${a.name}</span>
-            <span class="report-card-sub">${a.sub}</span>
-          </div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:${cc};line-height:1;">${a.co}</div>
-          <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${cbg};color:${cc};font-weight:600;">${lbl}</span>
-        </div>
-      </div>
-      ${rems.length ? `
-        <div style="margin-top:.85rem;">
-          <div style="font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:.5rem;">Recommendations</div>
-          ${rems.map((r,i) => `
-            <div class="rem-row">
-              <div class="rem-num" style="background:${cbg};color:${cc};">${i+1}</div>
-              <div style="flex:1;min-width:0;">
-                <div class="win-title">${r.title}</div>
-                <div class="win-where">${r.action}</div>
-                ${r.why ? `<div style="font-size:11px;color:var(--dim);margin-top:2px;">${r.why}</div>` : ''}
-              </div>
-              ${r.source_label ? `<div style="font-size:10px;color:var(--dim);flex-shrink:0;padding-left:8px;text-align:right;max-width:80px;">${r.source_label}</div>` : ''}
-            </div>`).join('')}
-        </div>` : `
-        <div style="margin-top:.75rem;font-size:12px;color:var(--dim);font-style:italic;">
-          Remediations loading — <a href="${a.page}" style="color:var(--cyan);">view actor page</a> for full details.
-        </div>`}
-      <div style="margin-top:.85rem;text-align:right;">
-        <a href="${a.page}" onclick="saveProfile()" style="font-size:12px;color:var(--cyan);font-weight:500;">Full ${a.name} profile →</a>
-      </div>
-    </div>`;
-  });
 
   h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
 
   document.getElementById('page').innerHTML = h;
 }
 
-// Prefetch all remediations then render
-prefetchAllRemediations().then(() => render()).catch(() => render());
+render();
