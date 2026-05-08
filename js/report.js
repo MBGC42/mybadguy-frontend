@@ -109,10 +109,22 @@ function getWins(ranked){
             .slice(0,3);
 }
 
-async function fetchRem(actorId, platform){
+async function fetchRem(actorId, platform, cveStats){
   const plt=platform==='iphone'?'ios':platform;
+  const p=PR;
+  const tier=p.patchTier==='current'?'current':p.patchTier==='behind'?'behind':'outdated';
+  const t=cveStats?.tiers?.[tier]||{};
+  const ctx=cveStats?.threat_context||{};
+  const params=new URLSearchParams({
+    platform: plt,
+    limit:   '12',
+    wild:    String(t.wild||0),
+    ps:      String(t.ps||0),
+    samples: String(ctx.malware_samples||0),
+    iocs:    String(ctx.active_iocs||0),
+  });
   try{
-    const r=await fetch(`${API}/api/actor/${actorId}/remediations?platform=${plt}&limit=12`);
+    const r=await fetch(`${API}/api/actor/${actorId}/remediations?${params}`);
     if(!r.ok) return null;
     return await r.json();
   } catch(_){ return null; }
@@ -139,7 +151,14 @@ async function renderReport(){
   const overall=Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
   const wins=getWins(ranked);
 
-  const remData=await Promise.all(ACTORS.map(a=>fetchRem(a.id,platform)));
+  // Fetch live CVE stats first — used to signal-rank remediations
+  let cveStats = null;
+  try {
+    const csResp = await fetch(`${API}/api/cve-stats/${platform==='iphone'?'iphone':platform}`);
+    if (csResp.ok) cveStats = await csResp.json();
+  } catch(_) {}
+
+  const remData=await Promise.all(ACTORS.map(a=>fetchRem(a.id,platform,cveStats)));
   const REM={};
   ACTORS.forEach((a,i)=>{REM[a.id]=remData[i];});
 
