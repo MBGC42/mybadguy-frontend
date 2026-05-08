@@ -41,7 +41,8 @@ const USAGE_L=['','At home','Work/commute','Public use','Travel','International'
 const USAGE_S=['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 
 // ── ACTOR DEFINITIONS (scores only — full detail in actor pages) ──
-const ACTORS = [
+// ── ACTOR CONFIGS (live from API, fallback to hardcoded) ──
+const ACTORS_FALLBACK = [
   { id:'apt',          name:'Nation-state / APT',      sub:'Espionage & intelligence', page:'actors/apt.html',
     g:'technical', gc:'#E24B4A', ab:'#D1ECF1', ac:'#0C447C', ini:'NS',
     tBase:97, sBase:52, cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
@@ -313,4 +314,43 @@ function render() {
   document.getElementById('page').innerHTML = h;
 }
 
-render();
+// ── ASYNC INIT ────────────────────────────────────────────
+// Fetches actor scoring configs from D1 via API.
+// Falls back to hardcoded ACTORS_FALLBACK if API unavailable.
+// Configs are cached in sessionStorage for the session duration.
+let ACTORS = ACTORS_FALLBACK;
+
+async function init() {
+  try {
+    const cached = sessionStorage.getItem('mbg_actor_configs');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      // Merge API scoring fields into ACTORS_FALLBACK (preserving page/gc/ab/ac/ini display props)
+      ACTORS = mergeConfigs(ACTORS_FALLBACK, parsed);
+    } else {
+      const r = await fetch('https://api.mybadguy.com/api/actor-configs');
+      if (r.ok) {
+        const apiConfigs = await r.json();
+        sessionStorage.setItem('mbg_actor_configs', JSON.stringify(apiConfigs));
+        ACTORS = mergeConfigs(ACTORS_FALLBACK, apiConfigs);
+      }
+    }
+  } catch (_) {
+    // API unavailable — ACTORS already set to ACTORS_FALLBACK
+  }
+  render();
+}
+
+// Merge live scoring weights into the full actor display objects.
+// The API returns {id,tBase,sBase,cf,ds,mdmW,lw} per actor.
+// ACTORS_FALLBACK has those plus display props (page, gc, ab, ac, ini, name, sub).
+function mergeConfigs(fallback, apiConfigs) {
+  return fallback.map(actor => {
+    const live = apiConfigs.find(c => c.id === actor.id);
+    if (!live) return actor;
+    return { ...actor, tBase: live.tBase, sBase: live.sBase,
+             cf: live.cf, ds: live.ds, mdmW: live.mdmW, lw: live.lw };
+  });
+}
+
+init();

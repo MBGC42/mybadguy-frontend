@@ -268,7 +268,8 @@ function calcScore(a) {
   return { t, s, cb, db, mb, lb, co: Math.round((t + s) / 2) };
 }
 
-const ACTOR_CONFIGS = [
+// ── ACTOR SCORING CONFIGS (live from API, fallback to hardcoded) ──
+const ACTOR_CONFIGS_FALLBACK = [
   { nm:'Nation-state / APT',  g:'technical',
     tBase:97, sBase:52,
     cf:{age:.1,fin:.2,tech:.1,iso:.1,pub:.7,sm:.4,role:.95},
@@ -298,6 +299,34 @@ const ACTOR_CONFIGS = [
     cf:{age:.5,fin:.6,tech:-.8,iso:.2,pub:.4,sm:.2,role:.1},
     ds:{ip:.95,id:.3,an:.90,mc:.2,wn:.15}, mdmW:.08, lw:{home:.95,usage:.90} },
 ];
+let ACTOR_CONFIGS = ACTOR_CONFIGS_FALLBACK;
+
+// loadActorConfigs() is called once during the detection calculation step.
+// By that point the user has already answered all questions, so any API
+// latency is hidden behind the 2-second animation.
+async function loadActorConfigs() {
+  try {
+    const cached = sessionStorage.getItem('mbg_actor_configs');
+    if (cached) {
+      ACTOR_CONFIGS = JSON.parse(cached).map(c => ({
+        nm: c.name, g: c.g, tBase: c.tBase, sBase: c.sBase,
+        cf: c.cf, ds: c.ds, mdmW: c.mdmW, lw: c.lw,
+      }));
+      return;
+    }
+    const r = await fetch(`${API}/api/actor-configs`);
+    if (r.ok) {
+      const apiConfigs = await r.json();
+      sessionStorage.setItem('mbg_actor_configs', JSON.stringify(apiConfigs));
+      ACTOR_CONFIGS = apiConfigs.map(c => ({
+        nm: c.name, g: c.g, tBase: c.tBase, sBase: c.sBase,
+        cf: c.cf, ds: c.ds, mdmW: c.mdmW, lw: c.lw,
+      }));
+    }
+  } catch (_) {
+    // API unavailable — keep ACTOR_CONFIGS_FALLBACK
+  }
+}
 
 function calcScores() {
   const results = ACTOR_CONFIGS.map(a => {
@@ -812,7 +841,10 @@ function renderCalc() {
         Matching your profile against 7 threat actor models…
       </p>
     </div>`;
-  setTimeout(() => {
+  setTimeout(async () => {
+    // Fetch live actor scoring configs (hidden behind the 2s animation).
+    // If API is unavailable falls back to ACTOR_CONFIGS_FALLBACK silently.
+    await loadActorConfigs();
     // Apply device flags and live patchScore to PR before scoring.
     // buildProfile() sets ip/id/an/mc/wn flags and patchScore — without this
     // the detect preview computes db=0 (no device boost) while dashboard gets
