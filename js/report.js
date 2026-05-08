@@ -92,11 +92,34 @@ const MDM_L  =['','Personal only','Work apps','Work email','Corp account','MDM e
 const HOME_L =['','Rural','Suburban','Urban','Dense urban'];
 const USAGE_L=['','At home','Mostly home','Mixed','Mostly public','Always public'];
 
-const IOS_V  =[{v:'iOS 26.4.2'},{v:'iOS 26.4'},{v:'iOS 26.3.x'},{v:'iOS 26.2'},{v:'iOS 26.1'},{v:'iOS 26.0'},{v:'iOS 18.4.x'},{v:'iOS 18.3.x'},{v:'iOS 18.2'},{v:'iOS 17.x'}];
-const IPAD_V =[{v:'iPadOS 26.4.2'},{v:'iPadOS 26.4'},{v:'iPadOS 26.3.x'},{v:'iPadOS 26.2'},{v:'iPadOS 26.0-26.1'},{v:'iPadOS 18.4.x'},{v:'iPadOS 18.x'},{v:'iPadOS 17.x'},{v:'iPadOS 16.x'}];
-const ANDROID_V=[{v:'Android 16'},{v:'Android 15'},{v:'Android 14'},{v:'Android 13'},{v:'Android 12'},{v:'Android 11'},{v:'Android 10'}];
-const MAC_V  =[{v:'macOS 26.4.1'},{v:'macOS 26.4'},{v:'macOS 26.3.x'},{v:'macOS 26.2'},{v:'macOS 26.0-26.1'},{v:'macOS 15.4.x'},{v:'macOS 15.x'},{v:'macOS 14.x'}];
-const WIN_V  =[{v:'Win 11 26H1'},{v:'Win 11 25H2'},{v:'Win 11 24H2'},{v:'Win 11 23H2'},{v:'Win 10 22H2'},{v:'Win 10 21H2'},{v:'Win 10 older'}];
+// ── VERSION LABEL RESOLUTION ──────────────────────────────
+// Primary source: p.deviceFullVersion (set during detection).
+// Fallback for old sessions: fetch latest version label from
+// /api/os-versions/:platform — always current from D1.
+const _osVerCache = {};
+
+async function resolveVersionLabel(p) {
+  if (p.deviceFullVersion) return p.deviceFullVersion;
+  const platform = p.ip ? 'ios' : p.id ? 'ipad' : p.an ? 'android' : p.mc ? 'mac' : p.wn ? 'windows' : null;
+  if (!platform) return '';
+  try {
+    if (!_osVerCache[platform]) {
+      const r = await fetch(`${API}/api/os-versions/${platform}`);
+      if (!r.ok) throw new Error(r.status);
+      _osVerCache[platform] = await r.json();
+    }
+    const data = _osVerCache[platform];
+    const tier = p.patchTier || 'behind';
+    const vers = data.versions || [];
+    if (tier === 'current')  return data.current || vers.find(v => v.is_current)?.latest_version || '';
+    if (tier === 'outdated') {
+      const eol = vers.find(v => !v.is_supported);
+      return eol ? eol.label : (vers[vers.length - 1]?.label || '');
+    }
+    const supported = vers.filter(v => v.is_supported);
+    return (supported[1] || supported[0])?.label || '';
+  } catch (_) { return ''; }
+}
 
 function scoreColor(v){ return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
 
@@ -156,7 +179,7 @@ async function renderReport(){
   const patchColor=patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
   const patchLabel=patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
   const patchBg=patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
-  const devVer=p.deviceFullVersion||(p.ip?IOS_V[p.iosV-1]?.v:p.id?IPAD_V[p.ipadV-1]?.v:p.an?ANDROID_V[p.anV-1]?.v:p.mc?MAC_V[p.mcV-1]?.v:p.wn?WIN_V[p.wnV-1]?.v:'')||'';
+  const devVer = await resolveVersionLabel(p);
   const chip=(label,val)=>`<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
 
   const ranked=ACTORS.map(a=>({...a,sc:calcScore(a),co:calcScore(a).co})).sort((a,b)=>b.co-a.co);

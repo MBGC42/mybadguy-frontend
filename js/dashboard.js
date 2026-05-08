@@ -13,12 +13,47 @@ let PR = JSON.parse(sessionStorage.getItem('mbg_profile') || 'null') || {
   patchScore:0, wildScore:0, patchTier:'current',
 };
 
-// Version tables kept for slider display labels only — scoring uses live patchScore
-const IOS_V    = [{v:'iOS 26.4.2',ps:0},{v:'iOS 26.4',ps:0},{v:'iOS 26.3.x',ps:6},{v:'iOS 26.2',ps:9},{v:'iOS 26.1',ps:14},{v:'iOS 26.0',ps:20},{v:'iOS 18.4.x',ps:32},{v:'iOS 18.3.x',ps:38},{v:'iOS 18.2',ps:44},{v:'iOS 17.x',ps:82}];
-const IPAD_V   = [{v:'iPadOS 26.4.2',ps:0},{v:'iPadOS 26.4',ps:0},{v:'iPadOS 26.3.x',ps:6},{v:'iPadOS 26.2',ps:9},{v:'iPadOS 26.0-26.1',ps:17},{v:'iPadOS 18.4.x',ps:30},{v:'iPadOS 18.x',ps:52},{v:'iPadOS 17.x',ps:78},{v:'iPadOS 16.x',ps:112}];
-const ANDROID_V= [{v:'Android 16',ps:0},{v:'Android 15',ps:0},{v:'Android 14',ps:28},{v:'Android 13',ps:62},{v:'Android 12',ps:98},{v:'Android 11',ps:134},{v:'Android 10',ps:178}];
-const MAC_V    = [{v:'macOS 26.4.1',ps:0},{v:'macOS 26.4',ps:0},{v:'macOS 26.3.x',ps:6},{v:'macOS 26.2',ps:9},{v:'macOS 26.0-26.1',ps:17},{v:'macOS 15.4.x',ps:28},{v:'macOS 15.x',ps:48},{v:'macOS 14.x',ps:92}];
-const WIN_V    = [{v:'Win 11 26H1',ps:0},{v:'Win 11 25H2',ps:0},{v:'Win 11 24H2',ps:28},{v:'Win 11 23H2',ps:66},{v:'Win 10 22H2',ps:112},{v:'Win 10 21H2',ps:186},{v:'Win 10 older',ps:248}];
+// ── VERSION LABEL RESOLUTION ──────────────────────────────
+// Primary source: p.deviceFullVersion (set during detection).
+// Fallback for old sessions: fetch latest version label from
+// /api/os-versions/:platform and use patchTier to pick the label.
+// KV-cached in the Worker — fast, always current from D1.
+const _osVerCache = {};
+
+async function resolveVersionLabel(p) {
+  // New sessions always have deviceFullVersion — return immediately.
+  if (p.deviceFullVersion) return p.deviceFullVersion;
+
+  // Legacy sessions: derive platform and fetch from API.
+  const platform = p.ip ? 'ios' : p.id ? 'ipad' : p.an ? 'android' : p.mc ? 'mac' : p.wn ? 'windows' : null;
+  if (!platform) return '';
+
+  try {
+    if (!_osVerCache[platform]) {
+      const r = await fetch(`${API}/api/os-versions/${platform}`);
+      if (!r.ok) throw new Error(r.status);
+      _osVerCache[platform] = await r.json();
+    }
+    const data  = _osVerCache[platform];
+    const tier  = p.patchTier || 'behind';
+    const vers  = data.versions || [];
+
+    if (tier === 'current') {
+      // Return the latest supported version string
+      return data.current || vers.find(v => v.is_current)?.latest_version || '';
+    }
+    if (tier === 'outdated') {
+      // Return the oldest supported or first EOL version label
+      const eol = vers.find(v => !v.is_supported);
+      return eol ? eol.label : (vers[vers.length - 1]?.label || '');
+    }
+    // 'behind' — return the second-most-recent supported version label
+    const supported = vers.filter(v => v.is_supported);
+    return (supported[1] || supported[0])?.label || '';
+  } catch (_) {
+    return '';
+  }
+}
 
 // ── CHIP DISPLAY ──────────────────────────────────────────
 const FIN_L  =['','Struggling','Working class','Middle income','Affluent','High wealth'];
@@ -186,7 +221,7 @@ function saveProfile() {
 }
 
 // ── MAIN RENDER ───────────────────────────────────────────
-function render() {
+async function render() {
   saveProfile();
   const p = PR;
 
@@ -229,7 +264,7 @@ function render() {
 
   // Device/patch vars
   const devName   = p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
-  const devVer    = p.deviceFullVersion || (p.ip?IOS_V[p.iosV-1]?.v:p.id?IPAD_V[p.ipadV-1]?.v:p.an?ANDROID_V[p.anV-1]?.v:p.mc?MAC_V[p.mcV-1]?.v:p.wn?WIN_V[p.wnV-1]?.v:'') || '';
+  const devVer    = await resolveVersionLabel(p);
   const patchTier = p.patchTier || (p.patchScore===0?'current':p.patchScore<30?'behind':'outdated');
   const patchColor= patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
   const patchLabel= patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
