@@ -71,7 +71,7 @@
         <div class="source-name">National Vulnerability Database (NVD)</div>
         <div class="source-org">National Institute of Standards and Technology (NIST) · U.S. Department of Commerce</div>
         <p class="source-desc">The authoritative U.S. government repository of vulnerability management data. Every CVE (Common Vulnerability and Exposure) assigned by MITRE is enriched here with CVSS severity scores, affected version ranges, and configuration data. We query NVD for CVEs affecting iOS, iPadOS, Android, macOS, and Windows 11 and store them in our database.</p>
-        <span class="source-stat">342+ CVEs across 5 platforms</span>
+        <span class="source-stat" data-stat="cve_total" data-fmt="CVEs across 5 platforms">342+ CVEs across 5 platforms</span>
         <div class="source-update">Updated every 2 hours via NVD REST API v2.0 · API key required (free)</div>
         <div><a href="https://nvd.nist.gov" class="source-link" target="_blank" rel="noopener noreferrer">nvd.nist.gov →</a></div>
         <p style="font-size:11px;color:var(--dim);margin-top:5px;">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
@@ -84,8 +84,8 @@
         <div class="source-name">Known Exploited Vulnerabilities (KEV) Catalog</div>
         <div class="source-org">Cybersecurity and Infrastructure Security Agency (CISA) · U.S. Department of Homeland Security</div>
         <p class="source-desc">CISA's authoritative catalog of vulnerabilities that have been confirmed as actively exploited in the wild. A CVE appearing in the KEV catalog means it has been weaponized against real targets — not just theoretically possible. We cross-reference every CVE in our database against the KEV catalog daily and elevate scores accordingly. The KEV carries far more scoring weight than a CVE with no in-wild confirmation.</p>
-        <span class="source-stat">1,587 confirmed in-wild CVEs</span>
-        <span class="source-stat" style="margin-left:6px;">52 affecting iOS/iPadOS</span>
+        <span class="source-stat" data-stat="kev_total" data-fmt="confirmed in-wild CVEs">1,587 confirmed in-wild CVEs</span>
+        <span class="source-stat" style="margin-left:6px;" data-stat="kev_ios_ipad" data-fmt="affecting iOS/iPadOS">52 affecting iOS/iPadOS</span>
         <div class="source-update">Updated daily via GitHub mirror (cisagov/kev-data) · CC0 public domain license</div>
         <div><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" class="source-link" target="_blank" rel="noopener noreferrer">cisa.gov/kev →</a></div>
       </div>
@@ -97,9 +97,9 @@
         <div class="source-name">MITRE ATT&amp;CK® Knowledge Base</div>
         <div class="source-org">MITRE Corporation</div>
         <p class="source-desc">The globally recognised knowledge base of adversary tactics, techniques, and procedures based on real-world observations. We ingest the Enterprise ATT&amp;CK collection for named threat actor groups (173 groups, including nation-state APTs and cybercriminal organisations) and the Mobile ATT&amp;CK collection for techniques targeting iOS and Android devices. Each group is mapped to our consumer actor categories and flagged if it is known to target individual consumers rather than enterprises.</p>
-        <span class="source-stat">127 APT groups</span>
-        <span class="source-stat" style="margin-left:6px;">36 cybercriminal groups</span>
-        <span class="source-stat" style="margin-left:6px;">189 mobile techniques</span>
+        <span class="source-stat" data-stat="apt_groups" data-fmt="APT groups">127 APT groups</span>
+        <span class="source-stat" style="margin-left:6px;" data-stat="cybercriminal_groups" data-fmt="cybercriminal groups">36 cybercriminal groups</span>
+        <span class="source-stat" style="margin-left:6px;" data-stat="mobile_techniques" data-fmt="mobile techniques">189 mobile techniques</span>
         <div class="source-update">Updated weekly via TAXII 2.1 API · CC BY 4.0 license</div>
         <div><a href="https://attack.mitre.org" class="source-link" target="_blank" rel="noopener noreferrer">attack.mitre.org →</a></div>
       </div>
@@ -306,7 +306,7 @@ KEV CVEs count as confirmed exploitation — higher weight than theoretical CVEs
         <tbody>
           <tr>
             <td>Nation-state / APT</td>
-            <td>NVD, CISA KEV, MITRE ATT&amp;CK Enterprise (127 groups)</td>
+            <td>NVD, CISA KEV, MITRE ATT&amp;CK Enterprise (<span data-stat="apt_groups">127</span> groups)</td>
             <td>Technical-heavy</td>
           </tr>
           <tr>
@@ -331,7 +331,7 @@ KEV CVEs count as confirmed exploitation — higher weight than theoretical CVEs
           </tr>
           <tr>
             <td>Cybercriminal</td>
-            <td>NVD, CISA KEV, FBI IC3 2024, MITRE ATT&amp;CK Enterprise (36 groups)</td>
+            <td>NVD, CISA KEV, FBI IC3 2024, MITRE ATT&amp;CK Enterprise (<span data-stat="cybercriminal_groups">36</span> groups)</td>
             <td>Balanced</td>
           </tr>
           <tr>
@@ -398,5 +398,35 @@ KEV CVEs count as confirmed exploitation — higher weight than theoretical CVEs
 
 <p class="nvd-attr">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
 
+<script>
+// ── Dynamic stats from /api/db-stats ─────────────────────
+// Replaces hardcoded CVE/ATT&CK counts with live database figures.
+// Falls back gracefully — hardcoded values remain if API is unavailable.
+(async () => {
+  try {
+    const r = await fetch('https://api.mybadguy.com/api/db-stats');
+    if (!r.ok) return;
+    const s = await r.json();
+
+    // Update source-stat pills — data-stat matches the API key, data-fmt is the suffix
+    document.querySelectorAll('[data-stat]').forEach(el => {
+      const key = el.dataset.stat;
+      const fmt = el.dataset.fmt;
+      const val = s[key];
+      if (val === undefined || val === 0) return;
+      const n = val.toLocaleString();
+      if (fmt) {
+        // Full pill: "1,612 confirmed in-wild CVEs"
+        el.textContent = `${n} ${fmt}`;
+      } else {
+        // Inline span: just the number
+        el.textContent = n;
+      }
+    });
+  } catch (_) {
+    // API unavailable — hardcoded fallback values already shown
+  }
+})();
+</script>
 </body>
 </html>
