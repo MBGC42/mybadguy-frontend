@@ -39,3 +39,26 @@ const A = {
     {l:'Using real personal info from data breaches',v:70},{l:'Promising prizes / lottery rewards',v:65},
   ],
 };
+
+// ── LIVE SCORING CONFIG ───────────────────────────────────
+// Merge live scoring weights from D1 over the static A object.
+// Bio, vecs, ideal, and match stay hardcoded — only the 6 scoring
+// fields (tBase, sBase, cf, ds, mdmW, lw) come from the database.
+// Uses mbg_actor_configs from sessionStorage (set by detect.js / dashboard.js).
+(function mergeActorConfig() {
+  try {
+    const cached = sessionStorage.getItem('mbg_actor_configs');
+    if (!cached) return;
+    const configs = JSON.parse(cached);
+    const live = configs.find(c => c.id === ACTOR_ID);
+    if (!live) return;
+    if (live.tBase !== undefined) A.tBase = live.tBase;
+    if (live.sBase !== undefined) A.sBase = live.sBase;
+    if (live.cf)   A.cf   = live.cf;
+    if (live.ds)   A.ds   = live.ds;
+    if (live.mdmW !== undefined) A.mdmW = live.mdmW;
+    if (live.lw)   A.lw   = live.lw;
+  } catch (_) {
+    // sessionStorage unavailable or malformed — keep static A values
+  }
+})();
