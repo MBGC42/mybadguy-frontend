@@ -132,6 +132,31 @@ function renderRemediationError() {
   </div>`;
 }
 
+// ── TACTIC LABEL MAP ────────────────────────────────
+const TACTIC_LABELS = {
+  'initial-access':             'Initial Access',
+  'execution':                  'Execution',
+  'persistence':                'Persistence',
+  'privilege-escalation':       'Privilege Escalation',
+  'defense-evasion':            'Defense Evasion',
+  'credential-access':          'Credential Access',
+  'discovery':                  'Discovery',
+  'collection':                 'Collection',
+  'command-and-control':        'Command & Control',
+  'exfiltration':               'Exfiltration',
+  'impact':                     'Impact',
+  'remote-access':              'Remote Access',
+  'anti-behavioral-detection':  'Anti-Detection',
+  'network-effects':            'Network Effects',
+};
+
+function parseTactics(tagsJson) {
+  try {
+    const tags = JSON.parse(tagsJson || '[]');
+    return tags.map(t => TACTIC_LABELS[t] || t).filter(Boolean);
+  } catch (_) { return []; }
+}
+
 function renderRemediationCards(data) {
   if (!data || !data.remediations || !data.remediations.length) return renderRemediationError();
 
@@ -159,8 +184,9 @@ function renderRemediationCards(data) {
       const dc  = diffClass[r.difficulty] || 'diff-easy';
       const dl  = diffLabel[r.difficulty] || 'Easy';
       const nc  = numClass[pri];
-      const url = r.source_url || '#';
-      const lbl = r.source_label || 'Source';
+      const url    = r.source_url   || '#';
+      const lbl    = r.source_label || 'Source';
+      const tactics = parseTactics(r.tactic_tags);
       h += `<div class="rem-card" data-rem="${num}">
         <div class="rem-card-hdr">
           <div class="rem-num ${nc}">${num++}</div>
@@ -175,7 +201,10 @@ function renderRemediationCards(data) {
           <div class="rem-action">${r.action}</div>
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why}</div>
-          <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">📋 ${lbl}</a>
+          <div class="rem-pills">
+            ${tactics.map(t => `<span class="rem-tactic">${t}</span>`).join('')}
+            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">📋 ${lbl}</a>
+          </div>
         </div>
       </div>`;
     });

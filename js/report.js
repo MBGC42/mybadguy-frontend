@@ -100,6 +100,18 @@ const WIN_V  =[{v:'Win 11 26H1'},{v:'Win 11 25H2'},{v:'Win 11 24H2'},{v:'Win 11 
 
 function scoreColor(v){ return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
 
+const TACTIC_LABELS={
+  'initial-access':'Initial Access','execution':'Execution','persistence':'Persistence',
+  'privilege-escalation':'Privilege Escalation','defense-evasion':'Defense Evasion',
+  'credential-access':'Credential Access','discovery':'Discovery','collection':'Collection',
+  'command-and-control':'Command & Control','exfiltration':'Exfiltration','impact':'Impact',
+  'remote-access':'Remote Access','anti-behavioral-detection':'Anti-Detection','network-effects':'Network Effects',
+};
+function parseTactics(tagsJson){
+  try{ return JSON.parse(tagsJson||'[]').map(t=>TACTIC_LABELS[t]||t).filter(Boolean); }
+  catch(_){ return []; }
+}
+
 function getWins(ranked){
   const p=PR, type=p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':p.wn?'windows':'iphone';
   const all=ACTOR_WINS[type]||ACTOR_WINS.iphone;
@@ -272,7 +284,8 @@ async function renderReport(){
           <div class="rem-action">${r.action}</div>
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why || ''}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:.5rem;">
+          <div class="rem-pills">
+            ${parseTactics(r.tactic_tags).map(t=>`<span class="rem-tactic">${t}</span>`).join('')}
             <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
           </div>
         </div>
