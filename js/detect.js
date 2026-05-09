@@ -927,7 +927,7 @@ function renderResults() {
       ${winCards}
 
       <div class="btn-row" style="margin-top:1.5rem;">
-        <button class="btn-primary" data-action="go-dashboard">Full plan →</button>
+        <button class="btn-primary" data-action="go-dashboard">Risk Details →</button>
         <button class="btn-outline" data-action="go-save">Save results</button>
         <button class="btn-ghost" data-action="go-home">← Home</button>
       </div>
