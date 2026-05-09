@@ -771,10 +771,17 @@ function applyCorrection() {
 
 // ── STEPS 2-3: PROFILE QUESTIONS ─────────────────────────
 function renderQuestions() {
-  const qs = QSETS[CQ];
+  const qs     = QSETS[CQ];
+  const qStart = CQ === 0 ? 1 : 6;                 // first question number in this set
+  const qEnd   = CQ === 0 ? 5 : 10;                // last question number in this set
+  const qTotal = 10;
+
   let h = `
     <div class="screen">
-      <p class="eyebrow">${qs.lb}</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem;">
+        <p class="eyebrow" style="margin:0;">${qs.lb}</p>
+        <p style="font-size:11px;color:var(--dim);font-weight:500;">Questions ${qStart}–${qEnd} of ${qTotal}</p>
+      </div>
       <div class="q-progress" role="progressbar" aria-valuenow="${qs.pc}" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion ${qs.pc}%">
         <div class="q-progress-fill" style="width:${qs.pc}%"></div>
       </div>`;
