@@ -307,7 +307,7 @@ async function renderReport(){
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why || ''}</div>
           <div class="rem-pills">
-            ${parseTactics(r.tactic_tags).map(t=>`<span class="rem-tactic">${t}</span>`).join('')}
+            ${parseTactics(r.tactic_tags).map(t=>`<span class="rem-tactic">Tactic: ${t}</span>`).join('')}
             <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
           </div>
         </div>

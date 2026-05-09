@@ -202,7 +202,7 @@ function renderRemediationCards(data) {
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why}</div>
           <div class="rem-pills">
-            ${tactics.map(t => `<span class="rem-tactic">${t}</span>`).join('')}
+            ${tactics.map(t => `<span class="rem-tactic">Tactic: ${t}</span>`).join('')}
             <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">📋 ${lbl}</a>
           </div>
         </div>
