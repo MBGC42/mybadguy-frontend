@@ -897,7 +897,7 @@ function renderResults() {
     <div class="screen" style="padding-bottom:2rem;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
         <p class="eyebrow" style="margin:0;">Your risk profile</p>
-        <p style="font-size:11px;color:var(--muted);">${DV.name} · ${DV.os} ${DV.major}</p>
+        <p style="font-size:11px;color:var(--muted);">${DV.name} · ${DV.os} ${DV.fullVersion || DV.major}</p>
       </div>
 
       <div class="score-hero" role="region" aria-label="Overall risk score">
