@@ -63,4 +63,4 @@ function calcScore(a) {
 function scoreClass(v) { return v >= 70 ? 'c-high' : v >= 45 ? 'c-med' : 'c-low'; }
 function fillClass(v)  { return v >= 70 ? 'fill-high' : v >= 45 ? 'fill-med' : 'fill-low'; }
 function chipCoClass(v){ return v >= 70 ? 'chip-hi' : v >= 45 ? 'chip-mi' : 'chip-lo'; }
-function scoreLabel(v) { return v >= 70 ? 'High' : v >= 45 ? 'Medium' : 'Lower'; }
+function scoreLabel(v) { return v >= 70 ? 'High' : v >= 45 ? 'Medium' : 'Low'; }

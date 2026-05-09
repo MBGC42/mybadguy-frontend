@@ -230,7 +230,7 @@ async function render() {
                         .sort((a,b)=>b.co-a.co);
   const overall = Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
   const overallColor = scoreColor(overall);
-  const overallLabel = overall>=70?'High risk profile':overall>=45?'Elevated risk profile':'Lower risk profile';
+  const overallLabel = overall>=70?'High risk profile':overall>=45?'Medium risk profile':'Low risk profile';
   const wins = getWins(ranked);
 
   // Group actors
@@ -315,7 +315,7 @@ async function render() {
     groupActors.forEach(a => {
       const cc  = scoreColor(a.co);
       const cbg = a.co>=70?'rgba(226,75,74,.1)':a.co>=45?'rgba(239,159,39,.1)':'rgba(34,197,94,.1)';
-      const lbl = a.co>=70?'High':a.co>=45?'Medium':'Lower';
+      const lbl = a.co>=70?'High':a.co>=45?'Medium':'Low';
       const isTop = a === ranked[0]; // highest overall actor gets accent border
       h += `<a class="actor-card${isTop?' actor-card-top':''}" href="${a.page}"
           style="${isTop?`border-color:${cc};border-width:2px;`:''}"
