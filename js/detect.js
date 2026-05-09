@@ -867,7 +867,7 @@ function renderCalc() {
 function renderResults() {
   const overall = Math.round(SC.reduce((s,a) => s + a.co, 0) / SC.length);
   const rc = overall >= 70 ? '#E24B4A' : overall >= 45 ? '#EF9F27' : '#22c55e';
-  const rl = overall >= 70 ? 'High risk profile' : overall >= 45 ? 'Medium risk profile' : 'Low risk profile';
+  const rl = overall >= 70 ? 'High combined risk profile' : overall >= 45 ? 'Medium combined risk profile' : 'Low combined risk profile';
   const rd = overall >= 70
     ? 'Several threat actors have strong interest in your profile. Start with the quick wins below.'
     : overall >= 45
