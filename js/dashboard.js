@@ -372,7 +372,7 @@ async function init() {
   } catch (_) {
     // API unavailable — ACTORS already set to ACTORS_FALLBACK
   }
-  render();
+  await render();
 }
 
 // Merge live scoring weights into the full actor display objects.
