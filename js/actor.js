@@ -227,7 +227,7 @@ function renderRemediationCards(data) {
                 ? `<a class="rem-tactic" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="MITRE ATT&CK: Tactic ${t}">Tactic: ${t}</a>`
                 : `<span class="rem-tactic">Tactic: ${t}</span>`;
             }).join('')}
-            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">📋 ${lbl}</a>
+            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
           </div>
         </div>
       </div>`;
