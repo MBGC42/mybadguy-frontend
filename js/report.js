@@ -214,8 +214,7 @@ async function renderReport(){
     <div class="report-card-hdr"><span class="report-card-title">Device &amp; profile</span></div>
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
-      ${devVer?`<span class="dev-ver-badge">${devVer}</span>`:''}
-      <span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>
+      ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
       ${p.patchScore>0?`<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>`:''}
     </div>
     <div class="ro-grid">
