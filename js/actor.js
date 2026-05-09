@@ -150,6 +150,24 @@ const TACTIC_LABELS = {
   'network-effects':            'Network Effects',
 };
 
+const TACTIC_URLS = {
+  'initial-access':            'https://attack.mitre.org/tactics/TA0001/',
+  'execution':                 'https://attack.mitre.org/tactics/TA0002/',
+  'persistence':               'https://attack.mitre.org/tactics/TA0003/',
+  'privilege-escalation':      'https://attack.mitre.org/tactics/TA0004/',
+  'defense-evasion':           'https://attack.mitre.org/tactics/TA0005/',
+  'credential-access':         'https://attack.mitre.org/tactics/TA0006/',
+  'discovery':                 'https://attack.mitre.org/tactics/TA0007/',
+  'collection':                'https://attack.mitre.org/tactics/TA0009/',
+  'command-and-control':       'https://attack.mitre.org/tactics/TA0011/',
+  'exfiltration':              'https://attack.mitre.org/tactics/TA0010/',
+  'impact':                    'https://attack.mitre.org/tactics/TA0040/',
+  'remote-access':             'https://attack.mitre.org/tactics/TA0036/',
+  'anti-behavioral-detection': 'https://attack.mitre.org/tactics/TA0037/',
+  'network-effects':           'https://attack.mitre.org/tactics/TA0038/',
+};
+
+
 function parseTactics(tagsJson) {
   try {
     const tags = JSON.parse(tagsJson || '[]');
@@ -202,7 +220,13 @@ function renderRemediationCards(data) {
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why}</div>
           <div class="rem-pills">
-            ${tactics.map(t => `<span class="rem-tactic">Tactic: ${t}</span>`).join('')}
+            ${tactics.map(t => {
+              const key = Object.keys(TACTIC_LABELS).find(k => TACTIC_LABELS[k] === t);
+              const url = key ? TACTIC_URLS[key] : '';
+              return url
+                ? `<a class="rem-tactic" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="MITRE ATT&CK: Tactic ${t}">Tactic: ${t}</a>`
+                : `<span class="rem-tactic">Tactic: ${t}</span>`;
+            }).join('')}
             <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">📋 ${lbl}</a>
           </div>
         </div>
