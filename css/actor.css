@@ -304,14 +304,17 @@
   align-items: center;
   gap: 4px;
   font-size: 10px;
+  font-weight: 600;
   padding: 2px 8px;
   border-radius: 99px;
   background: rgba(34,211,238,.07);
   border: .5px solid rgba(34,211,238,.2);
   color: var(--cyan);
   text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
 }
-.rem-source:hover { background: rgba(34,211,238,.12); text-decoration: none; }
+.rem-source:hover { background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.4); text-decoration: none; }
 .rem-tactic {
   display: inline-flex;
   align-items: center;
@@ -331,6 +334,7 @@
 a.rem-tactic:hover {
   background: rgba(226,75,74,.2);
   border-color: rgba(226,75,74,.5);
+  text-decoration: none;
 }
 .rem-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: .5rem; }
 
