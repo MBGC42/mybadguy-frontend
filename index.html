@@ -25,6 +25,16 @@
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     @keyframes pulse{0%{transform:scale(1);opacity:.35}100%{transform:scale(1.65);opacity:0}}
+    .scan-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;margin:1.25rem auto 0;display:flex;}
+    .ring{position:absolute;width:118px;height:118px;border-radius:50%;border:1.5px solid var(--cyan);pointer-events:none;}
+    .ring-1{animation:pulse 2.4s ease-out infinite 0s;}
+    .ring-2{animation:pulse 2.4s ease-out infinite .7s;}
+    .ring-3{animation:pulse 2.4s ease-out infinite 1.4s;}
+    .scan-btn{position:relative;z-index:2;width:110px;height:110px;border-radius:50%;background:var(--lcyan);border:2px solid rgba(34,211,238,.4);color:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;outline:none;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;box-shadow:none;transition:transform .2s,background .15s;text-decoration:none;}
+    .scan-btn:hover{transform:scale(1.05);background:#c8f5fb;}
+    .scan-btn:active{transform:scale(.97);}
+    .scan-btn-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);line-height:1;}
+    .scan-btn-sub{font-size:9px;color:rgba(15,23,42,.45);letter-spacing:.04em;}
     @keyframes blink{0%,88%,100%{opacity:1}94%{opacity:0}}
     .fade-1{animation:fadeUp .7s ease both .1s}
     .fade-2{animation:fadeUp .7s ease both .3s}
@@ -264,9 +274,23 @@
           <span class="product-tag">Cloud &amp; device</span>
           <span class="product-tag">Ranked remediations</span>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;">
-          <a href="detect.html" class="product-cta cta-primary" style="margin-top:0;" role="button">Detect risk →</a>
-          <a href="return.html" class="product-cta" style="margin-top:0;background:transparent;color:var(--muted);border:1.5px solid rgba(255,255,255,.12);font-size:11px;padding:6px 16px;" role="button">← Return to saved profile</a>
+        <div class="scan-wrap" role="presentation">
+          <div class="ring ring-1" aria-hidden="true"></div>
+          <div class="ring ring-2" aria-hidden="true"></div>
+          <div class="ring ring-3" aria-hidden="true"></div>
+          <a href="detect.html" class="scan-btn" role="button" aria-label="Start your free device security detection">
+            <svg width="44" height="27" viewBox="0 0 100 60" aria-hidden="true" focusable="false">
+              <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+              <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="50" cy="30" r="7" fill="#0f172a"/>
+              <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+            </svg>
+            <span class="scan-btn-label">Detect risk</span>
+            <span class="scan-btn-sub">~3 minutes</span>
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:1rem;">
+          <a href="return.html" style="font-size:11px;color:var(--dim);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--dim)'">← Return to saved profile</a>
         </div>
       </article>
 
