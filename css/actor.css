@@ -11,6 +11,29 @@
   padding: 1.5rem 1.25rem 3rem;
 }
 
+/* ── Important disclaimer box ────────────────────────────── */
+.mbg-disclaimer {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: rgba(239,159,39,.08);
+  border: 1px solid rgba(239,159,39,.35);
+  border-left: 4px solid #EF9F27;
+  border-radius: 10px;
+}
+.mbg-disclaimer-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #EF9F27;
+  margin-bottom: .4rem;
+}
+.mbg-disclaimer-body {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.mbg-disclaimer-body strong { color: var(--slate); }
+
 /* ── Actor header ────────────────────────────────────────── */
 .actor-hdr {
   background: var(--lift);
