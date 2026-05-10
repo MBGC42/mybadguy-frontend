@@ -4,192 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="About MyBadGuy — why we built it, how it works, and what we believe about consumer security.">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#003F72">
   <title>MyBadGuy — About</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/pages.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root{--navy:#003F72;--red:#C41230;--green:#007A53;--slate:#1a1a1a;--mid:#444;--muted:#555;--dim:#666;--light:#F0F4F8;--border:#dde3ea;--white:#fff;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:#fff;color:var(--slate);font-size:17px;line-height:1.7;overflow-x:hidden;}
+    a{color:var(--navy);}
+    a:hover{text-decoration:underline;}
+    img,svg{display:block;}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+    .nav{background:var(--navy);padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-wordmark{font-size:19px;font-weight:600;color:#fff;letter-spacing:-.01em;}
+    .nav-links{display:flex;gap:24px;}
+    .nav-link{font-size:15px;color:rgba(255,255,255,.85);text-decoration:none;}
+    .nav-link:hover{color:#fff;text-decoration:none;}
+    .nav-back{font-size:15px;color:rgba(255,255,255,.85);text-decoration:none;}
+    .nav-back:hover{color:#fff;}
+
+    .page-header{background:var(--navy);padding:32px 20px 28px;}
+    .page-header-inner{max-width:680px;margin:0 auto;}
+    .page-eyebrow{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+    .page-h1{font-size:clamp(26px,5vw,36px);font-weight:600;color:#fff;line-height:1.2;margin-bottom:12px;}
+    .page-intro{font-size:18px;color:rgba(255,255,255,.88);line-height:1.7;}
+
+    .page-content{max-width:680px;margin:0 auto;padding:32px 20px 40px;}
+
+    .belief-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:36px;}
+    .belief-card{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:16px;}
+    .belief-icon{font-size:24px;margin-bottom:8px;}
+    .belief-title{font-size:16px;font-weight:600;color:var(--slate);margin-bottom:4px;}
+    .belief-body{font-size:14px;color:var(--muted);line-height:1.6;}
+
+    .section{margin-bottom:36px;padding-bottom:36px;border-bottom:1px solid var(--border);}
+    .section:last-of-type{border-bottom:none;}
+    .section-h2{font-size:22px;font-weight:600;color:var(--slate);margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid var(--navy);display:inline-block;}
+    .prose{font-size:16px;color:var(--mid);line-height:1.75;margin-bottom:14px;}
+    .prose:last-child{margin-bottom:0;}
+    .prose strong{color:var(--slate);}
+    .prose a{color:var(--navy);}
+
+    .callout{background:var(--light);border:1px solid var(--border);border-left:5px solid var(--navy);border-radius:6px;padding:16px 18px;margin-bottom:18px;font-size:16px;color:var(--mid);line-height:1.7;}
+    .callout strong{color:var(--slate);}
+
+    .check-list{list-style:none;padding:0;margin:0 0 14px;}
+    .check-list li{font-size:16px;color:var(--mid);line-height:1.7;padding:10px 0 10px 32px;border-bottom:1px solid var(--border);position:relative;}
+    .check-list li:last-child{border-bottom:none;}
+    .check-list li::before{content:"\2713";position:absolute;left:0;top:10px;font-size:16px;color:var(--green);font-weight:700;}
+    .check-list strong{color:var(--slate);}
+
+    .data-list{list-style:none;padding:0;margin:0 0 14px;}
+    .data-list li{font-size:16px;color:var(--mid);line-height:1.7;padding:10px 0 10px 32px;border-bottom:1px solid var(--border);position:relative;}
+    .data-list li:last-child{border-bottom:none;}
+    .data-list li::before{content:"\25CF";position:absolute;left:0;top:12px;font-size:10px;color:var(--navy);}
+    .data-list strong{color:var(--slate);}
+
+    .cta-block{background:var(--navy);border-radius:10px;padding:28px 24px;text-align:center;margin-top:36px;}
+    .cta-title{font-size:22px;font-weight:600;color:#fff;margin-bottom:6px;}
+    .cta-sub{font-size:15px;color:rgba(255,255,255,.8);margin-bottom:20px;}
+    .cta-btn{display:inline-block;background:#fff;color:var(--navy);font-size:17px;font-weight:600;padding:14px 28px;border-radius:6px;text-decoration:none;}
+    .cta-btn:hover{background:#e8f0f8;text-decoration:none;}
+
+    .footer{background:var(--navy);padding:28px 20px;}
+    .footer-inner{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+    .footer-brand{display:flex;align-items:center;gap:8px;}
+    .footer-wordmark{font-size:16px;font-weight:600;color:#fff;}
+    .footer-tagline{font-size:13px;color:rgba(255,255,255,.6);margin-top:2px;}
+    .footer-links{display:flex;flex-wrap:wrap;gap:16px;}
+    .footer-link{font-size:14px;color:rgba(255,255,255,.8);text-decoration:none;}
+    .footer-link:hover{color:#fff;}
+
+    @media(max-width:500px){
+      .belief-grid{grid-template-columns:1fr;}
+      .nav-links{display:none;}
+    }
+  </style>
 </head>
 <body>
 
 <nav class="nav" role="navigation" aria-label="Main navigation">
-  <a href="/" class="nav-brand">
+  <a href="/" class="nav-brand" aria-label="MyBadGuy home">
     <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
       <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#fff"/>
       <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
     </svg>
-    <span class="nav-name">MyBadGuy</span>
+    <span class="nav-wordmark">MyBadGuy</span>
   </a>
-  <a href="/" class="btn-back">← Home</a>
+  <div class="nav-links" role="list">
+    <a href="/"             class="nav-link" role="listitem">Home</a>
+    <a href="/sources.html" class="nav-link" role="listitem">Data sources</a>
+    <a href="/glossary.html" class="nav-link" role="listitem">Glossary</a>
+  </div>
 </nav>
 
-<main class="page" id="main">
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-eyebrow">About</p>
+    <h1 class="page-h1">See yourself through their eyes.</h1>
+    <p class="page-intro">Threat actors profile people every day — by device, by habit, by circumstance. MyBadGuy flips the script and shows consumers exactly what that profile looks like, and what to do about it.</p>
+  </div>
+</div>
 
-  <p class="page-eyebrow">About</p>
-  <h1 class="page-title">See yourself<br>through their eyes.</h1>
-  <p class="page-intro">
-    Threat actors profile people every day — by device, by habit, by circumstance.
-    MyBadGuy flips the script and shows consumers exactly what that profile looks like,
-    and what to do about it.
-  </p>
+<main id="main">
+  <div class="page-content">
 
-  <!-- ── BELIEFS ── -->
-  <div class="belief-grid" role="list" aria-label="What we believe">
-
-    <div class="belief-card" role="listitem">
-      <div class="belief-icon">🔍</div>
-      <div class="belief-title">Perspective changes behaviour</div>
-      <div class="belief-body">Telling people to "use strong passwords" doesn't work. Showing them that a cybercriminal has already scored their profile does.</div>
+    <div class="belief-grid" role="list" aria-label="What we believe" style="margin-top:4px;">
+      <div class="belief-card" role="listitem">
+        <div class="belief-icon" aria-hidden="true">&#128269;</div>
+        <div class="belief-title">Perspective changes behaviour</div>
+        <div class="belief-body">Telling people to "use strong passwords" does not work. Showing them that a cybercriminal has already scored their profile does.</div>
+      </div>
+      <div class="belief-card" role="listitem">
+        <div class="belief-icon" aria-hidden="true">&#128;&#147;</div>
+        <div class="belief-title">Security advice should be free</div>
+        <div class="belief-body">The people most at risk are rarely the ones who can afford a professional assessment. We built this to close that gap.</div>
+      </div>
+      <div class="belief-card" role="listitem">
+        <div class="belief-icon" aria-hidden="true">&#129;&#141;</div>
+        <div class="belief-title">Educate, do not alarm</div>
+        <div class="belief-body">We are here to inform and empower — not to shame, scare, or upsell. Every recommendation is practical, free to act on, and specific to you.</div>
+      </div>
+      <div class="belief-card" role="listitem">
+        <div class="belief-icon" aria-hidden="true">&#128;&#146;</div>
+        <div class="belief-title">We protect what we preach</div>
+        <div class="belief-body">No cookies, no tracking, no advertising. We never sell your data. We apply the same security practices we recommend to you.</div>
+      </div>
     </div>
 
-    <div class="belief-card" role="listitem">
-      <div class="belief-icon">🆓</div>
-      <div class="belief-title">Security advice should be free</div>
-      <div class="belief-body">The people most at risk are rarely the ones who can afford a professional assessment. We built this to close that gap.</div>
-    </div>
+    <section class="section" aria-labelledby="s1">
+      <h2 class="section-h2" id="s1">How it works</h2>
+      <p class="prose">MyBadGuy reads the limited information your browser makes freely available — your device type and operating system version — then asks you ten short questions about your general situation. No names, no email addresses, no account required.</p>
+      <p class="prose">We run your profile against <strong>threat actor models</strong> built from publicly available intelligence — FBI IC3 annual reports, FTC Sentinel data, MITRE ATT&amp;CK, and NIST vulnerability databases. Each actor scores your profile based on how attractive you look to them, and why.</p>
+      <p class="prose">The result is a ranked threat profile showing which actors have the most interest in someone like you, and a prioritised list of practical steps to reduce your exposure — specific to your device, your situation, and your risk level.</p>
+    </section>
 
-    <div class="belief-card" role="listitem">
-      <div class="belief-icon">🤝</div>
-      <div class="belief-title">Educate, don't alarm</div>
-      <div class="belief-body">We are here to inform and empower — not to shame, scare, or upsell. Every recommendation we make is practical, free to act on, and specific to your situation.</div>
-    </div>
+    <section class="section" aria-labelledby="s2">
+      <h2 class="section-h2" id="s2">What we are not</h2>
+      <div class="callout">
+        <strong>MyBadGuy is an educational awareness tool, not a security scanner.</strong> We do not access your files, apps, contacts, camera, microphone, or any device resource beyond what your browser provides automatically. We are not a substitute for professional security advice.
+      </div>
+      <ul class="check-list" aria-label="What we are not">
+        <li><strong>Not a vulnerability scanner.</strong> We do not probe your device, network, or accounts. Our threat scores are based on your profile characteristics, not live scans.</li>
+        <li><strong>Not a security company.</strong> We do not sell security products or professional assessments. We have no financial incentive to inflate your risk score.</li>
+        <li><strong>Not infallible.</strong> This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. We update our data daily but we are not perfect.</li>
+        <li><strong>Not a substitute for professional advice.</strong> For a formal security assessment, consult a qualified cybersecurity professional.</li>
+      </ul>
+    </section>
 
-    <div class="belief-card" role="listitem">
-      <div class="belief-icon">🔒</div>
-      <div class="belief-title">We protect what we preach</div>
-      <div class="belief-body">No cookies, no tracking, no advertising. We never sell your data. We apply the same security practices we recommend to you.</div>
+    <section class="section" aria-labelledby="s3">
+      <h2 class="section-h2" id="s3">Our data</h2>
+      <p class="prose">Every threat score is derived from authoritative public sources — government agencies, academic research, and open standards bodies. We update our databases daily. No proprietary threat intelligence, no vendor bias.</p>
+      <ul class="data-list" aria-label="Data sources">
+        <li><strong>CVE data</strong> from the NIST National Vulnerability Database — updated every two hours.</li>
+        <li><strong>Actively exploited vulnerabilities</strong> from the CISA Known Exploited Vulnerabilities catalog — updated daily.</li>
+        <li><strong>Threat actor profiles</strong> from MITRE ATT&amp;CK Enterprise and Mobile — updated weekly.</li>
+        <li><strong>Phishing trends</strong> from OpenPhish community feed — updated hourly.</li>
+        <li><strong>OS support lifecycle data</strong> from endoflife.date — updated daily.</li>
+        <li><strong>CVE exploitation probability</strong> from EPSS (Exploit Prediction Scoring System) — updated daily.</li>
+        <li><strong>Malware and threat intelligence</strong> from URLhaus, MalwareBazaar, and ThreatFox (abuse.ch) — updated daily.</li>
+        <li><strong>Ransomware group activity</strong> from Ransomware.live — updated weekly.</li>
+        <li><strong>Consumer fraud data</strong> from FBI IC3 and FTC Consumer Sentinel annual reports.</li>
+      </ul>
+      <p class="prose">See our <a href="/sources.html">Data sources page</a> for the full list with links to primary sources.</p>
+    </section>
+
+    <section class="section" aria-labelledby="s4">
+      <h2 class="section-h2" id="s4">Our principles</h2>
+      <ul class="check-list" aria-label="Our principles">
+        <li><strong>Factual.</strong> We cite our sources. If we cannot substantiate a claim, we do not make it.</li>
+        <li><strong>Ethical.</strong> We will not shame, manipulate, or alarm users to drive engagement. Scores reflect real risk, not marketing.</li>
+        <li><strong>Private.</strong> We collect only what is necessary, protect it rigorously, and delete it on request. See our <a href="/privacy.html">Privacy policy</a>.</li>
+        <li><strong>Transparent.</strong> We disclose how our scores are calculated, where our data comes from, and what we do not know.</li>
+        <li><strong>Accessible.</strong> Plain language, mobile-first, and free — always. Security awareness should not require a degree or a subscription.</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="s5">
+      <h2 class="section-h2" id="s5">Contact</h2>
+      <p class="prose">For questions, feedback, or to report an issue with our data or recommendations, email us at <a href="mailto:support@mybadguy.com">support@mybadguy.com</a>. We aim to respond within 5 business days.</p>
+      <p class="prose">To report a security vulnerability in MyBadGuy itself, please follow responsible disclosure — details in our <a href="/.well-known/security.txt">security.txt</a>.</p>
+    </section>
+
+    <div class="cta-block" role="complementary" aria-label="Start your risk check">
+      <p class="cta-title">Ready to see your profile?</p>
+      <p class="cta-sub">Free · No account · Takes about 3 minutes</p>
+      <a href="/detect.html" class="cta-btn" role="button">Check my risk →</a>
     </div>
 
   </div>
-
-  <!-- ── HOW IT WORKS ── -->
-  <section class="section" aria-labelledby="s1">
-    <h2 class="section-title" id="s1">How it works</h2>
-    <p class="prose">
-      MyBadGuy reads the limited information your browser makes freely available —
-      your device type and operating system version — then asks you ten short questions
-      about your general situation. No names, no email addresses, no account required.
-    </p>
-    <p class="prose">
-      We run your profile against <strong>tangible threat actor models</strong> built from
-      publicly available intelligence — FBI IC3 annual reports, FTC Sentinel data,
-      MITRE ATT&amp;CK, and NIST vulnerability databases. Each actor scores your profile
-      based on how attractive you look to them, and why.
-    </p>
-    <p class="prose">
-      The result is a ranked threat profile showing which actors have the most interest
-      in someone like you, and a prioritised list of practical steps to reduce your exposure —
-      specific to your device, your situation, and your risk level.
-    </p>
-  </section>
-
-  <!-- ── WHAT WE ARE NOT ── -->
-  <section class="section" aria-labelledby="s2">
-    <h2 class="section-title" id="s2">What we are not</h2>
-    <div class="callout">
-      <strong>MyBadGuy is an educational awareness tool, not a security scanner.</strong>
-      We do not access your files, apps, contacts, camera, microphone, or any device
-      resource beyond what your browser provides automatically. We are not a substitute
-      for professional security advice.
-    </div>
-    <ul class="principles">
-      <li><span><strong>Not a vulnerability scanner.</strong> We do not probe your device, network, or accounts. Our threat scores are based on your profile characteristics, not live scans.</span></li>
-      <li><span><strong>Not a security company.</strong> We do not sell security products, managed services, or professional assessments. We have no financial incentive to inflate your risk score.</span></li>
-      <li><span><strong>Not infallible.</strong> This site is built and maintained with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. Threat landscapes change. We update our data daily but we are not perfect.</span></li>
-      <li><span><strong>Not a substitute for professional advice.</strong> For a formal security assessment of your business or personal infrastructure, consult a qualified cybersecurity professional.</span></li>
-    </ul>
-  </section>
-
-  <!-- ── OUR DATA ── -->
-  <section class="section" aria-labelledby="s3">
-    <h2 class="section-title" id="s3">Our data</h2>
-    <p class="prose">
-      Every threat score is derived from authoritative public sources — government agencies,
-      academic research, and open standards bodies. We update our databases daily.
-      No proprietary threat intelligence, no vendor bias.
-    </p>
-    <ul class="principles">
-      <li><span><strong>CVE data</strong> from the NIST National Vulnerability Database — updated every two hours.</span></li>
-      <li><span><strong>Actively exploited vulnerabilities</strong> from the CISA Known Exploited Vulnerabilities catalog — updated daily.</span></li>
-      <li><span><strong>Threat actor profiles</strong> from MITRE ATT&amp;CK Enterprise and Mobile — updated weekly.</span></li>
-      <li><span><strong>Phishing trends</strong> from OpenPhish community feed — updated hourly.</span></li>
-      <li><span><strong>OS support lifecycle data</strong> from endoflife.date and vendor security advisories — updated daily.</span></li>
-      <li><span><strong>CVE exploitation probability</strong> from the EPSS (Exploit Prediction Scoring System) — updated daily.</span></li>
-      <li><span><strong>Malware delivery URLs</strong> from URLhaus (abuse.ch) — updated daily.</span></li>
-      <li><span><strong>Active malware samples</strong> from MalwareBazaar (abuse.ch) — updated daily.</span></li>
-      <li><span><strong>Active threat intelligence IOCs</strong> from ThreatFox (abuse.ch) — updated daily.</span></li>
-      <li><span><strong>Ransomware group activity</strong> from Ransomware.live — updated weekly.</span></li>
-      <li><span><strong>Consumer fraud data</strong> from FBI IC3 and FTC Consumer Sentinel annual reports.</span></li>
-    </ul>
-    <p class="prose">
-      See our <a href="/sources.html">Data sources page</a> for the full list with links to
-      primary sources.
-    </p>
-  </section>
-
-  <!-- ── PRINCIPLES ── -->
-  <section class="section" aria-labelledby="s4">
-    <h2 class="section-title" id="s4">Our principles</h2>
-    <ul class="principles">
-      <li><span><strong>Factual.</strong> We cite our sources. If we cannot substantiate a claim, we do not make it.</span></li>
-      <li><span><strong>Ethical.</strong> We will not shame, manipulate, or alarm users to drive engagement. Scores reflect real risk, not marketing.</span></li>
-      <li><span><strong>Private.</strong> We collect only what is necessary, protect it rigorously, and delete it on request. See our <a href="/privacy.html">Privacy policy</a>.</span></li>
-      <li><span><strong>Transparent.</strong> We disclose how our scores are calculated, where our data comes from, and what we do not know. No black boxes.</span></li>
-      <li><span><strong>Accessible.</strong> Plain language, mobile-first, and free — always. Security awareness should not require a degree or a subscription.</span></li>
-    </ul>
-  </section>
-
-  <!-- ── CONTACT ── -->
-  <section class="section" aria-labelledby="s5">
-    <h2 class="section-title" id="s5">Contact</h2>
-    <p class="prose">
-      For questions, feedback, or to report an issue with our data or recommendations,
-      email us at <a href="mailto:support@mybadguy.com">support@mybadguy.com</a>.
-      We aim to respond within 5 business days.
-    </p>
-    <p class="prose">
-      To report a security vulnerability in MyBadGuy itself, please follow responsible
-      disclosure — details in our <a href="/.well-known/security.txt">security.txt</a>.
-    </p>
-  </section>
-
-  <!-- ── CTA ── -->
-  <div class="cta-block">
-    <p class="cta-title">Ready to see your profile?</p>
-    <p class="cta-sub">Free · No account · Takes about 3 minutes</p>
-    <a href="/detect.html" class="cta-btn">Start detection →</a>
-  </div>
-
 </main>
 
 <footer class="footer" role="contentinfo">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <svg width="22" height="13" viewBox="0 0 100 60" aria-hidden="true">
-        <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-        <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="50" cy="30" r="7" fill="#475569"/>
-        <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
-      </svg>
-      <span class="footer-wordmark">MyBadGuy</span>
+    <div>
+      <div class="footer-brand">
+        <svg width="22" height="14" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="50" cy="30" r="7" fill="rgba(255,255,255,.5)"/>
+          <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+        </svg>
+        <span class="footer-wordmark">MyBadGuy</span>
+      </div>
+      <p class="footer-tagline">Consumer threat intelligence</p>
     </div>
     <nav class="footer-links" aria-label="Footer navigation">
-      <a href="/"             class="footer-link">Home</a>
-      <a href="/about.html"   class="footer-link" aria-current="page">About</a>
-      <a href="/sources.html" class="footer-link">Data sources</a>
-      <a href="/privacy.html" class="footer-link">Privacy policy</a>
+      <a href="/"              class="footer-link">Home</a>
+      <a href="/about.html"    class="footer-link" aria-current="page">About</a>
+      <a href="/sources.html"  class="footer-link">Data sources</a>
       <a href="/glossary.html" class="footer-link">Glossary</a>
+      <a href="/privacy.html"  class="footer-link">Privacy policy</a>
       <a href="mailto:support@mybadguy.com" class="footer-link">Contact</a>
     </nav>
   </div>
 </footer>
-
-<p class="nvd-attr">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
 
 </body>
 </html>
