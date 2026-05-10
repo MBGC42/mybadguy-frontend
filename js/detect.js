@@ -1256,6 +1256,11 @@ function render() {
   renderDots();
   CQ = ST === 2 ? 1 : 0;
 
+  // Light background for intro, questions, results, save
+  // Dark background for scan animation, device confirm, calculating
+  const lightSteps = [0, 1, 2, 6, 7];
+  document.body.classList.toggle('light-screen', lightSteps.includes(ST));
+
   if      (ST === 0) renderIntro();
   else if (ST === 1) { CQ = 0; renderQuestions(); }
   else if (ST === 2) { CQ = 1; renderQuestions(); }
