@@ -198,7 +198,7 @@ function buildVersionCards(platform) {
 
 // ── QUESTION SCREENS ─────────────────────────────────────
 const QSETS = [
-  { lb:'About you', pc:40, qs:[
+  { lb:'About you', pc:25, qs:[
     { id:'age',  t:'How old are you?', ty:'slider' },
     { id:'fin',  t:'Your financial situation?', ty:'pills',
       o:['Struggling','Working class','Middle income','Doing well','High wealth'], v:[1,2,3,4,5] },
@@ -209,7 +209,7 @@ const QSETS = [
     { id:'sm',   t:'Social media activity?', ty:'pills',
       o:['Never use it','Occasional','Regular','Heavy user','Influencer / public'], v:[1,2,3,4,5] },
   ]},
-  { lb:'Your context', pc:80, qs:[
+  { lb:'Your context', pc:50, qs:[
     { id:'role', t:'Work-related data on this device?', ty:'pills',
       o:['No work data','Some work apps','Work email & files','Sensitive / regulated','Executive / gov'], v:[0,1,2,3,4] },
     { id:'pub',  t:'How public is your online presence?', ty:'pills',
@@ -542,7 +542,7 @@ function renderScan() {
         else if (/Android/.test(_ua)) _pt='android';
         else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
         await Promise.all([fetchOsVersions(_pt), fetchCveStats(_pt)]);
-        DV = detectDevice(); ST = 1; render();
+        DV = detectDevice(); ST = 3; render();
       }, 300);
       return;
     }
@@ -764,8 +764,8 @@ function applyCorrection() {
   const dt = DTYPES.find(d => d.id === TV.type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
   DV = { type:TV.type, os:TV.os, major:TV.major, fullVersion:TV.fullVersion||TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
-  // Windows auto-skips ST=1 (renderDevice), so go straight to questions
-  ST = DV.type === 'windows' ? 2 : 1;
+  // Windows auto-skips ST=3 (renderDevice), so go straight to calc
+  ST = DV.type === 'windows' ? 4 : 3;
   render();
 }
 
@@ -1114,7 +1114,7 @@ document.addEventListener('click', e => {
   const action = el.dataset.action;
 
   // Device confirm screen
-  if (action === 'confirm-device') { ST = 2; render(); return; }
+  if (action === 'confirm-device') { ST = 4; render(); return; }
   if (action === 'correct-device') { TV = {}; renderCorrect(); return; }
 
   // Device type selection
@@ -1132,7 +1132,7 @@ document.addEventListener('click', e => {
   }
   if (action === 'change-dtype') { renderCorrect(); return; }
   if (action === 'confirm-build') { applyCorrection(); return; }
-  if (action === 'back-to-device') { ST = 1; render(); return; }
+  if (action === 'back-to-device') { ST = 3; render(); return; }
 
   // Profile questions
   if (action === 'select-pill') {
@@ -1147,10 +1147,10 @@ document.addEventListener('click', e => {
     el.setAttribute('aria-pressed', 'true');
     return;
   }
-  if (action === 'q-back') { CQ = 0; ST = 2; render(); return; }
+  if (action === 'q-back') { CQ = 0; ST = 0; render(); return; }
   if (action === 'q-next') {
-    if (CQ === 0) { CQ = 1; ST = 3; render(); }
-    else          { ST = 4; render(); }
+    if (CQ === 0) { CQ = 1; ST = 1; render(); }
+    else          { ST = 2; render(); }
     return;
   }
 
@@ -1191,12 +1191,12 @@ document.addEventListener('input', e => {
 });
 function render() {
   renderDots();
-  CQ = ST === 3 ? 1 : 0;
+  CQ = ST === 1 ? 1 : 0;
 
-  if      (ST === 0) renderScan();
-  else if (ST === 1) renderDevice();
-  else if (ST === 2) { CQ = 0; renderQuestions(); }
-  else if (ST === 3) { CQ = 1; renderQuestions(); }
+  if      (ST === 0) { CQ = 0; renderQuestions(); }
+  else if (ST === 1) { CQ = 1; renderQuestions(); }
+  else if (ST === 2) renderScan();
+  else if (ST === 3) renderDevice();
   else if (ST === 4) renderCalc();
   else if (ST === 5) renderResults();
   else if (ST === 6) renderSave();
