@@ -339,11 +339,11 @@ async function renderReport(){
     h += '</div>';
   });
 
-  h+=`<p class="eyebrow" style="margin-top:1.25rem;">Quick wins</p>
+  h+=`<p class="eyebrow" style="margin-top:1.25rem;">Top recommendations</p>
   <div class="report-card">
     <div class="report-card-hdr">
-      <span class="report-card-title">Top quick wins for your ${devName}</span>
-      <span class="report-card-sub">Zero usage impact</span>
+      <span class="report-card-title">Top recommendations for your ${devName}</span>
+      <span class="report-card-sub">Ranked by impact</span>
     </div>`;
   wins.forEach((w,i)=>{
     h+=`<div class="win-row"><div class="win-num">${i+1}</div><div><div class="win-title">${w.t}</div><div class="win-where">${w.w}</div></div></div>`;

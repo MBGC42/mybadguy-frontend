@@ -925,10 +925,10 @@ function renderResults() {
   const rc = overall >= 70 ? '#E24B4A' : overall >= 45 ? '#EF9F27' : '#22c55e';
   const rl = overall >= 70 ? 'High combined risk profile' : overall >= 45 ? 'Medium combined risk profile' : 'Low combined risk profile';
   const rd = overall >= 70
-    ? 'Several threat actors have strong interest in your profile. Start with the quick wins below.'
+    ? 'Several threat actors have strong interest in your profile. Start with the top recommendations below.'
     : overall >= 45
     ? 'Some threat actors find your profile moderately attractive. A few targeted changes will meaningfully reduce your exposure.'
-    : 'Your profile is less attractive to most threat actors. These quick wins close the remaining gaps.';
+    : 'Your profile is less attractive to most threat actors. These recommendations close the remaining gaps.';
 
   const GC = { technical:'#E24B4A', social:'#378ADD', financial:'#EF9F27' };
   const wins = getTopWins();
@@ -979,7 +979,7 @@ function renderResults() {
         ${actorRows}
       </div>
 
-      <p class="wins-title">Top quick wins for your ${DV.name} — zero usage impact</p>
+      <p class="wins-title">Top recommendations for your ${DV.name}</p>
       ${winCards}
 
       <div class="btn-row" style="margin-top:1.5rem;">
