@@ -507,28 +507,28 @@ function renderIntro() {
 
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
 
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
-          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">~2 min</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">01</div>
+        <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">~2 min</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.15);line-height:1;margin-bottom:.65rem;">01</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">Tell us about yourself</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">10 questions about your financial situation, tech habits, and how you use your device. Generic enough to protect your privacy.</p>
-          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:100%;background:var(--cyan);border-radius:1px;"></div></div>
+          <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:100%;background:#003F72;border-radius:1px;"></div></div>
         </div>
 
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
-          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">~1 min</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">02</div>
+        <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">~1 min</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.15);line-height:1;margin-bottom:.65rem;">02</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">We detect your device</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">Your browser tells us your device type, OS, and version automatically. We pull live CVE counts updated every 2 hours from NIST NVD.</p>
-          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:66%;background:var(--cyan);border-radius:1px;"></div></div>
+          <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:66%;background:#003F72;border-radius:1px;"></div></div>
         </div>
 
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
-          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">Instant</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">03</div>
+        <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">Instant</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.15);line-height:1;margin-bottom:.65rem;">03</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">See what they see</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">Seven threat actor scores, ranked by how attractive your profile is to each. Remediations ranked by what is being actively exploited right now.</p>
-          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:33%;background:var(--cyan);border-radius:1px;"></div></div>
+          <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:33%;background:#003F72;border-radius:1px;"></div></div>
         </div>
 
       </div>
@@ -1258,7 +1258,7 @@ function render() {
 
   // Light background for intro, questions, results, save
   // Dark background for scan animation, device confirm, calculating
-  const lightSteps = [0, 1, 2, 6, 7];
+  const lightSteps = [0, 1, 2, 4, 6, 7];
   document.body.classList.toggle('light-screen', lightSteps.includes(ST));
 
   if      (ST === 0) renderIntro();
