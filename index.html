@@ -195,7 +195,7 @@
         </ul>
         <div class="group-foot">
           <span class="group-foot-label">Driven by OS version &amp; patch status</span>
-          <a href="detect.html" class="group-foot-cta">See actors →</a>
+          <a href="/glossary.html#threat-actors" class="group-foot-cta">Learn more →</a>
         </div>
       </article>
       <article class="group-card social" role="listitem">
@@ -212,7 +212,7 @@
         </ul>
         <div class="group-foot">
           <span class="group-foot-label">Heavily age &amp; isolation weighted</span>
-          <a href="detect.html" class="group-foot-cta">See actors →</a>
+          <a href="/glossary.html#threat-actors" class="group-foot-cta">Learn more →</a>
         </div>
       </article>
       <article class="group-card financial" role="listitem">
@@ -229,7 +229,7 @@
         </ul>
         <div class="group-foot">
           <span class="group-foot-label">Driven by income &amp; location</span>
-          <a href="detect.html" class="group-foot-cta">See actors →</a>
+          <a href="/glossary.html#threat-actors" class="group-foot-cta">Learn more →</a>
         </div>
       </article>
     </div>
@@ -238,6 +238,11 @@
 
 <section aria-label="Our tools" class="fade-5">
   <div class="products-section">
+    <div style="margin-bottom:1.5rem;">
+      <p class="eyebrow">Our tools</p>
+      <h2 class="sec-title" style="margin-bottom:.35rem;">Three ways to see your risk</h2>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;max-width:520px;">Each tool gives you a different lens on your exposure — your devices, your links, and where you travel.</p>
+    </div>
     <div class="products-grid">
 
       <article class="product-card live" aria-label="Device and social risk profile — live">
@@ -406,7 +411,7 @@ function handleNotify(inputId,btn){
   const input=document.getElementById(inputId);
   const email=(input?.value||'').trim();
   if(!email||!email.includes('@')){input.focus();return;}
-  btn.textContent='You're on the list ✓';
+  btn.textContent='You\'re on the list ✓';
   btn.disabled=true;
   btn.style.color='var(--green)';
   btn.style.borderColor='rgba(34,197,94,.3)';
