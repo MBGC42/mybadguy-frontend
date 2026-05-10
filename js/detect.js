@@ -540,7 +540,7 @@ function renderIntro() {
         <p style="font-size:11px;color:var(--dim);margin-top:.75rem;">Free · No account required · No data stored without your consent</p>
       </div>
     </div>`;
-  document.getElementById('page').innerHTML = h;
+  document.getElementById('app').innerHTML = h;
 }
 
 // ── STEP 0 — SCAN ANIMATION ────────────────────────────
