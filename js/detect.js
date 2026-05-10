@@ -535,7 +535,7 @@ function renderIntro() {
 
       <div style="text-align:center;">
         <button class="btn-primary" data-action="intro-continue" style="font-size:15px;padding:12px 36px;">
-          Begin →
+          Agree →
         </button>
         <p style="font-size:11px;color:var(--dim);margin-top:.75rem;">Free · No account required · No data stored without your consent</p>
       </div>
