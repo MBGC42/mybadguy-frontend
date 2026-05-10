@@ -3,630 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Definitions, terms, and abbreviations used throughout MyBadGuy — plain-English explanations of security concepts.">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Plain-English definitions of every security term, abbreviation, and concept used across MyBadGuy.">
+  <meta name="theme-color" content="#003F72">
   <title>MyBadGuy — Glossary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/pages.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
-  <style>
-    /* ── Glossary-specific styles ── */
-    .gloss-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 2rem;
-    }
-    .gloss-nav-link {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 99px;
-      background: rgba(34,211,238,.08);
-      border: .5px solid rgba(34,211,238,.2);
-      color: var(--cyan);
-      text-decoration: none;
-      transition: background .15s;
-    }
-    .gloss-nav-link:hover { background: rgba(34,211,238,.16); }
-
-    .gloss-section { margin-bottom: 2.5rem; }
-    .gloss-section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--slate);
-      padding-bottom: .5rem;
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      margin-bottom: 1rem;
-    }
-
-    .gloss-term {
-      background: var(--lift);
-      border: .5px solid rgba(255,255,255,.07);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      margin-bottom: .65rem;
-    }
-    .gloss-term-hdr {
-      display: flex;
-      align-items: baseline;
-      gap: .65rem;
-      margin-bottom: .4rem;
-      flex-wrap: wrap;
-    }
-    .gloss-term-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--slate);
-    }
-    .gloss-term-abbr {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 99px;
-      background: rgba(34,211,238,.08);
-      border: .5px solid rgba(34,211,238,.2);
-      color: var(--cyan);
-      white-space: nowrap;
-    }
-    .gloss-term-body {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    .gloss-term-body a {
-      color: var(--cyan);
-      text-decoration: none;
-    }
-    .gloss-term-body a:hover { text-decoration: underline; }
-    .gloss-term-example {
-      margin-top: .5rem;
-      padding: .5rem .75rem;
-      background: rgba(34,211,238,.04);
-      border-left: 2px solid rgba(34,211,238,.25);
-      border-radius: 0 6px 6px 0;
-      font-size: 12px;
-      color: var(--dim);
-      line-height: 1.6;
-    }
-    .gloss-term-example strong { color: var(--muted); }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/optiona.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
 </head>
 <body>
-
 <nav class="nav" role="navigation" aria-label="Main navigation">
-  <a href="/" class="nav-brand">
+  <a href="/" class="nav-brand" aria-label="MyBadGuy home">
     <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
       <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#fff"/>
       <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
     </svg>
-    <span class="nav-name">MyBadGuy</span>
+    <span class="nav-wordmark">MyBadGuy</span>
   </a>
-  <a href="/" class="btn-back">← Home</a>
+  <div class="nav-links" role="list">
+    <a href="/" class="nav-link" role="listitem">Home</a>
+    <a href="/about.html" class="nav-link" role="listitem">About</a>
+    <a href="/sources.html" class="nav-link" role="listitem">Data sources</a>
+    <a href="/glossary.html" class="nav-link" aria-current="page" role="listitem">Glossary</a>
+  </div>
 </nav>
+<div class="page-hdr">
+  <div class="page-hdr-inner">
+    <p class="page-eyebrow">Reference</p>
+    <h1 class="page-h1">Glossary</h1>
+    <p class="page-sub">Plain-English definitions of every security term, abbreviation, and concept used across MyBadGuy. No jargon left unexplained.</p>
+  </div>
+</div>
+<main id="main">
+<div class="page-content">
 
-<main class="page" id="main">
-
-  <p class="page-eyebrow">Reference</p>
-  <h1 class="page-title">Glossary</h1>
-  <p class="page-intro">
-    Plain-English definitions of every security term, abbreviation, and concept used across MyBadGuy.
-    No jargon left unexplained.
-  </p>
-
-  <!-- Jump links -->
-  <nav class="gloss-nav" aria-label="Jump to section">
-    <a class="gloss-nav-link" href="#vulnerability">Vulnerability terms</a>
-    <a class="gloss-nav-link" href="#threat-actors">Threat actor terms</a>
-    <a class="gloss-nav-link" href="#tactics">ATT&CK tactics</a>
-    <a class="gloss-nav-link" href="#frameworks">Frameworks &amp; standards</a>
-    <a class="gloss-nav-link" href="#privacy">Privacy &amp; data terms</a>
-    <a class="gloss-nav-link" href="#scoring">Scoring terms</a>
-    <a class="gloss-nav-link" href="#orgs">Organizations</a>
+  <nav class="jump-links" aria-label="Jump to section">
+    <a class="jump-link" href="#vulnerability">Vulnerability terms</a>
+    <a class="jump-link" href="#threat-actors">Threat actors</a>
+    <a class="jump-link" href="#tactics">ATT&CK tactics</a>
+    <a class="jump-link" href="#frameworks">Frameworks</a>
+    <a class="jump-link" href="#privacy">Privacy terms</a>
+    <a class="jump-link" href="#scoring">Scoring terms</a>
+    <a class="jump-link" href="#orgs">Organizations</a>
   </nav>
 
-  <!-- ── VULNERABILITY TERMS ── -->
-  <section class="gloss-section" id="vulnerability" aria-labelledby="s-vuln">
-    <h2 class="gloss-section-title" id="s-vuln">Vulnerability terms</h2>
-
+<section class="section" id="vulnerability" aria-labelledby="s-vulnerability">
+    <h2 class="section-h2" id="s-vulnerability">Vulnerability terms</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Common Vulnerabilities and Exposures</span>
-        <span class="gloss-term-abbr">CVE</span>
-      </div>
-      <p class="gloss-term-body">A unique identifier assigned to a publicly known security flaw in software or hardware. Each CVE has a number (e.g. CVE-2024-23225) and a description of what the flaw is and which products are affected. CVEs are the universal language of vulnerability tracking — every security tool, vendor advisory, and database uses the same IDs.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> We count how many CVEs affect your platform and OS version, and how many are confirmed to be actively exploited in the wild.</div>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Common Vulnerabilities and Exposures</span><span class="gloss-term-abbr">CVE</span></div>
+      <p class="gloss-term-body">A unique identifier assigned to a publicly known security flaw in software or hardware. Each CVE has a number (e.g. CVE-2024-23225) and a description of what the flaw is and which products are affected. CVEs are the universal language of vulnerability tracking — every security tool, vendor advisory, and database uses the same IDs.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> We count how many CVEs affect your platform and OS version, and how many are confirmed to be actively exploited in the wild.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Common Vulnerability Scoring System</span><span class="gloss-term-abbr">CVSS</span></div>
+      <p class="gloss-term-body">A 0–10 numerical score measuring the severity of a CVE. It considers how the vulnerability can be reached (network vs. physical access), how complex it is to exploit, what permissions are needed, and how much damage it can cause. A score of 9.0–10.0 is Critical; 7.0–8.9 is High; 4.0–6.9 is Medium; below 4.0 is Low.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> We use CVSS vector strings to determine which ATT&CK tactics a CVE enables.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Known Exploited Vulnerability</span><span class="gloss-term-abbr">KEV</span></div>
+      <p class="gloss-term-body">A CVE that CISA has confirmed is actively being exploited in real attacks against real targets — right now. Being on the KEV list is the strongest signal that a vulnerability is dangerous. CISA requires federal agencies to patch KEV vulnerabilities within deadlines; consumers should treat them as urgent.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> KEV status is a key input to your patch score. A KEV CVE on your platform significantly increases your risk score.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Exploit Prediction Scoring System</span><span class="gloss-term-abbr">EPSS</span></div>
+      <p class="gloss-term-body">A machine learning model that estimates the probability (0.0–1.0) that a CVE will be exploited in the wild within the next 30 days. EPSS complements CVSS — a vulnerability can be low severity but have a high EPSS score because attackers have already built tools for it.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> We store EPSS scores alongside CVE data and weight high-probability vulnerabilities more heavily.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">In the wild</span></div>
+      <p class="gloss-term-body">A vulnerability is "in the wild" when there is confirmed evidence that attackers are actively using it in real attacks — not just in a research lab. In-wild CVEs are the ones that matter most because someone has already built the tool and is using it.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Patch</span></div>
+      <p class="gloss-term-body">A software update that fixes a security vulnerability. When a vendor releases a patch, they are closing a door that attackers could walk through. Being "unpatched" means you are still running software with a known flaw that has not been fixed on your device yet.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">End of life</span><span class="gloss-term-abbr">EOL</span></div>
+      <p class="gloss-term-body">When a vendor stops releasing security updates for an OS version or device. No more patches means every vulnerability discovered after that date remains permanently unfixed. An EOL device is permanently vulnerable to any new attack discovered from that point forward.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> An EOL OS is treated as 100% vulnerable regardless of CVE count. EOL versions are flagged in red.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Zero-day</span><span class="gloss-term-abbr">0-day</span></div>
+      <p class="gloss-term-body">A vulnerability that is exploited before the vendor knows about it — meaning there are zero days between discovery and attack. Zero-days are the most dangerous class of vulnerability because there is no patch available. Nation-state threat actors are the primary users of zero-days.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Indicator of Compromise</span><span class="gloss-term-abbr">IOC</span></div>
+      <p class="gloss-term-body">A piece of evidence that a device or network has been attacked or is communicating with an attacker's infrastructure. Common IOCs include IP addresses, domain names, and file hashes associated with known malware.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> We track active IOC counts from ThreatFox. High IOC counts boost Command &amp; Control and Exfiltration tactic signals.</div>
     </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Common Vulnerability Scoring System</span>
-        <span class="gloss-term-abbr">CVSS</span>
-      </div>
-      <p class="gloss-term-body">A 0–10 numerical score that measures the severity of a CVE. It considers how the vulnerability can be reached (network vs. physical access), how complex it is to exploit, what permissions are needed, and how much damage it can cause. A score of 9.0–10.0 is Critical; 7.0–8.9 is High; 4.0–6.9 is Medium; below 4.0 is Low.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> We use CVSS vector strings to determine which ATT&CK tactics a CVE enables — for example, a network-reachable CVE with no privileges required maps to Initial Access and Execution.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Known Exploited Vulnerability</span>
-        <span class="gloss-term-abbr">KEV</span>
-      </div>
-      <p class="gloss-term-body">A CVE that CISA has confirmed is actively being exploited in real attacks against real targets — right now. Being on the KEV list is the strongest signal that a vulnerability is dangerous. CISA requires federal agencies to patch KEV vulnerabilities within deadlines; consumers should treat them as urgent.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> KEV status is a key input to your patch score. A KEV CVE on your platform that you haven't patched significantly increases your risk score.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Exploit Prediction Scoring System</span>
-        <span class="gloss-term-abbr">EPSS</span>
-      </div>
-      <p class="gloss-term-body">A machine learning model that estimates the probability (0.0–1.0) that a CVE will be exploited in the wild within the next 30 days. EPSS complements CVSS — a vulnerability can be low severity but have a high EPSS score because attackers have already built tools for it. Maintained by FIRST.org.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> We store EPSS scores alongside CVE data to weight high-probability vulnerabilities more heavily in tactic signal calculations.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">In the wild</span>
-      </div>
-      <p class="gloss-term-body">A vulnerability is "in the wild" when there is confirmed evidence that attackers are actively using it in real attacks — not just in a research lab. In-wild CVEs are the ones that matter most because someone has already built the tool and is using it. Our primary source for in-wild confirmation is the CISA KEV catalog.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Exploitation suspected</span>
-      </div>
-      <p class="gloss-term-body">Apple's language for a CVE they believe may have been exploited before a patch was available. Apple uses the phrase "Apple is aware of a report that this issue may have been actively exploited." This is a leading indicator — it typically appears 48–72 hours before CISA adds the CVE to the KEV catalog.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> We flag exploitation_suspected CVEs separately and weight them heavily in your score even before KEV confirmation arrives.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Patch</span>
-      </div>
-      <p class="gloss-term-body">A software update that fixes a security vulnerability. When a vendor releases a patch, they're closing a door that attackers could walk through. Being "unpatched" means you're still running software with a known flaw that hasn't been fixed on your device yet.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">End of life</span>
-        <span class="gloss-term-abbr">EOL</span>
-      </div>
-      <p class="gloss-term-body">When a vendor stops releasing security updates for an OS version or device, that version is "end of life." No more patches means every vulnerability discovered after that date remains permanently unfixed. An EOL device is not just outdated — it is permanently vulnerable to any new attack discovered from that point forward.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> An EOL OS is treated as 100% vulnerable regardless of CVE count. We only display vendor-supported OS versions — EOL versions are flagged in red.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Zero-day</span>
-        <span class="gloss-term-abbr">0-day</span>
-      </div>
-      <p class="gloss-term-body">A vulnerability that is exploited before the vendor knows about it — meaning there are zero days between discovery and attack. Zero-days are the most dangerous class of vulnerability because there is no patch available. Nation-state threat actors are the primary users of zero-days due to their cost and rarity.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Indicator of Compromise</span>
-        <span class="gloss-term-abbr">IOC</span>
-      </div>
-      <p class="gloss-term-body">A piece of evidence that a device or network has been attacked or is communicating with an attacker's infrastructure. Common IOCs include IP addresses, domain names, and file hashes associated with known malware. Active IOC counts are a signal that malware campaigns are running on a platform right now.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> We track active IOC counts per platform from ThreatFox. High IOC counts boost Command &amp; Control and Exfiltration tactic signals in your remediation ranking.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Command and Control</span>
-        <span class="gloss-term-abbr">C2</span>
-      </div>
-      <p class="gloss-term-body">The infrastructure — servers, domains, IP addresses — that attackers use to communicate with malware installed on a victim's device. Once malware establishes a C2 connection, attackers can issue commands remotely: steal files, install more malware, or activate ransomware.</p>
-    </div>
-
   </section>
-
-  <!-- ── THREAT ACTOR TERMS ── -->
-  <section class="gloss-section" id="threat-actors" aria-labelledby="s-actors">
-    <h2 class="gloss-section-title" id="s-actors">Threat actor terms</h2>
-
+<section class="section" id="threat-actors" aria-labelledby="s-threat-actors">
+    <h2 class="section-h2" id="s-threat-actors">Threat actor terms</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Threat actor</span>
-      </div>
-      <p class="gloss-term-body">Any individual, group, or organization that poses a security threat. MyBadGuy tracks seven categories of threat actor — each with different motivations, capabilities, and interest in your specific profile. Your scores reflect how attractive your profile is to each type, not whether you have been compromised.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Advanced Persistent Threat</span>
-        <span class="gloss-term-abbr">APT</span>
-      </div>
-      <p class="gloss-term-body">A sophisticated, well-funded attacker — typically a nation-state or state-sponsored group — that conducts long-term, targeted intrusion campaigns. APTs are patient: they may spend months inside a target's systems before taking action. They use zero-days, custom malware, and supply chain attacks that most consumers will never encounter — unless their profile makes them a target.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> Your APT score is driven primarily by your public profile, role, and device patch status. Journalists, executives, activists, and government-adjacent individuals score highest.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Nation-state actor</span>
-      </div>
-      <p class="gloss-term-body">A threat actor that operates on behalf of, or is directly controlled by, a government. Nation-state actors have virtually unlimited resources, legal immunity in their home country, and strategic objectives (intelligence gathering, disruption, financial theft) that align with their government's interests. Examples include groups attributed to Russia, China, North Korea, and Iran.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Data broker</span>
-      </div>
-      <p class="gloss-term-body">A company that collects, aggregates, and sells personal information about individuals — without their meaningful consent. Data brokers compile records from hundreds of sources: public records, loyalty programs, app tracking, social media, and purchased datasets. The resulting profiles can include name, address, income, health conditions, political affiliation, and behavioral patterns.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> Data brokers are a passive threat — they don't hack you, they harvest you. Your data broker score is driven by your social media use, public profile, and app permissions.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Stalkerware</span>
-      </div>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Threat actor</span></div>
+      <p class="gloss-term-body">Any individual, group, or organization that poses a security threat. MyBadGuy tracks seven categories — each with different motivations, capabilities, and interest in your specific profile. Your scores reflect how attractive your profile is to each type, not whether you have been compromised.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Advanced Persistent Threat</span><span class="gloss-term-abbr">APT</span></div>
+      <p class="gloss-term-body">A sophisticated, well-funded attacker — typically a nation-state or state-sponsored group — that conducts long-term, targeted intrusion campaigns. APTs are patient: they may spend months inside a target's systems before taking action. They use zero-days, custom malware, and supply chain attacks.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> Your APT score is driven primarily by your public profile, role, and device patch status. Journalists, executives, and government-adjacent individuals score highest.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Data broker</span></div>
+      <p class="gloss-term-body">A company that collects, aggregates, and sells personal information about individuals — without their meaningful consent. Data brokers compile records from hundreds of sources: public records, loyalty programs, app tracking, social media, and purchased datasets.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> Data brokers are a passive threat — they do not hack you, they harvest you. Your data broker score is driven by social media use, public profile, and app permissions.</div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Stalkerware</span></div>
       <p class="gloss-term-body">Software secretly installed on a device to monitor someone's location, messages, calls, and activity — typically by an intimate partner or family member. Unlike legitimate parental controls, stalkerware hides itself from the device owner and sends data covertly. It is a tool of domestic abuse and coercive control.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Insider threat</span>
-      </div>
-      <p class="gloss-term-body">A threat from someone with legitimate access to an organization's systems — an employee, contractor, or business partner — who uses that access to steal data, commit fraud, or cause damage. Insider threats are particularly difficult to detect because the activity looks like normal use from the outside.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Phishing</span>
-      </div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Phishing</span></div>
       <p class="gloss-term-body">A social engineering attack where the attacker impersonates a trusted entity — a bank, a government agency, a tech company — to trick the victim into revealing credentials, clicking a malicious link, or transferring money. Phishing is the most common initial access method used by both cybercriminals and nation-state actors.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Ransomware</span></div>
+      <p class="gloss-term-body">Malware that encrypts a victim's files and demands payment — typically in cryptocurrency — for the decryption key. Modern ransomware groups also steal data before encrypting it and threaten to publish it publicly if not paid. Ransomware is responsible for the majority of financial losses from cybercrime.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Mobile Device Management</span><span class="gloss-term-abbr">MDM</span></div>
+      <p class="gloss-term-body">Software installed by an employer or institution that allows them to manage and monitor a device remotely. MDM can enforce security policies, wipe a device, install apps, and read certain device data. Having MDM on a personal device — or using a work device for personal activity — creates a dual exposure risk.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> MDM level is one of the 10 profile factors. A work-managed device significantly increases your insider threat and data broker scores.</div>
     </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Ransomware</span>
-      </div>
-      <p class="gloss-term-body">Malware that encrypts a victim's files and demands payment — typically in cryptocurrency — for the decryption key. Modern ransomware groups also steal data before encrypting it and threaten to publish it publicly if not paid ("double extortion"). Ransomware is responsible for the majority of financial losses from cybercrime.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Social engineering</span>
-      </div>
-      <p class="gloss-term-body">Manipulating people rather than machines to gain unauthorized access. Social engineering exploits trust, urgency, fear, and authority rather than technical vulnerabilities. It includes phishing, vishing (voice calls), smishing (SMS), and impersonation. It is effective regardless of how well-patched your device is.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Mobile Device Management</span>
-        <span class="gloss-term-abbr">MDM</span>
-      </div>
-      <p class="gloss-term-body">Software installed by an employer or institution that allows them to manage and monitor a device remotely. MDM can enforce security policies, wipe a device, install apps, and read certain device data. Having MDM on a personal device — or using a work device for personal activity — creates a dual exposure risk.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> MDM level is one of the 10 profile factors. A work-managed device on a personal account significantly increases your insider threat and data broker scores.</div>
-    </div>
-
   </section>
-
-  <!-- ── ATT&CK TACTICS ── -->
-  <section class="gloss-section" id="tactics" aria-labelledby="s-tactics">
-    <h2 class="gloss-section-title" id="s-tactics">ATT&CK tactics</h2>
-
-    <p class="section-sub">MITRE ATT&CK is a globally recognized framework that categorizes the techniques attackers use at each stage of an attack. Each tactic represents a goal the attacker is trying to achieve. We use these tactics to link live CVE data to the most relevant security recommendations for your profile. Click any tactic to read the full MITRE definition.</p>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0001/" target="_blank" rel="noopener noreferrer">Initial Access</a></span>
-        <span class="gloss-term-abbr">TA0001</span>
-      </div>
+<section class="section" id="tactics" aria-labelledby="s-tactics">
+    <h2 class="section-h2" id="s-tactics">ATT&CK tactics</h2>
+    <p class="prose">MITRE ATT&amp;CK is a globally recognized framework that categorizes the techniques attackers use at each stage of an attack. Each tactic represents a goal the attacker is trying to achieve. We use these tactics to link live CVE data to the most relevant security recommendations for your profile.</p><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0001/" target="_blank" rel="noopener noreferrer">Initial Access</a></span><span class="gloss-term-abbr">TA0001</span></div>
       <p class="gloss-term-body">How an attacker first gets into your device or account. Common methods include phishing emails, exploiting a vulnerability in a browser or app, and malicious downloads. This is the entry point — everything else follows from here.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0002/" target="_blank" rel="noopener noreferrer">Execution</a></span>
-        <span class="gloss-term-abbr">TA0002</span>
-      </div>
-      <p class="gloss-term-body">Running malicious code on your device. Once an attacker has initial access, they need to execute code to do anything useful — install malware, steal data, or establish persistence. Many CVEs enable execution by allowing untrusted code to run with elevated permissions.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0003/" target="_blank" rel="noopener noreferrer">Persistence</a></span>
-        <span class="gloss-term-abbr">TA0003</span>
-      </div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0002/" target="_blank" rel="noopener noreferrer">Execution</a></span><span class="gloss-term-abbr">TA0002</span></div>
+      <p class="gloss-term-body">Running malicious code on your device. Once an attacker has initial access, they need to execute code to do anything useful — install malware, steal data, or establish persistence.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0003/" target="_blank" rel="noopener noreferrer">Persistence</a></span><span class="gloss-term-abbr">TA0003</span></div>
       <p class="gloss-term-body">Maintaining access to your device across reboots, password changes, and app restarts. Attackers use persistence techniques to ensure their malware survives device restarts and keeps running in the background without your knowledge.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0004/" target="_blank" rel="noopener noreferrer">Privilege Escalation</a></span>
-        <span class="gloss-term-abbr">TA0004</span>
-      </div>
-      <p class="gloss-term-body">Gaining higher-level permissions than originally obtained. An attacker who gets in with limited access will try to escalate to administrator or root level — which removes most restrictions on what they can do to your device.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0005/" target="_blank" rel="noopener noreferrer">Defense Evasion</a></span>
-        <span class="gloss-term-abbr">TA0005</span>
-      </div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0004/" target="_blank" rel="noopener noreferrer">Privilege Escalation</a></span><span class="gloss-term-abbr">TA0004</span></div>
+      <p class="gloss-term-body">Gaining higher-level permissions than originally obtained. An attacker who gets in with limited access will try to escalate to administrator or root level — which removes most restrictions on what they can do.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0005/" target="_blank" rel="noopener noreferrer">Defense Evasion</a></span><span class="gloss-term-abbr">TA0005</span></div>
       <p class="gloss-term-body">Hiding from security tools and avoiding detection. Attackers disguise malware as legitimate apps, disable security features, and cover their tracks to stay on your device as long as possible without triggering alerts.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0006/" target="_blank" rel="noopener noreferrer">Credential Access</a></span>
-        <span class="gloss-term-abbr">TA0006</span>
-      </div>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0006/" target="_blank" rel="noopener noreferrer">Credential Access</a></span><span class="gloss-term-abbr">TA0006</span></div>
       <p class="gloss-term-body">Stealing usernames, passwords, authentication tokens, or biometric data. Credential theft allows attackers to impersonate you — logging into your bank, email, or cloud storage as if they were you. Stolen credentials are often sold and reused across multiple services.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0009/" target="_blank" rel="noopener noreferrer">Collection</a></span><span class="gloss-term-abbr">TA0009</span></div>
+      <p class="gloss-term-body">Harvesting data from your device before sending it to the attacker. This includes reading your messages, photos, contacts, location history, documents, and browser history. Collection happens silently in the background.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0011/" target="_blank" rel="noopener noreferrer">Command &amp; Control</a></span><span class="gloss-term-abbr">C2 · TA0011</span></div>
+      <p class="gloss-term-body">Communication between malware on your device and the attacker's servers. C2 channels allow attackers to issue commands remotely — telling malware when to activate, what to steal, or when to encrypt your files.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0010/" target="_blank" rel="noopener noreferrer">Exfiltration</a></span><span class="gloss-term-abbr">TA0010</span></div>
+      <p class="gloss-term-body">Sending your data off your device to the attacker. Exfiltration is the point at which data theft is complete — your photos, documents, passwords, or financial records have left your device and are in the attacker's hands.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0040/" target="_blank" rel="noopener noreferrer">Impact</a></span><span class="gloss-term-abbr">TA0040</span></div>
+      <p class="gloss-term-body">Causing direct harm — deleting your files, encrypting your device for ransom, wiping your phone, or locking you out of your accounts. Ransomware is the most common consumer-facing impact tactic.</p>
     </div>
-
+  </section>
+<section class="section" id="frameworks" aria-labelledby="s-frameworks">
+    <h2 class="section-h2" id="s-frameworks">Frameworks &amp; standards</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0007/" target="_blank" rel="noopener noreferrer">Discovery</a></span>
-        <span class="gloss-term-abbr">TA0007</span>
-      </div>
-      <p class="gloss-term-body">Mapping your device, accounts, and network. Before taking action, attackers enumerate what's available — what apps are installed, what accounts are logged in, what files are accessible, what network you're on. Discovery is reconnaissance from inside your device.</p>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">MITRE ATT&amp;CK</span></div>
+      <p class="gloss-term-body">A globally recognized knowledge base of adversary tactics and techniques based on real-world observations. Maintained by MITRE Corporation and used by security teams worldwide to understand, detect, and defend against attacks. Free and publicly available at <a href="https://attack.mitre.org" target="_blank" rel="noopener noreferrer">attack.mitre.org</a>.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">NIST Cybersecurity Framework</span><span class="gloss-term-abbr">NIST CSF 2.0</span></div>
+      <p class="gloss-term-body">A voluntary framework published by the National Institute of Standards and Technology that provides guidance for managing cybersecurity risk. Organizes security activities into six functions: Govern, Identify, Protect, Detect, Respond, and Recover. Many of our remediation recommendations are mapped to CSF 2.0 controls.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">CIS Controls</span><span class="gloss-term-abbr">CIS v8.1</span></div>
+      <p class="gloss-term-body">A prioritized set of cybersecurity best practices published by the Center for Internet Security. IG1 — which we focus on — represents the minimum cybersecurity hygiene for any individual or small organization.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Multi-Factor Authentication</span><span class="gloss-term-abbr">MFA · 2FA</span></div>
+      <p class="gloss-term-body">Requiring more than one form of verification to log in. The three factors are: something you know (password), something you have (phone, hardware key), and something you are (fingerprint, face). MFA means a stolen password alone is not enough to access your account.</p><div class="gloss-term-example"><strong>On MyBadGuy:</strong> Enabling MFA on key accounts is a Critical-priority recommendation for almost every threat actor type.</div>
     </div>
-
+  </section>
+<section class="section" id="privacy" aria-labelledby="s-privacy">
+    <h2 class="section-h2" id="s-privacy">Privacy &amp; data terms</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0009/" target="_blank" rel="noopener noreferrer">Collection</a></span>
-        <span class="gloss-term-abbr">TA0009</span>
-      </div>
-      <p class="gloss-term-body">Harvesting data from your device before sending it to the attacker. This includes reading your messages, photos, contacts, location history, documents, and browser history. Collection happens silently in the background while you use your device normally.</p>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">General Data Protection Regulation</span><span class="gloss-term-abbr">GDPR</span></div>
+      <p class="gloss-term-body">The European Union's comprehensive data privacy law. GDPR gives individuals the right to access, correct, delete, and port their personal data. It applies to any organization that processes data about EU residents.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">California Consumer Privacy Act</span><span class="gloss-term-abbr">CCPA · CPRA</span></div>
+      <p class="gloss-term-body">California's consumer privacy law. Gives California residents the right to know what personal data is collected about them, to delete it, to opt out of its sale, and to not be discriminated against for exercising these rights.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Tracker</span></div>
+      <p class="gloss-term-body">Code embedded in apps and websites that records your behavior — what you tap, how long you spend, where you go — and sends it to third parties for advertising and analytics. Most consumers have dozens of trackers running in apps they use daily.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Session storage</span></div>
+      <p class="gloss-term-body">A browser storage mechanism that holds data only for the duration of a browser session — deleted automatically when you close the tab. MyBadGuy stores your detection profile in session storage so your data never reaches our servers unless you actively choose to save it.</p>
     </div>
-
+  </section>
+<section class="section" id="scoring" aria-labelledby="s-scoring">
+    <h2 class="section-h2" id="s-scoring">Scoring terms</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0011/" target="_blank" rel="noopener noreferrer">Command &amp; Control</a></span>
-        <span class="gloss-term-abbr">C2 · TA0011</span>
-      </div>
-      <p class="gloss-term-body">Communication between malware on your device and the attacker's servers. C2 channels allow attackers to issue commands remotely — telling malware when to activate, what to steal, or when to encrypt your files. C2 traffic is often disguised as normal web traffic to avoid detection.</p>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Technical score</span></div>
+      <p class="gloss-term-body">A 0–99 score reflecting how vulnerable your device is to technical exploitation — based on your OS version, patch status, live CVE counts for your platform, device type, and work context. A higher technical score means your device has more unpatched vulnerabilities that the threat actor can exploit.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Social score</span></div>
+      <p class="gloss-term-body">A 0–99 score reflecting how susceptible your profile is to social engineering and targeting — based on your age, financial situation, social isolation, social media use, and public profile.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Combined score</span></div>
+      <p class="gloss-term-body">The average of your technical and social scores, rounded to the nearest whole number. Scores of 70–99 are High, 45–69 are Medium, and below 45 are Low. Each of the seven threat actors has their own combined score.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Patch score</span><span class="gloss-term-abbr">ps</span></div>
+      <p class="gloss-term-body">The number of unpatched CVEs on your platform at your OS version tier. This is a live count from our database, updated every two hours from NIST NVD. A patch score of 0 means you are fully current.</p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">Tactic signal</span></div>
+      <p class="gloss-term-body">A 0.0–1.0 weight representing how active a particular ATT&CK tactic is on your platform right now, based on live CVE data. Tactic signals are used to rank your recommendations — if Initial Access is highly active today, remediations that defend against it are surfaced first.</p>
     </div>
-
+  </section>
+<section class="section" id="orgs" aria-labelledby="s-orgs">
+    <h2 class="section-h2" id="s-orgs">Organizations</h2>
     <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0010/" target="_blank" rel="noopener noreferrer">Exfiltration</a></span>
-        <span class="gloss-term-abbr">TA0010</span>
-      </div>
-      <p class="gloss-term-body">Sending your data off your device to the attacker. Exfiltration is the point at which data theft is complete — your photos, documents, passwords, or financial records have left your device and are in the attacker's hands. Exfiltration often happens slowly to avoid triggering network alerts.</p>
+      <div class="gloss-term-hdr"><span class="gloss-term-name">CISA</span></div>
+      <p class="gloss-term-body">The Cybersecurity and Infrastructure Security Agency — a U.S. federal agency under the Department of Homeland Security. CISA maintains the Known Exploited Vulnerabilities catalog and publishes cybersecurity advisories. <a href="https://www.cisa.gov" target="_blank" rel="noopener noreferrer">cisa.gov</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">NIST</span></div>
+      <p class="gloss-term-body">The National Institute of Standards and Technology — a U.S. federal agency that publishes cybersecurity standards and guidelines including the NVD, CSF 2.0, and NIST SP 800-63B. <a href="https://www.nist.gov" target="_blank" rel="noopener noreferrer">nist.gov</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">MITRE Corporation</span></div>
+      <p class="gloss-term-body">A non-profit research organization that maintains the ATT&CK framework, the CVE program, and other critical security infrastructure. <a href="https://www.mitre.org" target="_blank" rel="noopener noreferrer">mitre.org</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">NVD</span></div>
+      <p class="gloss-term-body">The National Vulnerability Database — the U.S. government repository of CVE data maintained by NIST. NVD enriches CVE records with CVSS scores and affected product data. It is the primary source of CVE data for MyBadGuy, updated every two hours. <a href="https://nvd.nist.gov" target="_blank" rel="noopener noreferrer">nvd.nist.gov</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">MSRC</span></div>
+      <p class="gloss-term-body">The Microsoft Security Response Center — Microsoft's team responsible for investigating and responding to security vulnerabilities. MSRC publishes monthly security updates on Patch Tuesday with exploitability assessments for each CVE. <a href="https://msrc.microsoft.com" target="_blank" rel="noopener noreferrer">msrc.microsoft.com</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">abuse.ch</span></div>
+      <p class="gloss-term-body">A Swiss non-profit research project that tracks cybercrime infrastructure. Operates URLhaus (malware delivery URLs), MalwareBazaar (malware samples), and ThreatFox (threat intelligence IOCs) — all free, community-driven feeds. <a href="https://abuse.ch" target="_blank" rel="noopener noreferrer">abuse.ch</a></p>
+    </div><div class="gloss-term">
+      <div class="gloss-term-hdr"><span class="gloss-term-name">FBI IC3</span></div>
+      <p class="gloss-term-body">The Federal Bureau of Investigation's Internet Crime Complaint Center. IC3 collects and analyzes cybercrime complaints from the public and publishes an annual report. The IC3 2024 report is a primary source for our elder scammer and cybercriminal actor scoring. <a href="https://www.ic3.gov" target="_blank" rel="noopener noreferrer">ic3.gov</a></p>
     </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0040/" target="_blank" rel="noopener noreferrer">Impact</a></span>
-        <span class="gloss-term-abbr">TA0040</span>
-      </div>
-      <p class="gloss-term-body">Causing direct harm — deleting your files, encrypting your device for ransom, wiping your phone, or locking you out of your accounts. Impact tactics are the final stage of a destructive attack. Ransomware is the most common consumer-facing impact tactic.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name"><a href="https://attack.mitre.org/tactics/TA0037/" target="_blank" rel="noopener noreferrer">Anti-Detection</a></span>
-        <span class="gloss-term-abbr">TA0037</span>
-      </div>
-      <p class="gloss-term-body">Techniques used specifically on mobile devices to hide malicious apps and activity from the device owner and security tools. Stalkerware relies heavily on anti-detection — hiding its icon, disguising its processes, and suppressing notifications that would reveal its presence.</p>
-    </div>
-
   </section>
 
-  <!-- ── FRAMEWORKS & STANDARDS ── -->
-  <section class="gloss-section" id="frameworks" aria-labelledby="s-frameworks">
-    <h2 class="gloss-section-title" id="s-frameworks">Frameworks &amp; standards</h2>
+  <div class="cta-block" role="complementary">
+    <p class="cta-title">Ready to check your risk?</p>
+    <p class="cta-sub">Free · No account · Takes about 3 minutes</p>
+    <a href="/detect.html" class="cta-btn" role="button">Check my risk →</a>
+  </div>
 
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">MITRE ATT&CK</span>
-      </div>
-      <p class="gloss-term-body">A globally recognized knowledge base of adversary tactics and techniques based on real-world observations. ATT&CK — Adversarial Tactics, Techniques, and Common Knowledge — is maintained by MITRE Corporation and used by security teams worldwide to understand, detect, and defend against attacks. It covers Enterprise, Mobile, and ICS environments. Free and publicly available at <a href="https://attack.mitre.org" target="_blank" rel="noopener noreferrer">attack.mitre.org</a>.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">NIST Cybersecurity Framework</span>
-        <span class="gloss-term-abbr">NIST CSF 2.0</span>
-      </div>
-      <p class="gloss-term-body">A voluntary framework published by the National Institute of Standards and Technology that provides guidance for managing cybersecurity risk. CSF 2.0 organizes security activities into six functions: Govern, Identify, Protect, Detect, Respond, and Recover. Many of our remediation recommendations are mapped to CSF 2.0 controls.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">CIS Controls</span>
-        <span class="gloss-term-abbr">CIS v8.1</span>
-      </div>
-      <p class="gloss-term-body">A prioritized set of cybersecurity best practices published by the Center for Internet Security. The controls are organized into Implementation Groups (IG1, IG2, IG3) by organization size and maturity. IG1 — which we focus on — represents the minimum cybersecurity hygiene for any individual or small organization.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Multi-Factor Authentication</span>
-        <span class="gloss-term-abbr">MFA · 2FA</span>
-      </div>
-      <p class="gloss-term-body">Requiring more than one form of verification to log in to an account. The three factors are: something you know (password), something you have (phone, hardware key), and something you are (fingerprint, face). MFA means a stolen password alone is not enough to access your account. Two-factor authentication (2FA) is the most common form — password plus a code sent to your phone or generated by an app.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> Enabling MFA on key accounts is a Critical-priority remediation for almost every threat actor type because it blocks credential access attacks regardless of whether your password was stolen.</div>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">PBKDF2</span>
-      </div>
-      <p class="gloss-term-body">Password-Based Key Derivation Function 2 — a cryptographic algorithm used to securely store passwords. Instead of storing your PIN directly, we run it through PBKDF2 with SHA-256 and 100,000 iterations, making it computationally expensive to reverse even if our database were compromised. This is the same approach used by password managers and operating systems.</p>
-      <div class="gloss-term-example"><strong>On MyBadGuy:</strong> Your save PIN is never stored. Only the PBKDF2 hash is stored, salted with your unique scan ID. We cannot recover your PIN — if lost, start a fresh detection.</div>
-    </div>
-
-  </section>
-
-  <!-- ── PRIVACY & DATA TERMS ── -->
-  <section class="gloss-section" id="privacy" aria-labelledby="s-privacy">
-    <h2 class="gloss-section-title" id="s-privacy">Privacy &amp; data terms</h2>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">General Data Protection Regulation</span>
-        <span class="gloss-term-abbr">GDPR</span>
-      </div>
-      <p class="gloss-term-body">The European Union's comprehensive data privacy law. GDPR gives individuals the right to access, correct, delete, and port their personal data. It requires organizations to have a lawful basis for processing personal data, to notify users of breaches, and to implement privacy by design. It applies to any organization that processes data about EU residents.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">California Consumer Privacy Act</span>
-        <span class="gloss-term-abbr">CCPA · CPRA</span>
-      </div>
-      <p class="gloss-term-body">California's consumer privacy law, strengthened by the California Privacy Rights Act (CPRA). Gives California residents the right to know what personal data is collected about them, to delete it, to opt out of its sale, and to not be discriminated against for exercising these rights. Many data brokers are required to comply with CCPA opt-out requests.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Tracker</span>
-      </div>
-      <p class="gloss-term-body">Code embedded in apps and websites that records your behavior — what you tap, how long you spend, where you go — and sends it to third parties for advertising and analytics. Most consumers have dozens of trackers running in apps they use daily. Trackers are the primary data collection mechanism for the data broker ecosystem.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Session storage</span>
-      </div>
-      <p class="gloss-term-body">A browser storage mechanism that holds data only for the duration of a browser session — it is automatically deleted when you close the tab. MyBadGuy stores your detection profile in session storage so your data never reaches our servers unless you actively choose to save it.</p>
-    </div>
-
-  </section>
-
-  <!-- ── SCORING TERMS ── -->
-  <section class="gloss-section" id="scoring" aria-labelledby="s-scoring">
-    <h2 class="gloss-section-title" id="s-scoring">Scoring terms</h2>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Technical score</span>
-      </div>
-      <p class="gloss-term-body">A 0–99 score reflecting how vulnerable your device is to technical exploitation — based on your OS version, patch status, live CVE counts for your platform, device type, and work context. A higher technical score means your device has more unpatched vulnerabilities that the threat actor can exploit without any action from you.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Social score</span>
-      </div>
-      <p class="gloss-term-body">A 0–99 score reflecting how susceptible your profile is to social engineering and targeting — based on your age, financial situation, social isolation, social media use, and public profile. A higher social score means the threat actor finds your profile attractive for non-technical attacks like phishing, scams, and impersonation.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Combined score</span>
-      </div>
-      <p class="gloss-term-body">The average of your technical and social scores, rounded to the nearest whole number. This is your overall risk score for a given threat actor. Scores of 70–99 are High, 45–69 are Medium, and below 45 are Low. Each of the seven threat actors has their own combined score based on how they weight your profile factors.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Patch score</span>
-        <span class="gloss-term-abbr">ps</span>
-      </div>
-      <p class="gloss-term-body">The number of unpatched CVEs on your platform at your OS version tier. This is a live count from our database, updated every two hours from the NIST NVD. A patch score of 0 means you're fully current. A high patch score means there are many known vulnerabilities on your platform that haven't been fixed on your device.</p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">Tactic signal</span>
-      </div>
-      <p class="gloss-term-body">A 0.0–1.0 weight representing how active a particular ATT&CK tactic is on your platform right now, based on live CVE data. Tactic signals are used to rank your remediation recommendations — if Initial Access is highly active on your platform today, remediations that defend against Initial Access are surfaced first.</p>
-    </div>
-
-  </section>
-
-  <!-- ── ORGANIZATIONS ── -->
-  <section class="gloss-section" id="orgs" aria-labelledby="s-orgs">
-    <h2 class="gloss-section-title" id="s-orgs">Organizations</h2>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">CISA</span>
-      </div>
-      <p class="gloss-term-body">The Cybersecurity and Infrastructure Security Agency — a U.S. federal agency under the Department of Homeland Security. CISA maintains the Known Exploited Vulnerabilities catalog, publishes cybersecurity advisories, and provides free resources to individuals and organizations. <a href="https://www.cisa.gov" target="_blank" rel="noopener noreferrer">cisa.gov</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">NIST</span>
-      </div>
-      <p class="gloss-term-body">The National Institute of Standards and Technology — a U.S. federal agency that publishes cybersecurity standards, frameworks, and guidelines including the NVD, CSF 2.0, and NIST SP 800-63B (identity and authentication guidance). <a href="https://www.nist.gov" target="_blank" rel="noopener noreferrer">nist.gov</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">MITRE Corporation</span>
-      </div>
-      <p class="gloss-term-body">A non-profit research organization that operates federally funded research centers. MITRE maintains the ATT&CK framework, the CVE program (which assigns CVE IDs), and other critical security infrastructure. <a href="https://www.mitre.org" target="_blank" rel="noopener noreferrer">mitre.org</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">NVD</span>
-      </div>
-      <p class="gloss-term-body">The National Vulnerability Database — the U.S. government repository of CVE data, maintained by NIST. NVD enriches CVE records with CVSS scores, vulnerability type classifications, and affected product data. It is the primary source of CVE data for MyBadGuy, updated every two hours. <a href="https://nvd.nist.gov" target="_blank" rel="noopener noreferrer">nvd.nist.gov</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">MSRC</span>
-      </div>
-      <p class="gloss-term-body">The Microsoft Security Response Center — Microsoft's team responsible for investigating and responding to security vulnerabilities in Microsoft products. MSRC publishes monthly security updates on Patch Tuesday (second Tuesday of each month) with exploitability assessments for each CVE. <a href="https://msrc.microsoft.com" target="_blank" rel="noopener noreferrer">msrc.microsoft.com</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">abuse.ch</span>
-      </div>
-      <p class="gloss-term-body">A Swiss non-profit research project that tracks cybercrime infrastructure. abuse.ch operates URLhaus (malware delivery URLs), MalwareBazaar (malware samples), and ThreatFox (threat intelligence IOCs) — all free, community-driven feeds used by security researchers worldwide. <a href="https://abuse.ch" target="_blank" rel="noopener noreferrer">abuse.ch</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">FIRST</span>
-      </div>
-      <p class="gloss-term-body">The Forum of Incident Response and Security Teams — an international confederation of incident response teams. FIRST maintains the EPSS (Exploit Prediction Scoring System) and coordinates global incident response. <a href="https://www.first.org" target="_blank" rel="noopener noreferrer">first.org</a></p>
-    </div>
-
-    <div class="gloss-term">
-      <div class="gloss-term-hdr">
-        <span class="gloss-term-name">FBI IC3</span>
-      </div>
-      <p class="gloss-term-body">The Federal Bureau of Investigation's Internet Crime Complaint Center. IC3 collects and analyzes cybercrime complaints from the public and publishes an annual report with statistics on fraud types, victim demographics, and financial losses. The IC3 2024 report is a primary source for our elder scammer and cybercriminal actor scoring. <a href="https://www.ic3.gov" target="_blank" rel="noopener noreferrer">ic3.gov</a></p>
-    </div>
-
-  </section>
-
+</div>
 </main>
-
 <footer class="footer" role="contentinfo">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <svg width="20" height="12" viewBox="0 0 100 60" aria-hidden="true">
-        <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-        <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="50" cy="30" r="7" fill="#94a3b8"/>
-        <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
-      </svg>
-      <div>
-        <div class="footer-wordmark">MyBadGuy</div>
-        <div class="footer-tagline">Consumer threat intelligence</div>
+    <div>
+      <div class="footer-brand">
+        <svg width="22" height="14" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="50" cy="30" r="7" fill="rgba(255,255,255,.5)"/>
+          <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+        </svg>
+        <span class="footer-wordmark">MyBadGuy</span>
       </div>
+      <p class="footer-tagline">Consumer threat intelligence</p>
     </div>
     <nav class="footer-links" aria-label="Footer navigation">
-      <a href="/"               class="footer-link">Home</a>
-      <a href="/about.html"     class="footer-link">About</a>
-      <a href="/sources.html"   class="footer-link">Data sources</a>
-      <a href="/glossary.html"  class="footer-link" aria-current="page">Glossary</a>
-      <a href="/privacy.html"   class="footer-link">Privacy policy</a>
+      <a href="/"              class="footer-link">Home</a>
+      <a href="/about.html"    class="footer-link">About</a>
+      <a href="/sources.html"  class="footer-link">Data sources</a>
+      <a href="/glossary.html" class="footer-link" aria-current="page">Glossary</a>
+      <a href="/privacy.html"  class="footer-link">Privacy policy</a>
+      <a href="/siteview.html" class="footer-link">What sites see</a>
       <a href="mailto:support@mybadguy.com" class="footer-link">Contact</a>
     </nav>
   </div>
 </footer>
-
+<p class="nvd-attr">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
 </body>
 </html>

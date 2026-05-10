@@ -3,430 +3,320 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MyBadGuy data sources — the authoritative databases, government reports, and research that power our threat actor scoring.">
-  <meta name="theme-color" content="#0f172a">
-  <title>MyBadGuy — Data Sources</title>
+  <meta name="description" content="Every data source used by MyBadGuy — with update schedules, licenses, and direct links.">
+  <meta name="theme-color" content="#003F72">
+  <title>MyBadGuy — Data sources</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/pages.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/optiona.css">
+  <style>
+    /* Sources page extras */
+    .source-card{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:18px;margin-bottom:12px;position:relative;padding-top:42px;}
+    .source-badge{position:absolute;top:14px;right:14px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;}
+    .badge-live{background:#D4EDDA;color:#155724;border:1px solid #c3e6cb;}
+    .badge-annual{background:#CCE5FF;color:#004085;border:1px solid #b8daff;}
+    .source-name{font-size:17px;font-weight:600;color:var(--slate);margin-bottom:3px;}
+    .source-org{font-size:13px;color:var(--dim);margin-bottom:10px;}
+    .source-desc{font-size:15px;color:var(--mid);line-height:1.65;margin-bottom:8px;}
+    .source-stat{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--light);border:1px solid var(--bdr);color:var(--navy);margin:0 4px 4px 0;}
+    .source-update{font-size:13px;color:var(--dim);margin:6px 0 4px;}
+    .source-link{font-size:14px;font-weight:500;color:var(--navy);}
+    /* Scoring table */
+    .score-table{width:100%;border-collapse:collapse;font-size:15px;margin-top:12px;}
+    .score-table th{text-align:left;font-size:12px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:2px solid var(--bdr);}
+    .score-table td{padding:10px;border-bottom:1px solid var(--bdr);color:var(--mid);vertical-align:top;line-height:1.5;}
+    .score-table td:first-child{color:var(--slate);font-weight:500;white-space:nowrap;}
+    .score-table tr:last-child td{border-bottom:none;}
+    .formula{font-family:monospace;font-size:13px;color:var(--navy);background:var(--light);border:1px solid var(--bdr);border-radius:6px;padding:12px 14px;margin:10px 0;white-space:pre;overflow-x:auto;line-height:1.8;}
+    .score-block{background:var(--light);border:1px solid var(--bdr);border-radius:8px;padding:16px 18px;margin-bottom:12px;}
+    .score-block h3{font-size:17px;font-weight:600;color:var(--slate);margin-bottom:8px;}
+    .score-block p{font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:8px;}
+    .score-block p:last-child{margin-bottom:0;}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
 </head>
 <body>
-
 <nav class="nav" role="navigation" aria-label="Main navigation">
-  <a href="/" class="nav-brand">
+  <a href="/" class="nav-brand" aria-label="MyBadGuy home">
     <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
       <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="50" cy="30" r="7" fill="#f1f5f9"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#fff"/>
       <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
     </svg>
-    <span class="nav-name">MyBadGuy</span>
+    <span class="nav-wordmark">MyBadGuy</span>
   </a>
-  <a href="/" class="btn-back">← Home</a>
-</nav>
-
-<main class="page" id="main">
-
-  <p class="page-eyebrow">Transparency</p>
-  <h1 class="page-title">Data sources &amp; methodology</h1>
-  <p class="page-intro">
-    Every score on MyBadGuy is derived from authoritative, publicly available data. We do not invent threat statistics. We do not exaggerate risk to drive engagement. This page documents exactly where our data comes from, how often it is updated, and how it feeds into your score.
-  </p>
-
-  <!-- PRINCIPLES -->
-  <div class="principles-grid" role="list">
-    <div class="principle" role="listitem">
-      <div class="principle-icon" aria-hidden="true">📖</div>
-      <div class="principle-title">Factual only</div>
-      <p class="principle-body">Every claim is sourced to a government report, peer-reviewed research, or an authoritative security database. We do not use estimates or vendor marketing data.</p>
-    </div>
-    <div class="principle" role="listitem">
-      <div class="principle-icon" aria-hidden="true">🔄</div>
-      <div class="principle-title">Automatically updated</div>
-      <p class="principle-body">Live sources are ingested on automated schedules — not manually. Scores reflect the current state of the threat landscape, not a snapshot from a year ago.</p>
-    </div>
-    <div class="principle" role="listitem">
-      <div class="principle-icon" aria-hidden="true">🔎</div>
-      <div class="principle-title">Auditable</div>
-      <p class="principle-body">Every source listed here is publicly accessible. You can verify any statistic we cite by visiting the linked source directly. Nothing is behind a paywall.</p>
-    </div>
-    <div class="principle" role="listitem">
-      <div class="principle-icon" aria-hidden="true">⚖️</div>
-      <div class="principle-title">No shame, no exaggeration</div>
-      <p class="principle-body">Scores reflect your actual exposure profile — not worst-case fear. A lower score is genuinely lower risk. We do not inflate numbers to drive anxiety.</p>
-    </div>
+  <div class="nav-links" role="list">
+    <a href="/" class="nav-link" role="listitem">Home</a>
+    <a href="/about.html" class="nav-link" role="listitem">About</a>
+    <a href="/sources.html" class="nav-link" aria-current="page" role="listitem">Data sources</a>
+    <a href="/glossary.html" class="nav-link" role="listitem">Glossary</a>
   </div>
+</nav>
+<div class="page-hdr">
+  <div class="page-hdr-inner">
+    <p class="page-eyebrow">Transparency</p>
+    <h1 class="page-h1">Our data sources</h1>
+    <p class="page-sub">Every threat score is derived from publicly available, authoritative sources. No proprietary feeds, no vendor bias. Updated automatically on a fixed schedule.</p>
+  </div>
+</div>
+<main id="main">
+<div class="page-content">
 
-  <!-- LIVE SOURCES -->
-  <section class="section" aria-labelledby="live-heading">
-    <h2 class="section-title" id="live-heading">Live data sources</h2>
-    <p class="section-sub">These sources are ingested automatically on a recurring schedule and directly influence your technical risk scores.</p>
+  <nav class="jump-links" aria-label="Jump to section">
+    <a class="jump-link" href="#live">Live sources</a>
+    <a class="jump-link" href="#annual">Annual reports</a>
+    <a class="jump-link" href="#methodology">Scoring methodology</a>
+    <a class="jump-link" href="#limits">What we do not do</a>
+  </nav>
+
+  <section class="section" id="live" aria-labelledby="live-h">
+    <h2 class="section-h2" id="live-h">Live data sources</h2>
+    <p class="prose">These sources are ingested automatically on a recurring schedule and directly influence your technical risk scores.</p>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Every 2 hrs</span>
-      <div class="source-body">
-        <div class="source-name">National Vulnerability Database (NVD)</div>
-        <div class="source-org">National Institute of Standards and Technology (NIST) · U.S. Department of Commerce</div>
-        <p class="source-desc">The authoritative U.S. government repository of vulnerability management data. Every CVE (Common Vulnerability and Exposure) assigned by MITRE is enriched here with CVSS severity scores, affected version ranges, and configuration data. We query NVD for CVEs affecting iOS, iPadOS, Android, macOS, and Windows 11 and store them in our database.</p>
-        <span class="source-stat" data-stat="cve_total" data-fmt="CVEs across 5 platforms">342+ CVEs across 5 platforms</span>
-        <div class="source-update">Updated every 2 hours via NVD REST API v2.0 · API key required (free)</div>
-        <div><a href="https://nvd.nist.gov" class="source-link" target="_blank" rel="noopener noreferrer">nvd.nist.gov →</a></div>
-        <p style="font-size:11px;color:var(--dim);margin-top:5px;">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
-      </div>
+      <div class="source-name">National Vulnerability Database (NVD)</div>
+      <div class="source-org">NIST · U.S. Department of Commerce</div>
+      <p class="source-desc">The authoritative U.S. government repository of vulnerability management data. Every CVE is enriched here with CVSS severity scores, affected version ranges, and configuration data. We query NVD for CVEs affecting iOS, iPadOS, Android, macOS, and Windows.</p>
+      <span class="source-stat" data-stat="cve_total" data-fmt="CVEs across 5 platforms">2,181 CVEs across 5 platforms</span>
+      <div class="source-update">Updated every 2 hours via NVD REST API v2.0</div>
+      <div><a href="https://nvd.nist.gov" class="source-link" target="_blank" rel="noopener noreferrer">nvd.nist.gov →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">Known Exploited Vulnerabilities (KEV) Catalog</div>
-        <div class="source-org">Cybersecurity and Infrastructure Security Agency (CISA) · U.S. Department of Homeland Security</div>
-        <p class="source-desc">CISA's authoritative catalog of vulnerabilities that have been confirmed as actively exploited in the wild. A CVE appearing in the KEV catalog means it has been weaponized against real targets — not just theoretically possible. We cross-reference every CVE in our database against the KEV catalog daily and elevate scores accordingly. The KEV carries far more scoring weight than a CVE with no in-wild confirmation.</p>
-        <span class="source-stat" data-stat="kev_total" data-fmt="confirmed in-wild CVEs">1,587 confirmed in-wild CVEs</span>
-        <span class="source-stat" style="margin-left:6px;" data-stat="kev_ios_ipad" data-fmt="affecting iOS/iPadOS">52 affecting iOS/iPadOS</span>
-        <div class="source-update">Updated daily via GitHub mirror (cisagov/kev-data) · CC0 public domain license</div>
-        <div><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" class="source-link" target="_blank" rel="noopener noreferrer">cisa.gov/kev →</a></div>
-      </div>
+      <div class="source-name">Known Exploited Vulnerabilities (KEV) Catalog</div>
+      <div class="source-org">CISA · U.S. Department of Homeland Security</div>
+      <p class="source-desc">CISA's authoritative catalog of vulnerabilities confirmed as actively exploited in the wild. A CVE in KEV has been weaponized against real targets — not just theoretically possible. We cross-reference every CVE in our database against KEV daily and elevate scores accordingly.</p>
+      <span class="source-stat" data-stat="kev_total" data-fmt="confirmed in-wild CVEs">419 confirmed in-wild CVEs</span>
+      <div class="source-update">Updated daily · CC0 public domain license</div>
+      <div><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" class="source-link" target="_blank" rel="noopener noreferrer">cisa.gov/kev →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Weekly</span>
-      <div class="source-body">
-        <div class="source-name">MITRE ATT&amp;CK® Knowledge Base</div>
-        <div class="source-org">MITRE Corporation</div>
-        <p class="source-desc">The globally recognised knowledge base of adversary tactics, techniques, and procedures based on real-world observations. We ingest the Enterprise ATT&amp;CK collection for named threat actor groups (173 groups, including nation-state APTs and cybercriminal organisations) and the Mobile ATT&amp;CK collection for techniques targeting iOS and Android devices. Each group is mapped to our consumer actor categories and flagged if it is known to target individual consumers rather than enterprises.</p>
-        <span class="source-stat" data-stat="apt_groups" data-fmt="APT groups">127 APT groups</span>
-        <span class="source-stat" style="margin-left:6px;" data-stat="cybercriminal_groups" data-fmt="cybercriminal groups">36 cybercriminal groups</span>
-        <span class="source-stat" style="margin-left:6px;" data-stat="mobile_techniques" data-fmt="mobile techniques">189 mobile techniques</span>
-        <div class="source-update">Updated weekly via TAXII 2.1 API · CC BY 4.0 license</div>
-        <div><a href="https://attack.mitre.org" class="source-link" target="_blank" rel="noopener noreferrer">attack.mitre.org →</a></div>
-      </div>
+      <div class="source-name">MITRE ATT&amp;CK® Knowledge Base</div>
+      <div class="source-org">MITRE Corporation</div>
+      <p class="source-desc">The globally recognised knowledge base of adversary tactics, techniques, and procedures. We ingest Enterprise ATT&CK for named threat actor groups and Mobile ATT&CK for techniques targeting iOS and Android. Each group is mapped to our consumer actor categories.</p>
+      <span class="source-stat" data-stat="apt_groups" data-fmt="APT groups">127 APT groups</span>
+      <span class="source-stat" data-stat="cybercriminal_groups" data-fmt="cybercriminal groups">36 cybercriminal groups</span>
+      <span class="source-stat" data-stat="mobile_techniques" data-fmt="mobile techniques">189 mobile techniques</span>
+      <div class="source-update">Updated weekly via TAXII 2.1 API · CC BY 4.0</div>
+      <div><a href="https://attack.mitre.org" class="source-link" target="_blank" rel="noopener noreferrer">attack.mitre.org →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Hourly</span>
-      <div class="source-body">
-        <div class="source-name">OpenPhish</div>
-        <div class="source-org">OpenPhish Community</div>
-        <p class="source-desc">A community-maintained feed of verified active phishing URLs. We monitor this feed hourly for phishing campaigns targeting Apple, Google, and Microsoft brand impersonation — the primary delivery vectors for credential theft against consumers. Phishing velocity (rate of active campaigns per platform) feeds into social engineering scores.</p>
-        <div class="source-update">Updated hourly · Free community feed · openphish.com</div>
-        <div><a href="https://openphish.com" class="source-link" target="_blank" rel="noopener noreferrer">openphish.com →</a></div>
-      </div>
+      <div class="source-name">OpenPhish</div>
+      <div class="source-org">OpenPhish Community</div>
+      <p class="source-desc">A community-maintained feed of verified active phishing URLs. We monitor this feed hourly for phishing campaigns targeting Apple, Google, and Microsoft — the primary delivery vectors for credential theft against consumers.</p>
+      <div class="source-update">Updated hourly · Free community feed</div>
+      <div><a href="https://openphish.com" class="source-link" target="_blank" rel="noopener noreferrer">openphish.com →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">Apple Security Advisories</div>
-        <div class="source-org">Apple Inc.</div>
-        <p class="source-desc">Apple's official security release feed, published at support.apple.com. We parse individual advisory pages daily to extract CVE IDs, affected platforms (iOS, iPadOS, macOS), exploitation status, and point release version numbers. Apple's advisory language "Apple is aware of a report that this issue may have been exploited" is tracked as an exploitation signal — Apple typically leads CISA's KEV catalog by 48–72 hours on iOS exploits.</p>
-        <div class="source-update">Fetched daily · OS point release data for iOS, iPadOS, and macOS</div>
-        <div><a href="https://support.apple.com/en-us/100100" class="source-link" target="_blank" rel="noopener noreferrer">Apple security releases →</a></div>
-      </div>
+      <div class="source-name">Apple Security Advisories</div>
+      <div class="source-org">Apple Inc.</div>
+      <p class="source-desc">Apple's official security release feed. We parse advisory pages daily to extract CVE IDs, affected platforms, exploitation status, and point release version numbers. Apple's advisory language about potential exploitation typically leads CISA's KEV catalog by 48–72 hours on iOS exploits.</p>
+      <div class="source-update">Fetched daily · iOS, iPadOS, and macOS</div>
+      <div><a href="https://support.apple.com/en-us/100100" class="source-link" target="_blank" rel="noopener noreferrer">Apple security releases →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Monthly</span>
-      <div class="source-body">
-        <div class="source-name">Microsoft Security Response Center (MSRC)</div>
-        <div class="source-org">Microsoft Corporation</div>
-        <p class="source-desc">Microsoft's Patch Tuesday security bulletins published monthly. We ingest the current and prior month's bulletins via the MSRC CVRF REST API and extract Windows CVEs with their exploitability assessments — Exploitation Detected, Exploitation More Likely, or Exploitation Less Likely. CVEs marked "Exploitation Detected" set our in-wild flag and elevate Windows technical scores.</p>
-        <div class="source-update">Fetched monthly · Second Tuesday of each month · No API key required</div>
-        <div><a href="https://msrc.microsoft.com" class="source-link" target="_blank" rel="noopener noreferrer">msrc.microsoft.com →</a></div>
-      </div>
+      <div class="source-name">Microsoft Security Response Center (MSRC)</div>
+      <div class="source-org">Microsoft Corporation</div>
+      <p class="source-desc">Microsoft's Patch Tuesday security bulletins. We ingest bulletins via the MSRC CVRF REST API and extract Windows CVEs with exploitability assessments. CVEs marked "Exploitation Detected" set our in-wild flag and elevate Windows technical scores.</p>
+      <div class="source-update">Fetched monthly · Second Tuesday of each month</div>
+      <div><a href="https://msrc.microsoft.com" class="source-link" target="_blank" rel="noopener noreferrer">msrc.microsoft.com →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">OS Lifecycle Data</div>
-        <div class="source-org">endoflife.date · MIT License</div>
-        <p class="source-desc">A community-maintained database of OS release cycles, support end dates, and latest version numbers for all five platforms we track. We use this to determine whether a detected OS version is current, behind, or end-of-life — a key input into patch status scoring. An end-of-life OS is treated as fully unpatched regardless of CVE counts, since no further security updates will be issued by the vendor.</p>
-        <div class="source-update">Updated daily · Covers iOS, iPadOS, Android, macOS, and Windows</div>
-        <div><a href="https://endoflife.date" class="source-link" target="_blank" rel="noopener noreferrer">endoflife.date →</a></div>
-      </div>
+      <div class="source-name">OS Lifecycle Data</div>
+      <div class="source-org">endoflife.date · MIT License</div>
+      <p class="source-desc">A community-maintained database of OS release cycles, support end dates, and latest version numbers. We use this to determine whether your OS version is current, behind, or end-of-life. An end-of-life OS is treated as fully unpatched — no further security updates will ever be issued.</p>
+      <div class="source-update">Updated daily · Covers iOS, iPadOS, Android, macOS, Windows</div>
+      <div><a href="https://endoflife.date" class="source-link" target="_blank" rel="noopener noreferrer">endoflife.date →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">Exploit Prediction Scoring System (EPSS)</div>
-        <div class="source-org">FIRST.org · Forum of Incident Response and Security Teams</div>
-        <p class="source-desc">A machine learning model that estimates the probability of a CVE being exploited in the wild within the next 30 days, scored 0.0–1.0. EPSS complements CVSS severity scores — a CVE can be low severity but high exploitation probability (or vice versa). We store EPSS scores alongside CVE data and weight high-probability CVEs more heavily in tactic signal calculations.</p>
-        <div class="source-update">Updated daily via FIRST.org CSV feed · Free, no auth required</div>
-        <div><a href="https://www.first.org/epss" class="source-link" target="_blank" rel="noopener noreferrer">first.org/epss →</a></div>
-      </div>
+      <div class="source-name">Exploit Prediction Scoring System (EPSS)</div>
+      <div class="source-org">FIRST.org</div>
+      <p class="source-desc">A machine learning model that estimates the probability of a CVE being exploited within the next 30 days. EPSS complements CVSS severity scores — a CVE can be low severity but high exploitation probability. We weight high-probability CVEs more heavily in tactic signal calculations.</p>
+      <div class="source-update">Updated daily via FIRST.org CSV feed · Free</div>
+      <div><a href="https://www.first.org/epss" class="source-link" target="_blank" rel="noopener noreferrer">first.org/epss →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">URLhaus</div>
-        <div class="source-org">abuse.ch</div>
-        <p class="source-desc">A community-driven database of URLs actively distributing malware. Unlike phishing feeds (which track credential-theft pages), URLhaus tracks active malware delivery — the URLs used to push ransomware, banking trojans, and remote access tools onto devices. We count active malware delivery URLs per platform and use this as a signal for Execution and Initial Access tactic weighting in remediation ranking.</p>
-        <div class="source-update">Updated daily · Free API · abuse.ch community project</div>
-        <div><a href="https://urlhaus.abuse.ch" class="source-link" target="_blank" rel="noopener noreferrer">urlhaus.abuse.ch →</a></div>
-      </div>
-    </div>
-
-    <div class="source-card">
-      <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">MalwareBazaar</div>
-        <div class="source-org">abuse.ch</div>
-        <p class="source-desc">A repository of malware samples shared by security researchers globally. We query recent sample counts and top malware families per platform to measure active malware volume. Platforms with high recent sample counts see elevated Execution tactic signals, which boosts the priority of patch-status and app-permission remediations in your results.</p>
-        <div class="source-update">Updated daily · Free API · abuse.ch community project</div>
-        <div><a href="https://bazaar.abuse.ch" class="source-link" target="_blank" rel="noopener noreferrer">bazaar.abuse.ch →</a></div>
-      </div>
-    </div>
-
-    <div class="source-card">
-      <span class="source-badge badge-live">Live · Daily</span>
-      <div class="source-body">
-        <div class="source-name">ThreatFox</div>
-        <div class="source-org">abuse.ch</div>
-        <p class="source-desc">A platform for sharing indicators of compromise (IOCs) — IP addresses and domains actively used by malware for command-and-control (C2) communication. We track active C2 IOC counts per platform. High IOC counts signal active malware campaigns and boost Command &amp; Control and Exfiltration tactic weights in remediation ranking.</p>
-        <div class="source-update">Updated daily · Free API · abuse.ch community project</div>
-        <div><a href="https://threatfox.abuse.ch" class="source-link" target="_blank" rel="noopener noreferrer">threatfox.abuse.ch →</a></div>
-      </div>
+      <div class="source-name">URLhaus · MalwareBazaar · ThreatFox</div>
+      <div class="source-org">abuse.ch</div>
+      <p class="source-desc">Three community-driven threat intelligence feeds from abuse.ch. URLhaus tracks active malware delivery URLs. MalwareBazaar tracks active malware sample counts per platform. ThreatFox tracks active command-and-control IOCs. Together these feed into our ATT&CK tactic signal calculations.</p>
+      <div class="source-update">Updated daily · Free APIs · Community project</div>
+      <div><a href="https://abuse.ch" class="source-link" target="_blank" rel="noopener noreferrer">abuse.ch →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-live">Live · Weekly</span>
-      <div class="source-body">
-        <div class="source-name">Ransomware.live</div>
-        <div class="source-org">Ransomware.live · Community project</div>
-        <p class="source-desc">Tracks active ransomware groups and their confirmed victims, aggregated from ransomware gang leak sites. We monitor total active groups, victim counts over the last 90 days, and Windows-focused groups specifically. This data feeds into cybercriminal actor scoring — ransomware is the highest-financial-impact threat category in the FBI IC3 2024 report.</p>
-        <div class="source-update">Updated weekly · Free API · no auth required</div>
-        <div><a href="https://www.ransomware.live" class="source-link" target="_blank" rel="noopener noreferrer">ransomware.live →</a></div>
-      </div>
+      <div class="source-name">Ransomware.live</div>
+      <div class="source-org">Ransomware.live · Community project</div>
+      <p class="source-desc">Tracks active ransomware groups and their confirmed victims, aggregated from ransomware gang leak sites. We monitor total active groups, victim counts over 90 days, and Windows-focused groups. Ransomware is the highest-financial-impact threat category in the FBI IC3 2024 report.</p>
+      <div class="source-update">Updated weekly · Free API</div>
+      <div><a href="https://www.ransomware.live" class="source-link" target="_blank" rel="noopener noreferrer">ransomware.live →</a></div>
     </div>
   </section>
 
-  <!-- ANNUAL SOURCES -->
-  <section class="section" aria-labelledby="annual-heading">
-    <h2 class="section-title" id="annual-heading">Annual report sources</h2>
-    <p class="section-sub">These government reports are published annually and provide the statistical foundation for our social engineering and consumer-targeting scores. They are reviewed and updated in our scoring model each year on publication.</p>
+  <section class="section" id="annual" aria-labelledby="annual-h">
+    <h2 class="section-h2" id="annual-h">Annual report sources</h2>
+    <p class="prose">These government reports are published annually and provide the statistical foundation for our social engineering and consumer-targeting scores.</p>
 
     <div class="source-card">
       <span class="source-badge badge-annual">Annual · April</span>
-      <div class="source-body">
-        <div class="source-name">Internet Crime Report (IC3)</div>
-        <div class="source-org">FBI Internet Crime Complaint Center (IC3)</div>
-        <p class="source-desc">The FBI's annual aggregation of consumer-reported cybercrime complaints. The IC3 report provides the statistical foundation for our elder scammer and cybercriminal actor models — including loss data by age group, crime type, and attack vector. Key 2024 findings informing our scoring:</p>
-        <span class="source-stat">$16.6B total losses in 2024 (+33%)</span>
-        <span class="source-stat" style="margin-left:6px;">Adults 60+ lost $4.8B — highest of any age group</span>
-        <span class="source-stat" style="margin-left:6px;">$6.5B from investment/crypto fraud</span>
-        <div class="source-update">Published annually each April · ic3.gov/AnnualReport</div>
-        <div><a href="https://www.ic3.gov/AnnualReport/Reports/2024_IC3Report.pdf" class="source-link" target="_blank" rel="noopener noreferrer">2024 IC3 Report (PDF) →</a></div>
-      </div>
+      <div class="source-name">Internet Crime Report (IC3)</div>
+      <div class="source-org">FBI Internet Crime Complaint Center</div>
+      <p class="source-desc">The FBI's annual aggregation of consumer-reported cybercrime. Provides the statistical foundation for our elder scammer and cybercriminal actor models — including loss data by age group, crime type, and attack vector.</p>
+      <span class="source-stat">$16.6B total losses in 2024</span>
+      <span class="source-stat">Adults 60+ lost $4.8B — highest of any age group</span>
+      <div class="source-update">Published annually each April</div>
+      <div><a href="https://www.ic3.gov/AnnualReport/Reports/2024_IC3Report.pdf" class="source-link" target="_blank" rel="noopener noreferrer">2024 IC3 Report (PDF) →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-annual">Annual · March</span>
-      <div class="source-body">
-        <div class="source-name">Consumer Sentinel Network Data Book</div>
-        <div class="source-org">Federal Trade Commission (FTC)</div>
-        <p class="source-desc">The FTC's annual compilation of 6.5 million consumer fraud reports. Provides category-level fraud statistics, contact method breakdowns (phone, text, email, social media), and loss amounts by scam type. Informs our scammer and cybercriminal scoring models — particularly imposter scam velocity and social media attack surface data.</p>
-        <span class="source-stat">$12.5B consumer fraud losses in 2024 (+25%)</span>
-        <span class="source-stat" style="margin-left:6px;">$2.95B to imposter scams</span>
-        <span class="source-stat" style="margin-left:6px;">$1.9B via social media contact</span>
-        <div class="source-update">Published annually each March · ftc.gov/exploredata</div>
-        <div><a href="https://www.ftc.gov/reports/consumer-sentinel-network-data-book-2024" class="source-link" target="_blank" rel="noopener noreferrer">2024 Consumer Sentinel Data Book →</a></div>
-      </div>
+      <div class="source-name">Consumer Sentinel Network Data Book</div>
+      <div class="source-org">Federal Trade Commission (FTC)</div>
+      <p class="source-desc">The FTC's annual compilation of 6.5 million consumer fraud reports. Provides category-level fraud statistics, contact method breakdowns, and loss amounts by scam type. Informs our scammer and cybercriminal scoring models.</p>
+      <span class="source-stat">$12.5B consumer fraud losses in 2024</span>
+      <span class="source-stat">$1.9B via social media contact</span>
+      <div class="source-update">Published annually each March</div>
+      <div><a href="https://www.ftc.gov/reports/consumer-sentinel-network-data-book-2024" class="source-link" target="_blank" rel="noopener noreferrer">2024 Consumer Sentinel Data Book →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-annual">Annual · March</span>
-      <div class="source-body">
-        <div class="source-name">State of Stalkerware Report</div>
-        <div class="source-org">Kaspersky / Coalition Against Stalkerware</div>
-        <p class="source-desc">An annual analysis of stalkerware detections across Kaspersky's global security network, published in coordination with the Coalition Against Stalkerware. Provides confirmed detection counts, platform breakdown (Android significantly more affected than iOS due to iOS's closed system), and geographic distribution. Informs our intimate-partner abuser actor model.</p>
-        <span class="source-stat">31,031 unique users affected in 2023 globally</span>
-        <span class="source-stat" style="margin-left:6px;">Android far more affected than iOS</span>
-        <div class="source-update">Published annually each March · stopstalkerware.org</div>
-        <div><a href="https://stopstalkerware.org" class="source-link" target="_blank" rel="noopener noreferrer">stopstalkerware.org →</a></div>
-      </div>
+      <div class="source-name">State of Stalkerware Report</div>
+      <div class="source-org">Kaspersky / Coalition Against Stalkerware</div>
+      <p class="source-desc">Annual analysis of stalkerware detections. Provides confirmed detection counts, platform breakdown (Android significantly more affected than iOS), and geographic distribution. Informs our intimate-partner abuser actor model.</p>
+      <span class="source-stat">31,031 unique users affected in 2023 globally</span>
+      <div class="source-update">Published annually each March</div>
+      <div><a href="https://stopstalkerware.org" class="source-link" target="_blank" rel="noopener noreferrer">stopstalkerware.org →</a></div>
     </div>
 
     <div class="source-card">
       <span class="source-badge badge-annual">Annual · Varies</span>
-      <div class="source-body">
-        <div class="source-name">FBI Uniform Crime Reports (UCR)</div>
-        <div class="source-org">FBI Crime Data Explorer</div>
-        <p class="source-desc">Annual national crime statistics including property crime, theft, and robbery data. Informs the environmental and location-based components of our opportunistic device thief scoring model — particularly the correlation between population density, urban environment, and device theft exposure.</p>
-        <div class="source-update">Published annually · crime-data-explorer.fr.cloud.gov</div>
-        <div><a href="https://crime-data-explorer.fr.cloud.gov" class="source-link" target="_blank" rel="noopener noreferrer">FBI Crime Data Explorer →</a></div>
-      </div>
+      <div class="source-name">FBI Uniform Crime Reports (UCR)</div>
+      <div class="source-org">FBI Crime Data Explorer</div>
+      <p class="source-desc">Annual national crime statistics including property crime, theft, and robbery data. Informs the location-based components of our opportunistic device thief scoring model.</p>
+      <div class="source-update">Published annually</div>
+      <div><a href="https://crime-data-explorer.fr.cloud.gov" class="source-link" target="_blank" rel="noopener noreferrer">FBI Crime Data Explorer →</a></div>
     </div>
   </section>
 
-  <!-- SCORING METHODOLOGY -->
-  <section class="section" aria-labelledby="methodology-heading">
-    <h2 class="section-title" id="methodology-heading">Scoring methodology</h2>
-    <p class="section-sub">How your answers and device data combine into a score for each threat actor type.</p>
+  <section class="section" id="methodology" aria-labelledby="method-h">
+    <h2 class="section-h2" id="method-h">Scoring methodology</h2>
 
-    <div class="scoring-block">
+    <div class="score-block">
       <h3>Two independent scores per actor</h3>
-      <p>Every threat actor produces two sub-scores — a <strong>Technical score</strong> and a <strong>Social score</strong> — which are averaged into a Combined score out of 99.</p>
-      <div class="formula">
-Technical score  = base + consumer_boost + device_OS_boost + MDM_boost + location_boost
+      <p>Every threat actor produces two sub-scores — a Technical score and a Social score — which are averaged into a Combined score out of 99.</p>
+      <div class="formula">Technical score  = base + consumer_boost + device_OS_boost + MDM_boost + location_boost
 Social score     = base + consumer_boost
-Combined score   = round((Technical + Social) / 2)
-      </div>
-      <p>Technical scores are elevated by unpatched CVEs, MDM exposure, and public location usage. Social scores reflect how attractive your consumer profile is to each actor's psychological playbook — regardless of your device's patch status.</p>
+Combined score   = round((Technical + Social) / 2)</div>
     </div>
 
-    <div class="scoring-block">
+    <div class="score-block">
       <h3>Device OS boost — powered by NVD + CISA KEV</h3>
-      <p>Each unpatched CVE on your device platform contributes a weighted boost to technical scores. CVEs confirmed in the CISA KEV catalog — meaning actively exploited in the wild — contribute more than theoretical CVEs. Each actor type has a platform weighting that reflects how much they rely on technical exploits versus social engineering for that platform.</p>
-      <div class="formula">
-device_OS_boost = sum(unpatched_CVEs × actor_platform_weight × CVE_severity_factor)
-KEV CVEs count as confirmed exploitation — higher weight than theoretical CVEs
-      </div>
+      <p>Each unpatched CVE on your device platform contributes a weighted boost to technical scores. CVEs confirmed in the CISA KEV catalog contribute more than theoretical CVEs. Each actor type has a platform weighting reflecting how much they rely on technical exploits versus social engineering.</p>
     </div>
 
-    <div class="scoring-block">
-      <h3>Consumer profile factors — 10 inputs</h3>
-      <p>Each of the 10 profile questions maps to a weighted factor that is specific to each actor. An actor who targets the elderly weighs age heavily. A device thief weighs location and environment. An APT weights public profile and job data. The weighting for each factor is documented on each actor's detail page under the Weighted tab.</p>
-    </div>
-
-    <div class="scoring-block">
-      <h3>Actor categories and their primary data sources</h3>
-      <table class="actor-table">
-        <thead>
-          <tr>
-            <th>Actor</th>
-            <th>Primary data sources</th>
-            <th>Score type</th>
-          </tr>
-        </thead>
+    <div class="score-block">
+      <h3>Actor categories and primary data sources</h3>
+      <table class="score-table">
+        <thead><tr><th>Actor</th><th>Primary sources</th><th>Score type</th></tr></thead>
         <tbody>
-          <tr>
-            <td>Nation-state / APT</td>
-            <td>NVD, CISA KEV, MITRE ATT&amp;CK Enterprise (<span data-stat="apt_groups">127</span> groups)</td>
-            <td>Technical-heavy</td>
-          </tr>
-          <tr>
-            <td>Insider threat</td>
-            <td>NVD, MITRE ATT&amp;CK Enterprise</td>
-            <td>Balanced</td>
-          </tr>
-          <tr>
-            <td>Data broker / adtech</td>
-            <td>NVD, MITRE ATT&amp;CK Mobile</td>
-            <td>Technical-heavy</td>
-          </tr>
-          <tr>
-            <td>Partner abuser</td>
-            <td>Kaspersky State of Stalkerware, NNEDV Safety Net research</td>
-            <td>Social-heavy</td>
-          </tr>
-          <tr>
-            <td>Elder scammer</td>
-            <td>FBI IC3 2024 Report, FTC Consumer Sentinel 2024</td>
-            <td>Social-heavy</td>
-          </tr>
-          <tr>
-            <td>Cybercriminal</td>
-            <td>NVD, CISA KEV, FBI IC3 2024, MITRE ATT&amp;CK Enterprise (<span data-stat="cybercriminal_groups">36</span> groups)</td>
-            <td>Balanced</td>
-          </tr>
-          <tr>
-            <td>Device thief</td>
-            <td>FBI UCR, NVD (device resale value model)</td>
-            <td>Social-heavy</td>
-          </tr>
+          <tr><td>Nation-state / APT</td><td>NVD, CISA KEV, MITRE ATT&amp;CK Enterprise</td><td>Technical-heavy</td></tr>
+          <tr><td>Insider threat</td><td>NVD, MITRE ATT&amp;CK Enterprise</td><td>Balanced</td></tr>
+          <tr><td>Data broker / adtech</td><td>NVD, MITRE ATT&amp;CK Mobile</td><td>Technical-heavy</td></tr>
+          <tr><td>Partner abuser</td><td>Kaspersky Stalkerware Report, NNEDV</td><td>Social-heavy</td></tr>
+          <tr><td>Elder scammer</td><td>FBI IC3 2024, FTC Sentinel 2024</td><td>Social-heavy</td></tr>
+          <tr><td>Cybercriminal</td><td>NVD, CISA KEV, FBI IC3, MITRE ATT&amp;CK</td><td>Balanced</td></tr>
+          <tr><td>Device thief</td><td>FBI UCR, NVD</td><td>Social-heavy</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- WHAT WE DON'T DO -->
-  <section class="section" aria-labelledby="limits-heading">
-    <h2 class="section-title" id="limits-heading">What we do not do</h2>
-    <p class="section-sub">Transparency includes being clear about the limits of our model.</p>
+  <section class="section" id="limits" aria-labelledby="limits-h">
+    <h2 class="section-h2" id="limits-h">What we do not do</h2>
 
-    <div class="scoring-block">
+    <div class="score-block">
       <h3>We do not scan your device</h3>
       <p>MyBadGuy does not access your files, contacts, photos, messages, or installed apps. Device detection is limited to what your browser reports — operating system type and version. Everything else is self-reported through the profile questions.</p>
     </div>
-    <div class="scoring-block">
+    <div class="score-block">
       <h3>Scores are probabilistic, not diagnostic</h3>
-      <p>A high score means your profile matches the characteristics that threat actors target — it does not mean you have been compromised or are under active attack. Scores reflect relative exposure, not confirmed incidents.</p>
+      <p>A high score means your profile matches characteristics that threat actors target — it does not mean you have been compromised. Scores reflect relative exposure, not confirmed incidents.</p>
     </div>
-    <div class="scoring-block">
+    <div class="score-block">
       <h3>We do not use vendor threat intelligence</h3>
-      <p>We do not pay for commercial threat intelligence feeds, vendor risk scores, or third-party data enrichment. Every data source is publicly available and government or open-source in origin. This prevents commercial conflicts of interest from influencing your score.</p>
+      <p>We do not pay for commercial threat intelligence feeds or third-party data enrichment. Every data source is publicly available and government or open-source in origin.</p>
     </div>
-    <div class="scoring-block">
-      <h3>We are not a party to a third-party breach</h3>
-      <p>We do not share your scan data with advertisers, data brokers, security vendors, or any third party. Your profile data — if you choose to save it — is stored encrypted in a Cloudflare database and is only accessible with your private ID and PIN. We cannot access it ourselves.</p>
+    <div class="score-block">
+      <h3>We do not share your data</h3>
+      <p>We do not share your scan data with advertisers, data brokers, or any third party. Your profile — if you save it — is stored encrypted and only accessible with your private ID and PIN. We cannot access it ourselves.</p>
     </div>
   </section>
 
-  <div class="disclaimer" role="note">
-    <div class="disclaimer-title">⚠️ Important limitation</div>
-    <p class="disclaimer-body">MyBadGuy is an educational and awareness tool, not a professional security assessment. Scores are derived from population-level threat intelligence data and self-reported profile information. Individual circumstances may vary significantly. For a professional security assessment of your devices or organisation, consult a qualified cybersecurity professional.</p>
+  <div class="disclaimer-box" role="note">
+    <div class="disclaimer-title">⚠️ Important disclaimer</div>
+    <div class="disclaimer-body">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature. <strong>You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment.</div>
   </div>
 
+</div>
 </main>
-
-
 <footer class="footer" role="contentinfo">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <svg width="22" height="13" viewBox="0 0 100 60" aria-hidden="true">
-        <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
-        <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="50" cy="30" r="7" fill="#475569"/>
-        <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
-      </svg>
-      <span class="footer-wordmark">MyBadGuy</span>
+    <div>
+      <div class="footer-brand">
+        <svg width="22" height="14" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="50" cy="30" r="7" fill="rgba(255,255,255,.5)"/>
+          <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+        </svg>
+        <span class="footer-wordmark">MyBadGuy</span>
+      </div>
+      <p class="footer-tagline">Consumer threat intelligence</p>
     </div>
     <nav class="footer-links" aria-label="Footer navigation">
-      <a href="/"             class="footer-link">Home</a>
-      <a href="/about.html"   class="footer-link">About</a>
-      <a href="/sources.html" class="footer-link" aria-current="page">Data sources</a>
-      <a href="/privacy.html" class="footer-link">Privacy policy</a>
+      <a href="/"              class="footer-link">Home</a>
+      <a href="/about.html"    class="footer-link">About</a>
+      <a href="/sources.html"  class="footer-link"aria-current="page">Data sources</a>
       <a href="/glossary.html" class="footer-link">Glossary</a>
+      <a href="/privacy.html"  class="footer-link">Privacy policy</a>
+      <a href="/siteview.html" class="footer-link">What sites see</a>
       <a href="mailto:support@mybadguy.com" class="footer-link">Contact</a>
     </nav>
   </div>
 </footer>
-
 <p class="nvd-attr">This product uses data from the NVD API but is not endorsed or certified by the NVD.</p>
-
 <script>
-// ── Dynamic stats from /api/db-stats ─────────────────────
-// Replaces hardcoded CVE/ATT&CK counts with live database figures.
-// Falls back gracefully — hardcoded values remain if API is unavailable.
-(async () => {
-  try {
-    const r = await fetch('https://api.mybadguy.com/api/db-stats');
-    if (!r.ok) return;
-    const s = await r.json();
-
-    // Update source-stat pills — data-stat matches the API key, data-fmt is the suffix
-    document.querySelectorAll('[data-stat]').forEach(el => {
-      const key = el.dataset.stat;
-      const fmt = el.dataset.fmt;
-      const val = s[key];
-      if (val === undefined || val === 0) return;
-      const n = val.toLocaleString();
-      if (fmt) {
-        // Full pill: "1,612 confirmed in-wild CVEs"
-        el.textContent = `${n} ${fmt}`;
-      } else {
-        // Inline span: just the number
-        el.textContent = n;
-      }
+(async()=>{
+  try{
+    const r=await fetch('https://api.mybadguy.com/api/db-stats');
+    if(!r.ok)return;
+    const s=await r.json();
+    document.querySelectorAll('[data-stat]').forEach(el=>{
+      const v=s[el.dataset.stat];
+      const fmt=el.dataset.fmt;
+      if(v&&fmt)el.textContent=v.toLocaleString()+' '+fmt;
+      else if(v)el.textContent=v.toLocaleString();
     });
-  } catch (_) {
-    // API unavailable — hardcoded fallback values already shown
-  }
+  }catch(_){}
 })();
 </script>
 </body>
