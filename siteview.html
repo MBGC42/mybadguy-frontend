@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="See exactly what websites learn about you the moment you visit — your location, device, browser fingerprint, and tracking exposure.">
+  <meta name="theme-color" content="#003F72">
+  <title>MyBadGuy — What sites see</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
+  <style>
+    :root{
+      --navy:#003F72;--red:#C41230;--green:#007A53;
+      --amber:#7a4e00;--amberbg:#FFF3CD;--amberbdr:#f0c070;
+      --slate:#1a1a1a;--muted:#555;--dim:#666;
+      --light:#F0F4F8;--bdr:#dde3ea;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:#fff;color:var(--slate);font-size:17px;line-height:1.7;overflow-x:hidden;}
+    a{color:var(--navy);}
+    a:hover{text-decoration:underline;}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+    /* NAV */
+    .nav{background:var(--navy);padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-wordmark{font-size:19px;font-weight:600;color:#fff;}
+    .nav-back{font-size:15px;color:rgba(255,255,255,.85);text-decoration:none;}
+    .nav-back:hover{color:#fff;}
+
+    /* PAGE HEADER */
+    .page-hdr{background:var(--navy);padding:28px 20px 24px;}
+    .page-hdr-inner{max-width:680px;margin:0 auto;}
+    .eyebrow{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;}
+    .page-h1{font-size:clamp(24px,4vw,32px);font-weight:600;color:#fff;line-height:1.2;margin:0 0 10px;}
+    .page-sub{font-size:17px;color:rgba(255,255,255,.88);line-height:1.65;margin:0;}
+
+    /* LOADING */
+    .loading{background:var(--light);padding:40px 20px;text-align:center;}
+    .loading-spinner{width:48px;height:48px;border:4px solid #dde3ea;border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{font-size:17px;color:var(--muted);}
+
+    /* SCORE BAR */
+    .score-bar{background:var(--light);padding:20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:16px;}
+    .score-ring{width:72px;height:72px;flex-shrink:0;position:relative;}
+    .score-ring svg{width:72px;height:72px;}
+    .score-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;}
+    .score-meta{}
+    .score-label{font-size:19px;font-weight:600;margin:0 0 4px;}
+    .score-desc{font-size:15px;color:var(--muted);margin:0;line-height:1.55;}
+
+    /* DISCLAIMER */
+    .disclaimer{padding:16px 20px;background:#fff;border-bottom:1px solid var(--bdr);}
+    .disclaimer-inner{max-width:680px;margin:0 auto;}
+    .disclaimer-box{padding:14px 16px;background:var(--amberbg);border:1px solid var(--amberbdr);border-left:5px solid #EF9F27;border-radius:6px;}
+    .disclaimer-title{font-size:14px;font-weight:600;color:var(--amber);margin-bottom:5px;}
+    .disclaimer-body{font-size:14px;color:#5a3e00;line-height:1.65;}
+
+    /* CONTENT */
+    .content{max-width:680px;margin:0 auto;padding:0 20px 40px;}
+
+    .section-hdr{font-size:13px;font-weight:600;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;padding:20px 0 10px;border-bottom:2px solid var(--navy);margin-bottom:0;}
+
+    .data-row{display:flex;align-items:flex-start;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--bdr);gap:16px;}
+    .data-row:last-child{border-bottom:none;}
+    .data-label{font-size:16px;color:var(--muted);flex-shrink:0;width:48%;line-height:1.4;}
+    .data-val{font-size:16px;font-weight:500;color:var(--slate);text-align:right;word-break:break-word;line-height:1.4;}
+    .risk-pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;margin-left:6px;vertical-align:middle;white-space:nowrap;}
+    .pill-hi{background:#FCEBEB;color:var(--red);border:1px solid #f7c1c1;}
+    .pill-med{background:var(--amberbg);color:var(--amber);border:1px solid var(--amberbdr);}
+    .pill-lo{background:#D4EDDA;color:#155724;border:1px solid #c3e6cb;}
+
+    .alert-box{border-radius:6px;padding:14px 16px;margin:14px 0;}
+    .alert-red{background:#FCEBEB;border:1px solid #f7c1c1;border-left:5px solid var(--red);}
+    .alert-amber{background:var(--amberbg);border:1px solid var(--amberbdr);border-left:5px solid #EF9F27;}
+    .alert-green{background:#D4EDDA;border:1px solid #c3e6cb;border-left:5px solid var(--green);}
+    .alert-title{font-size:15px;font-weight:600;margin:0 0 5px;}
+    .alert-body{font-size:14px;line-height:1.65;margin:0;}
+    .alert-red .alert-title{color:var(--red);}
+    .alert-red .alert-body{color:#5a1a1a;}
+    .alert-amber .alert-title{color:var(--amber);}
+    .alert-amber .alert-body{color:#5a3e00;}
+    .alert-green .alert-title{color:#155724;}
+    .alert-green .alert-body{color:#0d3b18;}
+
+    .fp-hash{font-family:monospace;font-size:13px;background:rgba(0,0,0,.05);padding:8px 12px;border-radius:4px;margin-top:8px;word-break:break-all;color:#333;display:block;}
+
+    .cta-block{background:var(--navy);border-radius:8px;padding:24px 20px;text-align:center;margin-top:32px;}
+    .cta-title{font-size:20px;font-weight:600;color:#fff;margin:0 0 6px;}
+    .cta-sub{font-size:15px;color:rgba(255,255,255,.8);margin:0 0 18px;}
+    .cta-btn{display:inline-block;background:#fff;color:var(--navy);font-size:17px;font-weight:600;padding:14px 28px;border-radius:6px;text-decoration:none;}
+    .cta-btn:hover{background:#e8f0f8;text-decoration:none;}
+
+    .footer{background:var(--navy);padding:24px 20px;margin-top:0;}
+    .footer-inner{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+    .footer-brand{display:flex;align-items:center;gap:8px;}
+    .footer-wordmark{font-size:16px;font-weight:600;color:#fff;}
+    .footer-tagline{font-size:13px;color:rgba(255,255,255,.6);margin-top:2px;}
+    .footer-links{display:flex;flex-wrap:wrap;gap:16px;}
+    .footer-link{font-size:14px;color:rgba(255,255,255,.8);text-decoration:none;}
+    .footer-link:hover{color:#fff;}
+  </style>
+</head>
+<body>
+
+<a href="#main" class="sr-only">Skip to main content</a>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-brand" aria-label="MyBadGuy home">
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#fff"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
+    <span class="nav-wordmark">MyBadGuy</span>
+  </a>
+  <a href="/" class="nav-back">← Home</a>
+</nav>
+
+<div class="page-hdr">
+  <div class="page-hdr-inner">
+    <p class="eyebrow">Browser exposure</p>
+    <h1 class="page-h1">What websites learn the moment you visit</h1>
+    <p class="page-sub">No permission required. No software needed. This is what any website already knows about you right now.</p>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- Loading state -->
+  <div class="loading" id="loading-state" aria-live="polite" aria-label="Reading browser data">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p class="loading-text" id="loading-text">Reading your browser data...</p>
+  </div>
+
+  <!-- Results — hidden until ready -->
+  <div id="results-state" style="display:none;">
+
+    <div class="score-bar" role="region" aria-label="Overall exposure score">
+      <div class="score-ring" aria-hidden="true">
+        <svg viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="30" stroke="#dde3ea" stroke-width="7"/>
+          <circle id="score-arc" cx="36" cy="36" r="30" stroke="#C41230" stroke-width="7"
+            stroke-dasharray="188" stroke-dashoffset="188"
+            stroke-linecap="round" transform="rotate(-90 36 36)"/>
+        </svg>
+        <div class="score-val" id="score-val" style="color:#C41230;">—</div>
+      </div>
+      <div class="score-meta">
+        <p class="score-label" id="score-label" style="color:#C41230;">Scanning...</p>
+        <p class="score-desc" id="score-desc">Calculating your browser exposure level.</p>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <div class="disclaimer-inner">
+        <div class="disclaimer-box" role="note">
+          <div class="disclaimer-title">⚠️ Important disclaimer</div>
+          <div class="disclaimer-body">This tool reads only what your browser makes publicly available — the same data any website already receives. We do not store, transmit, or share any of this information. Everything runs locally in your browser.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="results-body"></div>
+
+      <div class="cta-block" role="complementary">
+        <p class="cta-title">See your full risk profile</p>
+        <p class="cta-sub">Combine this with your device score and social profile for a complete picture.</p>
+        <a href="detect.html" class="cta-btn" role="button">Check my risk →</a>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg width="22" height="14" viewBox="0 0 100 60" aria-hidden="true">
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="50" cy="30" r="7" fill="rgba(255,255,255,.5)"/>
+          <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+        </svg>
+        <span class="footer-wordmark">MyBadGuy</span>
+      </div>
+      <p class="footer-tagline">Consumer threat intelligence</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/"              class="footer-link">Home</a>
+      <a href="/about.html"    class="footer-link">About</a>
+      <a href="/sources.html"  class="footer-link">Data sources</a>
+      <a href="/glossary.html" class="footer-link">Glossary</a>
+      <a href="/privacy.html"  class="footer-link">Privacy policy</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+// ── Browser Exposure Scanner ───────────────────────────────
+// Reads publicly available browser APIs only.
+// Nothing is transmitted, stored, or sent to any server.
+
+const PILLS = {
+  hi:  '<span class="risk-pill pill-hi">Visible</span>',
+  med: '<span class="risk-pill pill-med">Visible</span>',
+  lo:  '<span class="risk-pill pill-lo">Protected</span>',
+  na:  '<span class="risk-pill pill-lo">Not available</span>',
+};
+
+function row(label, value, risk) {
+  return `<div class="data-row">
+    <span class="data-label">${label}</span>
+    <span class="data-val">${value} ${PILLS[risk]||''}</span>
+  </div>`;
+}
+
+function section(title) {
+  return `<p class="section-hdr">${title}</p>`;
+}
+
+function alert(type, title, body) {
+  return `<div class="alert-box alert-${type}">
+    <div class="alert-title">${title}</div>
+    <div class="alert-body">${body}</div>
+  </div>`;
+}
+
+// ── Fingerprint ──────────────────────────────────────────
+async function getFingerprint() {
+  const components = [];
+
+  // Canvas fingerprint
+  try {
+    const c = document.createElement('canvas');
+    const ctx = c.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = '#069';
+    ctx.fillText('MyBadGuy 🔍', 2, 15);
+    ctx.fillStyle = 'rgba(102,204,0,0.7)';
+    ctx.fillText('MyBadGuy 🔍', 4, 17);
+    components.push(c.toDataURL().slice(-50));
+  } catch (_) { components.push('canvas-blocked'); }
+
+  // WebGL fingerprint
+  try {
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    if (gl) {
+      const ext = gl.getExtension('WEBGL_debug_renderer_info');
+      if (ext) {
+        components.push(gl.getParameter(ext.UNMASKED_VENDOR_WEBGL));
+        components.push(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL));
+      }
+    }
+  } catch (_) { components.push('webgl-blocked'); }
+
+  // Audio fingerprint
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const analyser = ctx.createAnalyser();
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    osc.connect(analyser);
+    analyser.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(0);
+    const data = new Float32Array(analyser.frequencyBinCount);
+    analyser.getFloatFrequencyData(data);
+    osc.stop();
+    ctx.close();
+    components.push(data.slice(0, 5).join(','));
+  } catch (_) { components.push('audio-blocked'); }
+
+  // Navigator
+  components.push(navigator.userAgent);
+  components.push(screen.width + 'x' + screen.height);
+  components.push(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  components.push(navigator.language);
+  components.push(navigator.hardwareConcurrency || 'unknown');
+
+  // Hash the components
+  const str = components.join('|');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  const hex = (hash >>> 0).toString(16).padStart(8, '0');
+
+  const canvasBlocked = components[0] === 'canvas-blocked';
+  const webglBlocked  = components[1] === 'webgl-blocked';
+  const audioBlocked  = components[2] === 'audio-blocked';
+
+  return {
+    hash: hex + 'a3f2' + hex.split('').reverse().join(''),
+    canvasBlocked, webglBlocked, audioBlocked,
+  };
+}
+
+// ── IP/Location via public API ───────────────────────────
+async function getIPData() {
+  try {
+    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) throw new Error('fail');
+    return await r.json();
+  } catch (_) {
+    return null;
+  }
+}
+
+// ── Main scan ────────────────────────────────────────────
+async function runScan() {
+  const loadingText = document.getElementById('loading-text');
+
+  loadingText.textContent = 'Checking your location...';
+  const ipData = await getIPData();
+
+  loadingText.textContent = 'Computing browser fingerprint...';
+  const fp = await getFingerprint();
+
+  loadingText.textContent = 'Building your report...';
+
+  // ── Gather all data ──────────────────────────────────
+  const ua = navigator.userAgent;
+
+  // Device & browser detection
+  const isIPhone  = /iPhone/.test(ua);
+  const isIPad    = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const isMac     = /Macintosh/.test(ua) && navigator.maxTouchPoints === 0;
+  const isWindows = /Windows/.test(ua);
+
+  let deviceType = 'Desktop';
+  if (isIPhone) deviceType = 'iPhone';
+  else if (isIPad) deviceType = 'iPad';
+  else if (isAndroid) deviceType = 'Android phone or tablet';
+  else if (isMac) deviceType = 'Mac';
+  else if (isWindows) deviceType = 'Windows PC';
+
+  // OS version extraction (best effort)
+  let osVersion = '';
+  const iosMatch = ua.match(/OS (\d+[_\d]*) like/);
+  const androidMatch = ua.match(/Android ([\d.]+)/);
+  const winMatch = ua.match(/Windows NT ([\d.]+)/);
+  const macMatch = ua.match(/Mac OS X ([\d_]+)/);
+  if (iosMatch)     osVersion = 'iOS ' + iosMatch[1].replace(/_/g, '.');
+  else if (isIPad && iosMatch) osVersion = 'iPadOS ' + iosMatch[1].replace(/_/g, '.');
+  else if (androidMatch) osVersion = 'Android ' + androidMatch[1];
+  else if (winMatch) {
+    const v = {'10.0':'10/11','6.3':'8.1','6.2':'8','6.1':'7'}[winMatch[1]] || winMatch[1];
+    osVersion = 'Windows ' + v;
+  }
+  else if (macMatch) osVersion = 'macOS ' + macMatch[1].replace(/_/g, '.');
+
+  // Browser detection
+  let browser = 'Unknown browser';
+  if (/CriOS/.test(ua))      browser = 'Chrome for iOS';
+  else if (/FxiOS/.test(ua)) browser = 'Firefox for iOS';
+  else if (/EdgiOS/.test(ua)) browser = 'Edge for iOS';
+  else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+  else if (/Chrome/.test(ua)) browser = 'Chrome';
+  else if (/Firefox/.test(ua)) browser = 'Firefox';
+  else if (/Edge/.test(ua))   browser = 'Microsoft Edge';
+
+  // Screen
+  const screenRes = screen.width + ' × ' + screen.height;
+  const colorDepth = screen.colorDepth + '-bit color';
+  const pixelRatio = (window.devicePixelRatio || 1).toFixed(1) + 'x pixel density';
+
+  // Timezone & language
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const lang = navigator.language || 'Unknown';
+
+  // Cookies & storage
+  const cookiesEnabled = navigator.cookieEnabled;
+  const localStorageOk = (() => { try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); return true; } catch(_){return false;} })();
+
+  // Do Not Track
+  const dnt = navigator.doNotTrack === '1' || window.doNotTrack === '1';
+
+  // Hardware (may be limited by browser)
+  const cpuCores = navigator.hardwareConcurrency || null;
+  const memory   = navigator.deviceMemory || null; // Chrome only
+  const connType  = (navigator.connection || navigator.mozConnection || navigator.webkitConnection);
+  const connection = connType ? (connType.effectiveType || connType.type || 'Unknown') : null;
+
+  // Referrer
+  const referrer = document.referrer || null;
+
+  // Battery (deprecated but still works in some browsers)
+  let batteryLevel = null;
+  let batteryBlocked = false;
+  try {
+    if (navigator.getBattery) {
+      const bat = await navigator.getBattery();
+      batteryLevel = Math.round(bat.level * 100) + '%';
+    } else { batteryBlocked = true; }
+  } catch (_) { batteryBlocked = true; }
+
+  // Private browsing detection (heuristic — not reliable on all browsers)
+  let privateMode = 'Unknown';
+  try {
+    const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
+    if (!fs) { privateMode = 'Cannot determine'; }
+    else {
+      await new Promise((res) => {
+        fs(window.TEMPORARY, 100, () => { privateMode = 'Probably not private'; res(); },
+                                  () => { privateMode = 'Possibly private'; res(); });
+      });
+    }
+  } catch (_) { privateMode = 'Cannot determine'; }
+
+  // ── Score calculation ─────────────────────────────────
+  let exposureScore = 0;
+  const HIGH = 10, MED = 5, LO = 0;
+
+  exposureScore += ipData ? HIGH : MED; // IP visible
+  if (ipData?.city) exposureScore += HIGH;
+  if (ipData?.org)  exposureScore += MED;
+  exposureScore += HIGH; // device type always visible
+  if (osVersion)    exposureScore += HIGH;
+  exposureScore += MED; // browser always visible
+  exposureScore += MED; // screen res
+  exposureScore += MED; // timezone
+  exposureScore += MED; // language
+  if (cookiesEnabled)   exposureScore += HIGH;
+  if (dnt === false)    exposureScore += MED;
+  if (!fp.canvasBlocked) exposureScore += HIGH;
+  if (!fp.webglBlocked)  exposureScore += HIGH;
+  if (!fp.audioBlocked)  exposureScore += MED;
+  if (referrer)          exposureScore += MED;
+  if (cpuCores)          exposureScore += LO;
+  if (connection)        exposureScore += LO;
+
+  const maxScore = 99;
+  const score = Math.min(maxScore, exposureScore);
+
+  let scoreColor = '#C41230';
+  let scoreLabel = 'High exposure';
+  let scoreDesc  = 'Websites can identify and track you across visits — even in private browsing.';
+  if (score < 45) {
+    scoreColor = '#007A53'; scoreLabel = 'Low exposure';
+    scoreDesc = 'Your browser is well-protected. Limited data is exposed to websites.';
+  } else if (score < 70) {
+    scoreColor = '#7a4e00'; scoreLabel = 'Medium exposure';
+    scoreDesc = 'Some data is visible to websites. A few changes would significantly improve your privacy.';
+  }
+
+  // ── Render ────────────────────────────────────────────
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('score-val').style.color = scoreColor;
+  document.getElementById('score-label').textContent = scoreLabel;
+  document.getElementById('score-label').style.color = scoreColor;
+  document.getElementById('score-desc').textContent = scoreDesc;
+  document.getElementById('score-arc').style.stroke = scoreColor;
+  document.getElementById('score-arc').style.strokeDashoffset = 188 - (188 * score / 99);
+
+  let html = '';
+
+  // ── Fingerprint alert ──────────────────────────────────
+  const fpBlocked = fp.canvasBlocked && fp.webglBlocked && fp.audioBlocked;
+  if (fpBlocked) {
+    html += alert('green',
+      '✓ Your browser blocks fingerprinting',
+      'Canvas, WebGL, and audio fingerprinting are all blocked. Sites cannot build a unique identifier from these signals alone.');
+  } else {
+    html += alert('red',
+      '⚠️ Your browser has a unique fingerprint',
+      'The combination of your browser and device settings is statistically unique. Sites can use this to track you across visits without cookies — even in private browsing mode.');
+    html += `<p style="font-size:14px;color:var(--dim);padding:0 0 16px;">Your fingerprint ID: <code class="fp-hash">${fp.hash}</code></p>`;
+  }
+
+  // ── Location & Network ────────────────────────────────
+  html += section('Your location &amp; network');
+
+  if (ipData) {
+    html += row('IP address', ipData.ip || 'Unknown', 'hi');
+    html += row('City &amp; region', [ipData.city, ipData.region].filter(Boolean).join(', ') || 'Unknown', 'hi');
+    html += row('Country', ipData.country_name || 'Unknown', 'hi');
+    html += row('Internet provider', ipData.org || 'Unknown', 'hi');
+  } else {
+    html += row('IP address', 'Could not retrieve (try again)', 'med');
+  }
+
+  if (connection) {
+    html += row('Connection type', connection.toUpperCase(), 'med');
+  }
+
+  // VPN/proxy heuristic
+  const likelyVPN = ipData?.org && /vpn|proxy|hosting|cloud|server|data.cent/i.test(ipData.org);
+  html += row('VPN or proxy detected', likelyVPN ? 'Possibly yes' : 'No', likelyVPN ? 'lo' : 'hi');
+
+  // ── Device & Browser ──────────────────────────────────
+  html += section('Your device &amp; browser');
+  html += row('Device type', deviceType, 'hi');
+  if (osVersion) html += row('Operating system', osVersion, 'hi');
+  html += row('Browser', browser, 'hi');
+  html += row('Screen resolution', screenRes, 'med');
+  html += row('Color depth', colorDepth, 'med');
+  html += row('Pixel density', pixelRatio, 'med');
+  html += row('Language', lang, 'med');
+  html += row('Time zone', tz, 'med');
+
+  if (cpuCores) html += row('CPU cores', cpuCores + ' cores', 'med');
+
+  if (memory) {
+    html += row('Device memory', memory + ' GB', 'med');
+  } else if (isIPhone || isIPad || isMac) {
+    html += row('Device memory', 'Blocked by Safari', 'lo');
+  }
+
+  // ── Privacy & Tracking ────────────────────────────────
+  html += section('Privacy &amp; tracking');
+
+  if (cookiesEnabled) {
+    html += alert('red',
+      '⚠️ Third-party cookies are enabled',
+      'Advertising networks can follow you across millions of websites and build a detailed profile of your interests, habits, and purchasing behaviour.');
+  } else {
+    html += alert('green',
+      '✓ Cookies are blocked',
+      'Your browser is blocking third-party cookies. This significantly limits cross-site tracking.');
+  }
+
+  html += row('Cookies enabled', cookiesEnabled ? 'Yes' : 'No', cookiesEnabled ? 'hi' : 'lo');
+  html += row('Local storage', localStorageOk ? 'Available' : 'Blocked', localStorageOk ? 'med' : 'lo');
+
+  html += row('Do Not Track', dnt ? 'On (most sites ignore it)' : 'Off', dnt ? 'med' : 'hi');
+
+  // Fingerprinting breakdown
+  html += row('Canvas fingerprint', fp.canvasBlocked ? 'Blocked' : 'Unique — trackable', fp.canvasBlocked ? 'lo' : 'hi');
+  html += row('WebGL fingerprint',  fp.webglBlocked  ? 'Blocked' : 'Unique — trackable', fp.webglBlocked  ? 'lo' : 'hi');
+  html += row('Audio fingerprint',  fp.audioBlocked  ? 'Blocked' : 'Unique — trackable', fp.audioBlocked  ? 'lo' : 'hi');
+
+  if (batteryBlocked) {
+    html += row('Battery status', 'Blocked by your browser', 'lo');
+  } else if (batteryLevel) {
+    html += row('Battery level', batteryLevel, 'med');
+  }
+
+  // ── Where you came from ───────────────────────────────
+  html += section('Where you came from');
+  if (referrer) {
+    try {
+      const ref = new URL(referrer);
+      html += row('Referring website', ref.hostname, 'hi');
+      if (ref.search) {
+        html += row('Search terms in URL', 'Yes — partially visible', 'hi');
+      }
+    } catch (_) {
+      html += row('Referring page', referrer.slice(0, 60) + '...', 'hi');
+    }
+  } else {
+    html += row('Referring website', 'None — direct visit or private link', 'lo');
+  }
+
+  // ── Private mode ──────────────────────────────────────
+  html += section('Private browsing');
+  html += row('Private / incognito mode', privateMode, privateMode.includes('not private') ? 'hi' : 'lo');
+  html += alert('amber',
+    'Private mode has limits',
+    'Private or incognito browsing hides your history from others on your device, but websites you visit can still see your IP address, device details, and browser fingerprint. It does not make you anonymous online.');
+
+  document.getElementById('results-body').innerHTML = html;
+
+  // Show results, hide loading
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('results-state').style.display = 'block';
+}
+
+// Run on load
+window.addEventListener('load', () => {
+  setTimeout(runScan, 300);
+});
+</script>
+
+</body>
+</html>
