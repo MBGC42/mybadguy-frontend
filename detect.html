@@ -37,6 +37,7 @@
       color: var(--slate);
       min-height: 100%;
       display: flex;
+      font-size: 17px;
       flex-direction: column;
     }
 
@@ -59,13 +60,13 @@
     }
     .hdr-name {
       font-family: 'Syne', sans-serif;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--slate);
     }
     .hdr-steps { display: flex; gap: 5px; align-items: center; }
     .step-dot {
-      width: 6px; height: 6px;
+      width: 9px; height: 9px;
       border-radius: 50%;
       background: rgba(255,255,255,.15);
       transition: background .3s;
@@ -132,7 +133,7 @@
     .scan-status {
       grid-area: 1 / 1;
       text-align: center;
-      font-size: 12px;
+      font-size: 15px;
       color: var(--cyan);
       letter-spacing: .08em;
       text-transform: uppercase;
@@ -161,11 +162,11 @@
     }
     .device-name {
       font-family: 'Syne', sans-serif;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 700;
       margin-bottom: .25rem;
     }
-    .device-meta { font-size: 14px; color: var(--muted); margin-bottom: .85rem; }
+    .device-meta { font-size: 16px; color: var(--muted); margin-bottom: .85rem; }
     .patch-badge {
       display: inline-block;
       font-size: 11px;
@@ -230,7 +231,7 @@
     }
     .ver-card:hover { background: #c8f5fb; border-color: var(--cyan); }
     .ver-card.sel   { background: var(--cyan); border-color: var(--cyan); }
-    .ver-label { font-size: 13px; font-weight: 600; color: var(--navy); display: block; margin-bottom: 1px; }
+    .ver-label { font-size: 15px; font-weight: 600; color: var(--navy); display: block; margin-bottom: 1px; }
     .ver-note  { font-size: 10px; display: block; margin-bottom: 1px; }
     .ver-date  { font-size: 10px; color: #475569; display: block; font-style: italic; }
     .ver-card.sel .ver-note,
@@ -253,7 +254,7 @@
     .q-block { margin-bottom: 1.75rem; }
     .q-label {
       font-family: 'Syne', sans-serif;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--slate);
       margin-bottom: .85rem;
@@ -261,9 +262,9 @@
     }
     .q-pills { display: flex; flex-wrap: wrap; gap: 8px; }
     .q-pill {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 500;
-      padding: 9px 18px;
+      padding: 13px 22px;
       border-radius: 99px;
       background: var(--lcyan);
       color: var(--navy);
@@ -342,8 +343,8 @@
       line-height: 1;
     }
     .score-of { font-size: 10px; opacity: .6; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
-    .score-detail h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: .3rem; }
-    .score-detail p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .score-detail h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: .3rem; }
+    .score-detail p  { font-size: 16px; color: var(--muted); line-height: 1.55; }
 
     .actor-list {
       background: var(--lift);
@@ -361,10 +362,10 @@
     }
     .actor-row:last-child { border-bottom: none; }
     .actor-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-    .actor-name { font-size: 13px; width: 160px; flex-shrink: 0; }
+    .actor-name { font-size: 15px; width: 160px; flex-shrink: 0; }
     .actor-bar-wrap { flex: 1; height: 5px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden; }
     .actor-bar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
-    .actor-score { font-size: 13px; font-weight: 500; min-width: 28px; text-align: right; }
+    .actor-score { font-size: 15px; font-weight: 500; min-width: 28px; text-align: right; }
 
     .wins-title {
       font-family: 'Syne', sans-serif;
@@ -394,8 +395,8 @@
       flex-shrink: 0;
       margin-top: 1px;
     }
-    .win-title  { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-    .win-where  { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 5px; }
+    .win-title  { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+    .win-where  { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 5px; }
     .win-chips  { display: flex; gap: 4px; flex-wrap: wrap; }
     .win-chip   { font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
 
@@ -550,7 +551,8 @@
     </svg>
     <span class="hdr-name">MyBadGuy</span>
   </a>
-  <div class="hdr-steps" id="stepDots" aria-label="Scan progress" role="progressbar" aria-valuemin="0" aria-valuemax="6"></div>
+  <div class="hdr-steps" id="stepDots" aria-label="Scan progress" role="progressbar" aria-valuemin="0" aria-valuemax="7"></div>
+  <a href="/" style="font-size:15px;color:rgba(255,255,255,.65);text-decoration:none;white-space:nowrap;" aria-label="Return to home">← Home</a>
 </header>
 
 <main id="app" role="main"></main>
