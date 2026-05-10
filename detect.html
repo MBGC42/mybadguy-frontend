@@ -39,6 +39,117 @@
       display: flex;
       font-size: 17px;
       flex-direction: column;
+      transition: background .25s;
+    }
+
+    /* ── LIGHT SCREEN MODE ── */
+    body.light-screen {
+      background: #fff;
+      color: #1a1a1a;
+    }
+    body.light-screen .hdr {
+      background: #003F72;
+      border-bottom-color: rgba(255,255,255,.1);
+    }
+    body.light-screen #app {
+      background: #fff;
+    }
+    body.light-screen .eyebrow {
+      color: #003F72;
+    }
+    body.light-screen .q-label {
+      color: #1a1a1a;
+    }
+    body.light-screen .q-progress {
+      background: #dde3ea;
+    }
+    body.light-screen .q-progress-fill {
+      background: #003F72;
+    }
+    body.light-screen .q-pill {
+      background: #F0F4F8;
+      color: #1a1a1a;
+      border-color: #dde3ea;
+    }
+    body.light-screen .q-pill:hover {
+      background: #d8e4f0;
+      border-color: #003F72;
+    }
+    body.light-screen .q-pill.sel {
+      background: #003F72;
+      color: #fff;
+      border-color: #003F72;
+    }
+    body.light-screen .age-val {
+      color: #003F72;
+    }
+    body.light-screen .age-range-labels {
+      color: #666;
+    }
+    body.light-screen input[type=range] {
+      accent-color: #003F72;
+    }
+    body.light-screen .btn-primary {
+      background: #003F72;
+      color: #fff;
+    }
+    body.light-screen .btn-ghost {
+      color: #555;
+      border-color: #dde3ea;
+    }
+    body.light-screen .wins-title {
+      color: #1a1a1a;
+    }
+    body.light-screen .win-card {
+      background: #F0F4F8;
+      border-color: #dde3ea;
+    }
+    body.light-screen .win-num {
+      background: rgba(0,63,114,.12);
+      color: #003F72;
+    }
+    body.light-screen .win-title {
+      color: #1a1a1a;
+    }
+    body.light-screen .win-where {
+      color: #666;
+    }
+    body.light-screen .win-chip {
+      border-color: #dde3ea !important;
+      color: #555 !important;
+      background: #F0F4F8 !important;
+    }
+    body.light-screen .score-hero {
+      background: #F0F4F8;
+      border-color: #dde3ea;
+    }
+    body.light-screen .score-detail h2 {
+      color: #1a1a1a;
+    }
+    body.light-screen .score-detail p {
+      color: #555;
+    }
+    body.light-screen .actor-list {
+      background: #F0F4F8;
+      border-color: #dde3ea;
+    }
+    body.light-screen .actor-name {
+      color: #444;
+    }
+    body.light-screen .actor-bar-wrap {
+      background: #dde3ea;
+    }
+    body.light-screen .attribution {
+      color: #888;
+    }
+    body.light-screen .step-dot {
+      background: rgba(0,63,114,.2);
+    }
+    body.light-screen .step-dot.active {
+      background: #003F72;
+    }
+    body.light-screen .step-dot.done {
+      background: rgba(0,63,114,.4);
     }
 
     /* ── HEADER ── */
