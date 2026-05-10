@@ -484,15 +484,66 @@ function detectDevice() {
 function renderDots() {
   const el = document.getElementById('stepDots');
   let h = '';
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     const cls = i === ST ? 'active' : i < ST ? 'done' : '';
     h += `<div class="step-dot ${cls}" aria-hidden="true"></div>`;
   }
   el.innerHTML = h;
   el.setAttribute('aria-valuenow', ST);
+  el.setAttribute('aria-valuemax', 7);
 }
 
-// ── STEP 0: SCAN ANIMATION ────────────────────────────────
+// ── STEP 0: HOW IT WORKS INTRO ───────────────────────────
+function renderIntro() {
+  let h = `
+    <div class="screen">
+      <p class="eyebrow" style="text-align:center;">Device &amp; social risk profile</p>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,26px);font-weight:700;color:var(--slate);text-align:center;margin-bottom:.5rem;letter-spacing:-.01em;">
+        Three steps. Under three minutes.
+      </h2>
+      <p style="font-size:14px;color:var(--muted);text-align:center;line-height:1.7;max-width:420px;margin:0 auto 2rem;">
+        No account. No software. No data stored without your consent.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">~2 min</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">01</div>
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">Tell us about yourself</div>
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;">10 questions about your financial situation, tech habits, and how you use your device. Generic enough to protect your privacy.</p>
+          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:100%;background:var(--cyan);border-radius:1px;"></div></div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">~1 min</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">02</div>
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">We detect your device</div>
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;">Your browser tells us your device type, OS, and version automatically. We pull live CVE counts updated every 2 hours from NIST NVD.</p>
+          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:66%;background:var(--cyan);border-radius:1px;"></div></div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.25rem;position:relative;">
+          <span style="position:absolute;top:.85rem;right:.85rem;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--cyan);opacity:.6;">Instant</span>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(34,211,238,.1);line-height:1;margin-bottom:.65rem;">03</div>
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">See what they see</div>
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;">Seven threat actor scores, ranked by how attractive your profile is to each. Remediations ranked by what is being actively exploited right now.</p>
+          <div style="height:2px;background:rgba(34,211,238,.1);border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:33%;background:var(--cyan);border-radius:1px;"></div></div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;">
+        <button class="btn-primary" data-action="intro-continue" style="font-size:15px;padding:12px 36px;">
+          Begin →
+        </button>
+        <p style="font-size:11px;color:var(--dim);margin-top:.75rem;">Free · No account required · No data stored without your consent</p>
+      </div>
+    </div>`;
+  document.getElementById('page').innerHTML = h;
+}
+
+// ── STEP 0 — SCAN ANIMATION ────────────────────────────
 
 const CHECKS = [
   'Reading device type…',
@@ -542,7 +593,7 @@ function renderScan() {
         else if (/Android/.test(_ua)) _pt='android';
         else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
         await Promise.all([fetchOsVersions(_pt), fetchCveStats(_pt)]);
-        DV = detectDevice(); ST = 3; render();
+        DV = detectDevice(); ST = 4; render();
       }, 300);
       return;
     }
@@ -765,7 +816,7 @@ function applyCorrection() {
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
   DV = { type:TV.type, os:TV.os, major:TV.major, fullVersion:TV.fullVersion||TV.major, icon:dt?dt.ic:'📱', patch:TV.patch, name:NAMES[TV.type]||'Device' };
   // Windows auto-skips ST=3 (renderDevice), so go straight to calc
-  ST = DV.type === 'windows' ? 4 : 3;
+  ST = DV.type === 'windows' ? 5 : 4;
   render();
 }
 
@@ -858,7 +909,7 @@ function renderCalc() {
     // the full profile, causing a score mismatch.
     Object.assign(PR, buildProfile());
     SC = calcScores();
-    ST = 5;
+    ST = 6;
     render();
   }, 2000);
 }
@@ -1114,7 +1165,8 @@ document.addEventListener('click', e => {
   const action = el.dataset.action;
 
   // Device confirm screen
-  if (action === 'confirm-device') { ST = 4; render(); return; }
+  if (action === 'intro-continue') { ST = 1; render(); return; }
+  if (action === 'confirm-device') { ST = 5; render(); return; }
   if (action === 'correct-device') { TV = {}; renderCorrect(); return; }
 
   // Device type selection
@@ -1132,7 +1184,7 @@ document.addEventListener('click', e => {
   }
   if (action === 'change-dtype') { renderCorrect(); return; }
   if (action === 'confirm-build') { applyCorrection(); return; }
-  if (action === 'back-to-device') { ST = 3; render(); return; }
+  if (action === 'back-to-device') { ST = 4; render(); return; }
 
   // Profile questions
   if (action === 'select-pill') {
@@ -1147,21 +1199,21 @@ document.addEventListener('click', e => {
     el.setAttribute('aria-pressed', 'true');
     return;
   }
-  if (action === 'q-back') { CQ = 0; ST = 0; render(); return; }
+  if (action === 'q-back') { CQ = 0; ST = 1; render(); return; }
   if (action === 'q-next') {
-    if (CQ === 0) { CQ = 1; ST = 1; render(); }
-    else          { ST = 2; render(); }
+    if (CQ === 0) { CQ = 1; ST = 2; render(); }
+    else          { ST = 3; render(); }
     return;
   }
 
   // Results screen
   if (action === 'go-dashboard') { goToDashboard(); return; }
-  if (action === 'go-save')      { SID = genId(); ST = 6; render(); return; }
+  if (action === 'go-save')      { SID = genId(); ST = 7; render(); return; }
   if (action === 'go-home')      { window.location.href = '/'; return; }
 
   // Save screen
   if (action === 'do-save')   { doSave(); return; }
-  if (action === 'skip-save') { ST = 5; render(); return; }
+  if (action === 'skip-save') { ST = 6; render(); return; }
 });
 
 // Keyboard support for role=button elements (dtype-card, ver-card)
@@ -1191,15 +1243,16 @@ document.addEventListener('input', e => {
 });
 function render() {
   renderDots();
-  CQ = ST === 1 ? 1 : 0;
+  CQ = ST === 2 ? 1 : 0;
 
-  if      (ST === 0) { CQ = 0; renderQuestions(); }
-  else if (ST === 1) { CQ = 1; renderQuestions(); }
-  else if (ST === 2) renderScan();
-  else if (ST === 3) renderDevice();
-  else if (ST === 4) renderCalc();
-  else if (ST === 5) renderResults();
-  else if (ST === 6) renderSave();
+  if      (ST === 0) renderIntro();
+  else if (ST === 1) { CQ = 0; renderQuestions(); }
+  else if (ST === 2) { CQ = 1; renderQuestions(); }
+  else if (ST === 3) renderScan();
+  else if (ST === 4) renderDevice();
+  else if (ST === 5) renderCalc();
+  else if (ST === 6) renderResults();
+  else if (ST === 7) renderSave();
 }
 
 // ── BOOT ─────────────────────────────────────────────────
