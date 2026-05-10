@@ -540,9 +540,9 @@ function renderIntro() {
         <p style="font-size:11px;color:var(--dim);margin-top:.75rem;">Free · No account required · No data stored without your consent</p>
       </div>
 
-      <div style="margin-top:1.75rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note">
-        <p style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important limitation</p>
-        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin:0;">MyBadGuy is an educational and awareness tool, not a professional security assessment. Scores are derived from population-level threat intelligence data and self-reported profile information. Individual circumstances may vary significantly. For a professional security assessment of your devices or organisation, consult a qualified cybersecurity professional.</p>
+      <div style="margin-top:1.75rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
+        <p style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important disclaimer</p>
+        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:var(--slate);">You are solely responsible for validating any changes you make to your device or accounts.</strong> MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
       </div>
     </div>`;
   document.getElementById('app').innerHTML = h;
