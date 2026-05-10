@@ -297,7 +297,7 @@ function init() {
   document.getElementById('page').innerHTML = `
     <div class="mbg-disclaimer" role="note" aria-label="Important disclaimer">
       <p class="mbg-disclaimer-title">⚠️ Important disclaimer</p>
-      <p class="mbg-disclaimer-body">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong>You are solely responsible for validating any changes you make to your device or accounts.</strong> MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
+      <p class="mbg-disclaimer-body">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong>You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
     </div>
     <div class="actor-hdr">
       <div class="actor-avatar ${A.avClass || 'av-cyan'}" id="actor-av">${A.init}</div>
