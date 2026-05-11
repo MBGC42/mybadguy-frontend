@@ -396,25 +396,8 @@ async function runScan() {
       } else {
         osVersion = 'macOS ' + parts.join('.');
       }
-      // UA omits the patch digit (e.g. 15_7 not 15_7_5)
-      // Enrich with latest point release only if UA version has fewer parts
-      // Never replace a specific detected version with a different one.
-      try {
-        const major = parts[0] === '10' ? (parts[1] || '15') : parts[0];
-        const r = await fetch(`https://api.mybadguy.com/api/os-versions/mac`);
-        if (r.ok) {
-          const data = await r.json();
-          const cycle = (data.versions || []).find(v => String(v.cycle) === String(major));
-          if (cycle?.latest_version) {
-            const uaParts = osVersion.replace('macOS ', '').split('.').length;
-            const dbParts = cycle.latest_version.split('.').length;
-            const uaVer   = osVersion.replace('macOS ', '');
-            if (uaParts < dbParts && cycle.latest_version.startsWith(uaVer + '.')) {
-              osVersion = 'macOS ' + cycle.latest_version;
-            }
-          }
-        }
-      } catch (_) { /* use UA version as fallback */ }
+      // Note: Safari UA only reports major.minor (e.g. 15.7) — patch digit is never included.
+      // This is a browser limitation — we cannot know the exact patch version from the UA alone.
     }
   }
 
