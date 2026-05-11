@@ -690,6 +690,17 @@ function renderDevice() {
     }
   }
 
+  // Low confidence signal — shown when we can't determine the exact patch version
+  // macOS: browsers only report major.minor from the UA (e.g. 15.7 not 15.7.5)
+  // This is an Apple/macOS privacy limitation — affects all browsers on macOS
+  const partialDetection = DV.type === 'mac' && (DV.fullVersion || DV.major).split('.').length < 3;
+  const lowConfidence = partialDetection
+    ? `<div style="margin-top:.75rem;padding:12px 14px;background:#FFF3CD;border:1px solid #f0c070;border-left:4px solid #EF9F27;border-radius:6px;font-size:15px;color:#7a4e00;line-height:1.6;">
+        <strong style="display:block;margin-bottom:3px;color:#7a4e00;">⚠️ Partial detection — action needed</strong>
+        Browsers on macOS only report your major version number. We cannot detect your exact build automatically. Tap <strong>Correct it</strong> to confirm your version from <strong> → About This Mac</strong>.
+      </div>`
+    : '';
+
   document.getElementById('app').innerHTML = `
     <div class="screen">
       <p class="eyebrow">Device detected</p>
@@ -700,6 +711,7 @@ function renderDevice() {
         <span class="patch-badge" style="background:${pb};color:${pc};">${pl}</span>
         ${warn}
         ${upgradeNote}
+        ${lowConfidence}
       </div>
       <p style="font-size:16px;color:var(--muted);text-align:center;margin-bottom:1.25rem;">Is this your device?</p>
       <div class="btn-row">
