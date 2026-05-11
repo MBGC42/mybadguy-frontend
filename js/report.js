@@ -337,17 +337,22 @@ async function renderReport(){
   const numClass = {1:'rem-num-1', 2:'rem-num-2', 3:'rem-num-3', 4:'rem-num-3'};
 
   h += `<p class="eyebrow" style="margin-top:1.25rem;">All recommendations</p>
-  <p style="font-size:12px;color:#666;margin-bottom:1rem;">Sorted from easiest to hardest across all threat actors. Tap any card to expand.</p>`;
+  <p style="font-size:15px;color:#666;margin-bottom:1rem;">Sorted from easiest to hardest across all threat actors. Tap a section header to expand.</p>`;
 
   let globalNum = 1;
   ['easy','medium','hard'].forEach(diff => {
     const items = diffGroups[diff];
     if (!items.length) return;
-    h += `<div class="pri-group" style="margin-bottom:6px;">
-      <div class="pri-hdr ${diffPriClass[diff]}">
+    const groupId = `pri-group-${diff}`;
+    h += `<div class="pri-group" style="margin-bottom:8px;">
+      <div class="pri-hdr ${diffPriClass[diff]}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;" onclick="toggleGroup('${groupId}')">
         <span class="pri-title">${diffLabels[diff]}</span>
-        <span class="pri-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
-      </div>`;
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="pri-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
+          <span id="${groupId}-chevron" style="font-size:16px;color:inherit;transition:transform .2s;">&#9654;</span>
+        </div>
+      </div>
+      <div id="${groupId}" style="display:none;">`;
     items.forEach(r => {
       const a   = r.actor;
       const nc  = numClass[r.priority] || 'rem-num-3';
@@ -382,7 +387,7 @@ async function renderReport(){
         </div>
       </div>`;
     });
-    h += '</div>';
+    h += '</div></div>'; // close group body + pri-group
   });
 
   h+='<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>';
@@ -393,6 +398,16 @@ async function renderReport(){
     const card=e.target.closest('.rem-card');
     if(card) card.classList.toggle('open');
   });
+
+  // Expose toggleGroup globally for onclick handlers
+  window.toggleGroup = function(id) {
+    const body    = document.getElementById(id);
+    const chevron = document.getElementById(id + '-chevron');
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+  };
 }
 
 renderReport().catch(err=>{
