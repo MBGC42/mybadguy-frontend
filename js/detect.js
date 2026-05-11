@@ -1226,7 +1226,7 @@ document.addEventListener('click', e => {
   // Device confirm screen
   if (action === 'intro-continue') { ST = 1; render(); return; }
   if (action === 'confirm-device') { ST = 5; render(); return; }
-  if (action === 'correct-device') { TV = {}; renderCorrect(); return; }
+  if (action === 'correct-device') { TV = { type: DV.type, os: DV.os }; renderCorrectBuilds().catch(console.error); return; }
 
   // Device type selection
   if (action === 'select-dtype') {
