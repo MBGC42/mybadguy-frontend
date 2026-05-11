@@ -313,13 +313,31 @@ async function getFingerprint() {
 
 // ── IP/Location via public API ───────────────────────────
 async function getIPData() {
-  try {
-    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) throw new Error('fail');
-    return await r.json();
-  } catch (_) {
-    return null;
+  // Try multiple free IP geolocation APIs in order
+  const APIs = [
+    async () => {
+      const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      return { ip: d.ip, city: d.city, region: d.region, country_name: d.country_name, org: d.org, is_vpn: d.security?.vpn };
+    },
+    async () => {
+      const r = await fetch('https://ipwho.is/', { signal: AbortSignal.timeout(4000) });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      return { ip: d.ip, city: d.city, region: d.region, country_name: d.country, org: `${d.connection?.asn || ''} ${d.connection?.isp || ''}`.trim() };
+    },
+    async () => {
+      const r = await fetch('https://freeipapi.com/api/json', { signal: AbortSignal.timeout(4000) });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      return { ip: d.ipAddress, city: d.cityName, region: d.regionName, country_name: d.countryName, org: d.ispName };
+    },
+  ];
+  for (const api of APIs) {
+    try { return await api(); } catch (_) {}
   }
+  return null;
 }
 
 // ── Main scan ────────────────────────────────────────────
@@ -423,8 +441,32 @@ async function runScan() {
   // Hardware (may be limited by browser)
   const cpuCores = navigator.hardwareConcurrency || null;
   const memory   = navigator.deviceMemory || null; // Chrome only
-  const connType  = (navigator.connection || navigator.mozConnection || navigator.webkitConnection);
-  const connection = connType ? (connType.effectiveType || connType.type || 'Unknown') : null;
+  // Connection type — effectiveType is unreliable (reports 4g on WiFi)
+  // Use downlink speed as a proxy for connection quality
+  const connObj = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  let connection = null;
+  if (connObj) {
+    const et = connObj.effectiveType;
+    const dl = connObj.downlink; // Mbps estimate
+    const type = connObj.type;   // 'wifi', 'cellular', 'ethernet', 'none' — not always available
+    if (type && type !== 'unknown') {
+      // If browser reports type directly, use it
+      const typeMap = { wifi: 'Wi-Fi', ethernet: 'Ethernet', cellular: 'Cellular', bluetooth: 'Bluetooth', none: 'No connection', wimax: 'WiMAX', other: 'Other' };
+      connection = typeMap[type] || type;
+    } else if (dl >= 10) {
+      connection = 'Broadband (Wi-Fi or Ethernet)';
+    } else if (dl >= 1.5) {
+      connection = 'Fast mobile (5G or LTE)';
+    } else if (et === '4g') {
+      connection = 'Mobile (4G/LTE)';
+    } else if (et === '3g') {
+      connection = 'Mobile (3G)';
+    } else if (et === '2g' || et === 'slow-2g') {
+      connection = 'Slow mobile (2G)';
+    } else {
+      connection = et ? et.toUpperCase() : null;
+    }
+  }
 
   // Referrer
   const referrer = document.referrer || null;
@@ -529,8 +571,14 @@ async function runScan() {
   }
 
   // VPN/proxy heuristic
-  const likelyVPN = ipData?.org && /vpn|proxy|hosting|cloud|server|data.cent/i.test(ipData.org);
-  html += row('VPN or proxy detected', likelyVPN ? 'Possibly yes' : 'No', likelyVPN ? 'lo' : 'hi');
+  // VPN detection — check API flag first, then ISP name patterns
+  const vpnPatterns = /vpn|proxy|hosting|cloud|server|data.cent|datacenter|data center|digitalocean|linode|vultr|ovh|hetzner|mullvad|nordvpn|expressvpn|surfshark|proton|tor|anonymi|private internet|tunnelbear|hidemy|astrill|privateVPN|perfect privacy|ipvanish|cyberghost/i;
+  const likelyVPN = ipData?.is_vpn === true
+    || (ipData?.org && vpnPatterns.test(ipData.org))
+    || (ipData?.org && /AS\d+\s+(M247|Datacamp|QuadraNet|Psychz|B2 Net|Frantech|Sharktech)/i.test(ipData.org));
+  html += row('VPN or proxy detected',
+    likelyVPN ? 'Yes — VPN or proxy likely active' : 'Not detected',
+    likelyVPN ? 'lo' : 'hi');
 
   // ── Device & Browser ──────────────────────────────────
   html += section('Your device &amp; browser');
