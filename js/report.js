@@ -247,7 +247,7 @@ async function renderReport(){
     </div>
   <p class="eyebrow">Full report</p>
   <h1 style="font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:700;color:#1a1a1a;margin-bottom:.4rem;letter-spacing:-.01em;">
-    ${devName}${devVer?` · <span style="color:${patchColor};">${devVer}</span>`:''} · <span style="color:${scoreColor(overall)};">${overall} combined risk</span>
+    ${devName}${devVer?` · <span style="color:#1a1a1a;">${devVer}</span>`:''} · <span style="color:${scoreColor(overall)};">${overall} combined risk</span>
   </h1>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
     <p style="font-size:15px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
@@ -260,7 +260,7 @@ async function renderReport(){
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
       ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
-      ${p.patchScore>0?`<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>`:''}
+      ${p.patchScore>0?`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:500;">${p.patchScore} unpatched CVEs on this platform</span>`:''}
     </div>
     <div class="ro-grid">
       <div class="ro-section" style="grid-column:1/-1;">Personal</div>
