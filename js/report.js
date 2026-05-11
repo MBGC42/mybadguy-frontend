@@ -422,16 +422,17 @@ async function renderReport(){
     const card = document.getElementById('actor-card-' + actorId);
     if (card) card.style.opacity = checked ? '1' : '0.45';
 
-    // Show/hide all rem-cards for this actor
+    // Show/hide all rem-cards for this actor using data-hidden attribute
     document.querySelectorAll(`.rem-card[data-actor="${actorId}"]`).forEach(el => {
       el.style.display = checked ? '' : 'none';
+      el.dataset.hidden = checked ? '' : '1';
     });
 
-    // Update step counts in each pri-group header in real time
+    // Update step counts — count cards without data-hidden="1"
     document.querySelectorAll('.pri-group').forEach(group => {
       const body    = group.querySelector('[id^="pri-group-"]');
       if (!body) return;
-      const visible = body.querySelectorAll('.rem-card:not([style*="display: none"])').length;
+      const visible = body.querySelectorAll('.rem-card:not([data-hidden="1"])').length;
       const countEl = group.querySelector('.pri-count');
       if (countEl) countEl.textContent = `${visible} step${visible !== 1 ? 's' : ''}`;
     });
