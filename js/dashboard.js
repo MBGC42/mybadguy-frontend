@@ -56,23 +56,27 @@ async function resolveVersionLabel(p) {
 }
 
 // ── CHIP DISPLAY ──────────────────────────────────────────
-const FIN_L  =['','Struggling','Working class','Middle income','Affluent','High wealth'];
+// ── PROFILE DISPLAY LABELS ───────────────────────────────
+// IMPORTANT: These arrays MUST match the answer options in detect.js QSETS exactly.
+// If you change question wording in detect.js, update these arrays to match.
+// Mismatch = consumer sees different text on dashboard than what they selected.
+const FIN_L  =['','Struggling','Working class','Middle income','Doing well','High wealth'];
 const FIN_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
-const TECH_L =['','No tech skills','Basic user','Moderate','Tech-savvy','Expert / IT'];
+const TECH_L =['','Not at all','Basic user','Moderate','Tech-savvy','Expert / IT'];
 const TECH_S =['','background:#FCEBEB;color:#A32D2D','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A'];
-const ISO_L  =['','Severely isolated','Some isolation','Socially active','Well connected','Community leader'];
+const ISO_L  =['','Very isolated','Somewhat isolated','Active','Well connected','Community leader'];
 const ISO_S  =['','background:#FCEBEB;color:#A32D2D','background:#FAEEDA;color:#854F0B','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A'];
-const SM_L   =['','Never uses','Casual','Regular','Heavy user','Influencer'];
+const SM_L   =['','Never use it','Occasional','Regular','Heavy user','Influencer / public'];
 const SM_S   =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
-const ROLE_L =['','No work data','Some work apps','Confidential','Regulated','Gov / exec'];
+const ROLE_L =['','No work data','Some work apps','Work email & files','Sensitive / regulated','Executive / gov'];
 const ROLE_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
-const PUB_L  =['','Very private','Low','Moderate','High','Very public'];
+const PUB_L  =['','Very private','Low profile','Moderate','High visibility','Very public'];
 const PUB_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const MDM_L  =['','Personal only','Work apps','Work email','Corp account','MDM enrolled'];
 const MDM_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const HOME_L =['','Rural','Suburban','Urban','Dense urban'];
 const HOME_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
-const USAGE_L=['','At home','Work/commute','Public use','Travel','International'];
+const USAGE_L=['','Mostly at home','Work / commute','Often in public','Frequent travel','International'];
 const USAGE_S=['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 
 // ── ACTOR DEFINITIONS (scores only — full detail in actor pages) ──
