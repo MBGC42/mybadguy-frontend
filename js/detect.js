@@ -33,10 +33,8 @@ const DTYPES = [
 
 async function fetchOsVersions(platform) {
   if (OSV[platform]) return OSV[platform];
-  // iphone data is stored under 'ios' slug in the API — alias it
-  const urlPlatform = platform === 'iphone' ? 'ios' : platform;
   try {
-    const r = await fetch(`${API}/api/os-versions/${urlPlatform}`);
+    const r = await fetch(`${API}/api/os-versions/${platform}`);
     if (!r.ok) throw new Error(r.status);
     OSV[platform] = await r.json();
   } catch (_) { OSV[platform] = { versions:[], current:null, supported:0 }; }
