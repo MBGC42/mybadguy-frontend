@@ -693,9 +693,10 @@ function renderDevice() {
   }
 
   // Low confidence signal — shown when we can't determine the exact patch version
-  // macOS: browsers only report major.minor from the UA (e.g. 15.7 not 15.7.5)
-  // This is an Apple/macOS privacy limitation — affects all browsers on macOS
-  const partialDetection = DV.type === 'mac' && (DV.fullVersion || DV.major).split('.').length < 3;
+  // Suppressed if the user has already corrected their version via the version picker
+  const partialDetection = DV.type === 'mac'
+    && (DV.fullVersion || DV.major).split('.').length < 3
+    && !TV.build; // TV.build is set when user selects exact version via Correct it
   const lowConfidence = partialDetection
     ? `<div style="margin-top:.75rem;padding:12px 14px;background:#FFF3CD;border:1px solid #f0c070;border-left:4px solid #EF9F27;border-radius:6px;font-size:15px;color:#7a4e00;line-height:1.6;">
         <strong style="display:block;margin-bottom:3px;color:#7a4e00;">⚠️ Partial detection — action needed</strong>
