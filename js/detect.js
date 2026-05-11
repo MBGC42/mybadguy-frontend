@@ -76,11 +76,21 @@ function versionToPatchStatus(fullVersion, platform) {
 
   if (!cycle.is_supported)  return 'outdated'; // vendor EOL
 
-  // If user is on the latest point release of this cycle they are fully patched
-  // regardless of whether a newer major version exists.
-  // e.g. macOS 15.7.5 = fully patched on Sequoia even though macOS 26 exists.
-  if (cycle.latest_version && fullVersion === cycle.latest_version) return 'current';
-  if (cycle.is_current)     return 'current';  // newest major + no point release data
+  // Check point releases first — most precise signal
+  const pointReleases = data.point_releases || [];
+  if (pointReleases.length > 0) {
+    const thisPR = pointReleases.find(pr => pr.version === fullVersion && pr.major_cycle === major);
+    if (thisPR) {
+      // Found this exact version in point releases
+      return (thisPR.is_latest === 1 && cycle.is_current) ? 'current' : 'behind';
+    }
+  }
+
+  // Fall back to cycle-level latest_version check
+  if (cycle.latest_version && fullVersion === cycle.latest_version) {
+    return cycle.is_current ? 'current' : 'behind'; // latest in cycle but not newest major
+  }
+  if (cycle.is_current && !cycle.latest_version) return 'current'; // newest major, no point data
 
   // On a supported but not-newest cycle AND behind within that cycle
   return 'behind';
