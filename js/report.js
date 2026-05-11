@@ -277,24 +277,27 @@ async function renderReport(){
     </div>
   </div>`;
 
-  // ── ACTOR LINKS ───────────────────────────────────────
+  // ── ACTOR FILTER CHECKBOXES ──────────────────────────
   h += `<p class="eyebrow" style="margin-top:1.5rem;">Threat actor profiles</p>
   <div class="report-card">
-    <p style="font-size:15px;color:#555;margin-bottom:1rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
+    <p style="font-size:15px;color:#555;margin-bottom:4px;">All actors selected. Uncheck any you want to exclude from the recommendations below.</p>
+    <p style="font-size:13px;color:#888;margin-bottom:1rem;">Tap an actor name to learn more about them.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
       ${ranked.map(a => {
         const cc  = scoreColor(a.co);
         const cbg = a.co>=70?'#FCEBEB':a.co>=45?'#FFF3CD':'#D4EDDA';
         const bdr = a.co>=70?'#f7c1c1':a.co>=45?'#f0c070':'#c3e6cb';
-        return `<a href="${a.page}" style="display:flex;align-items:center;gap:10px;padding:.85rem 1rem;border-radius:10px;border:1.5px solid ${bdr};background:${cbg};text-decoration:none;transition:border-color .15s;"
-          onmouseover="this.style.borderColor='#003F72'" onmouseout="this.style.borderColor='${bdr}'">
+        return `<div style="display:flex;align-items:center;gap:10px;padding:.85rem 1rem;border-radius:10px;border:1.5px solid ${bdr};background:${cbg};transition:opacity .2s;" id="actor-card-${a.id}">
+          <input type="checkbox" id="actor-chk-${a.id}" checked
+            style="width:20px;height:20px;cursor:pointer;accent-color:#003F72;flex-shrink:0;"
+            onchange="toggleActor('${a.id}', this.checked)"
+            aria-label="Include ${a.name} recommendations">
           <div style="width:34px;height:34px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">${a.ini}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:15px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+            <a href="${a.page}" style="font-size:15px;font-weight:600;color:#1a1a1a;text-decoration:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</a>
             <div style="font-size:15px;color:${cc};font-weight:700;">${a.co} / 99</div>
           </div>
-          <span style="font-size:16px;color:#666;">›</span>
-        </a>`;
+        </div>`;
       }).join('')}
     </div>
   </div>`;
@@ -347,7 +350,7 @@ async function renderReport(){
       const nc  = numClass[r.priority] || 'rem-num-3';
       const url = r.source_url   || '#';
       const lbl = r.source_label || 'Source';
-      h += `<div class="rem-card" data-rem="all-${globalNum}">
+      h += `<div class="rem-card" data-rem="all-${globalNum}" data-actor="${r.actor.id}">
         <div class="rem-card-hdr">
           <div class="rem-num ${nc}">${globalNum++}</div>
           <div class="rem-title-wrap">
@@ -411,6 +414,27 @@ async function renderReport(){
     const isOpen = body.style.display !== 'none';
     body.style.display = isOpen ? 'none' : 'block';
     if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+  };
+
+  // Toggle all recommendations for a given actor
+  window.toggleActor = function(actorId, checked) {
+    // Dim the actor card
+    const card = document.getElementById('actor-card-' + actorId);
+    if (card) card.style.opacity = checked ? '1' : '0.45';
+
+    // Show/hide all rem-cards for this actor
+    document.querySelectorAll(`.rem-card[data-actor="${actorId}"]`).forEach(el => {
+      el.style.display = checked ? '' : 'none';
+    });
+
+    // Hide pri-group sections that now have no visible cards
+    document.querySelectorAll('.pri-group').forEach(group => {
+      const body    = group.querySelector('[id^="pri-group-"]');
+      if (!body) return;
+      const visible = body.querySelectorAll('.rem-card:not([style*="display: none"])').length;
+      const hdr     = group.querySelector('.pri-hdr');
+      if (hdr) hdr.style.opacity = visible === 0 ? '0.45' : '1';
+    });
   };
 }
 
