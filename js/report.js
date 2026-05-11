@@ -82,15 +82,38 @@ const ACTOR_WINS = {
   ],
 };
 
-const FIN_L  =['','Minimal assets','Some savings','Moderate wealth','Significant wealth','High net worth'];
-const TECH_L =['','Beginner','Basic','Intermediate','Advanced','Expert'];
-const ISO_L  =['','Severely isolated','Some isolation','Socially active','Well connected','Community leader'];
-const SM_L   =['','Never','Rarely','Sometimes','Often','Constantly'];
-const ROLE_L =['','No sensitive data','Some work data','Regular work data','Sensitive work data','Highly sensitive data'];
-const PUB_L  =['','Very private','Mostly private','Some public presence','Notable presence','Highly public'];
-const MDM_L  =['','Personal only','Work apps','Work email','Corp account','MDM enrolled'];
+// ── PROFILE DISPLAY LABELS ───────────────────────────────
+// Fallback arrays — used if /api/questions is unavailable.
+// Primary labels loaded from D1 via loadQuestions() at init.
+const FIN_L  =['','Struggling','Working class','Middle income','Doing well','High wealth'];
+const TECH_L =['','Not at all','Basic user','Moderate','Tech-savvy','Expert / IT'];
+const ISO_L  =['','Very isolated','Somewhat isolated','Active','Well connected','Community leader'];
+const SM_L   =['','Never use it','Occasional','Regular','Heavy user','Influencer / public'];
+const ROLE_L =['','No work data','Some work apps','Work email & files','Sensitive / regulated','Executive / gov'];
+const PUB_L  =['','Very private','Low profile','Moderate','High visibility','Very public'];
+const MDM_L  =['','Personal only','Work apps installed','Work email linked','Corporate account','MDM enrolled'];
 const HOME_L =['','Rural','Suburban','Urban','Dense urban'];
-const USAGE_L=['','At home','Mostly home','Mixed','Mostly public','Always public'];
+const USAGE_L=['','Mostly at home','Work / commute','Often in public','Frequent travel','International'];
+
+// Dynamic label map from /api/questions
+let Q_LABELS = {};
+
+async function loadQuestions() {
+  try {
+    const r = await fetch('https://api.mybadguy.com/api/questions');
+    if (!r.ok) return;
+    const data = await r.json();
+    for (const [qid, answers] of Object.entries(data.answers || {})) {
+      Q_LABELS[qid] = {};
+      for (const a of answers) { Q_LABELS[qid][a.value] = a.label; }
+    }
+  } catch (_) {}
+}
+
+function qLabel(id, value, fallbackArr) {
+  if (Q_LABELS[id] && Q_LABELS[id][value] !== undefined) return Q_LABELS[id][value];
+  return fallbackArr[value] || String(value);
+}
 
 // ── VERSION LABEL RESOLUTION ──────────────────────────────
 // Primary source: p.deviceFullVersion (set during detection).
@@ -100,7 +123,7 @@ const _osVerCache = {};
 
 async function resolveVersionLabel(p) {
   if (p.deviceFullVersion) return p.deviceFullVersion;
-  const platform = p.ip ? 'ios' : p.id ? 'ipad' : p.an ? 'android' : p.mc ? 'mac' : p.wn ? 'windows' : null;
+  const platform = p.ip ? 'iphone' : p.id ? 'ipad' : p.an ? 'android' : p.mc ? 'mac' : p.wn ? 'windows' : null;
   if (!platform) return '';
   try {
     if (!_osVerCache[platform]) {
@@ -185,6 +208,7 @@ async function fetchRem(actorId, platform, cveStats){
 
 
 async function renderReport(){
+  await loadQuestions();
   const p=PR;
   if(!p||(!p.ip&&!p.id&&!p.an&&!p.mc&&!p.wn)){
     document.getElementById('report').innerHTML='<div class="loading"><p>No detection profile found.</p><p style="margin-top:.75rem;"><a href="detect.html">Run a detection first</a></p></div>';
@@ -219,15 +243,15 @@ async function renderReport(){
   const displayVer = devVer ? `${devName} ${devVer}` : devName;
   h+=`<div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
         <p style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important disclaimer</p>
-        <p style="font-size:12px;color:var(--muted);line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:var(--slate);">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
+        <p style="font-size:12px;color:#555;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#1a1a1a;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
       </div>
   <p class="eyebrow">Full report</p>
   <h1 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,30px);font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em;">
-    ${devName}${devVer?` <span style="color:${patchColor};">${devVer}</span>`:''} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> <span style="color:var(--slate);">combined risk</span>
+    ${devName}${devVer?` <span style="color:${patchColor};">${devVer}</span>`:''} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> <span style="color:#1a1a1a;">combined risk</span>
   </h1>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
-    <p style="font-size:13px;color:var(--muted);margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
-    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:99px;background:transparent;color:var(--slate);border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
+    <p style="font-size:13px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
+    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:99px;background:transparent;color:#1a1a1a;border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
   </div>`;
 
   h+=`<p class="eyebrow">Detection</p>
@@ -240,29 +264,29 @@ async function renderReport(){
     </div>
     <div class="ro-grid">
       <div class="ro-section" style="grid-column:1/-1;">Personal</div>
-      ${chip('Age',p.age)}${chip('Financial',FIN_L[p.fin]||p.fin)}${chip('Tech skill',TECH_L[p.tech]||p.tech)}${chip('Social',ISO_L[p.iso]||p.iso)}${chip('Social media',SM_L[p.sm]||p.sm)}
+      ${chip('Age',p.age)}${chip('Financial',    qLabel('fin',  p.fin,  FIN_L))}${chip('Tech skill',   qLabel('tech', p.tech, TECH_L))}${chip('Social',       qLabel('iso',  p.iso,  ISO_L))}${chip('Social media', qLabel('sm',   p.sm,   SM_L))}
       <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
       <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
-      ${chip('Job data',ROLE_L[p.role+1]||'No work data')}${chip('Public profile',PUB_L[p.pub+1]||'Very private')}${chip('Work / MDM',MDM_L[p.mdm+1]||'Personal only')}${chip('Home',HOME_L[p.home]||'Rural')}${chip('Usage',USAGE_L[p.usage+1]||'At home')}
+      ${chip('Job data',qLabel('role',p.role,ROLE_L))}${chip('Public profile',qLabel('pub',p.pub,PUB_L))}${chip('Work / MDM',qLabel('mdm',p.mdm,MDM_L))}${chip('Home',qLabel('home',p.home,HOME_L))}${chip('Usage',qLabel('usage',p.usage,USAGE_L))}
     </div>
   </div>`;
 
   // ── ACTOR LINKS ───────────────────────────────────────
   h += `<p class="eyebrow" style="margin-top:1.5rem;">Threat actor profiles</p>
   <div class="report-card">
-    <p style="font-size:12px;color:var(--muted);margin-bottom:.85rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
+    <p style="font-size:12px;color:#555;margin-bottom:.85rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
       ${ranked.map(a => {
         const cc  = scoreColor(a.co);
         const cbg = a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
         return `<a href="${a.page}" style="display:flex;align-items:center;gap:8px;padding:.6rem .85rem;border-radius:10px;border:.5px solid rgba(255,255,255,.08);background:${cbg};text-decoration:none;transition:border-color .15s;"
           onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-          <div style="width:24px;height:24px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${a.ini}</div>
+          <div style="width:24px;height:24px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${a.ini}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:12px;font-weight:500;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
-            <div style="font-size:10px;color:${cc};font-weight:600;">${a.co} / 99</div>
+            <div style="font-size:12px;font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+            <div style="font-size:12px;color:${cc};font-weight:600;">${a.co} / 99</div>
           </div>
-          <span style="font-size:11px;color:var(--dim);">&rsaquo;</span>
+          <span style="font-size:13px;color:#666;">&rsaquo;</span>
         </a>`;
       }).join('')}
     </div>
@@ -295,7 +319,7 @@ async function renderReport(){
   const numClass = {1:'rem-num-1', 2:'rem-num-2', 3:'rem-num-3', 4:'rem-num-3'};
 
   h += `<p class="eyebrow" style="margin-top:1.25rem;">All recommendations</p>
-  <p style="font-size:12px;color:var(--dim);margin-bottom:1rem;">Sorted from easiest to hardest across all threat actors. Tap any card to expand.</p>`;
+  <p style="font-size:12px;color:#666;margin-bottom:1rem;">Sorted from easiest to hardest across all threat actors. Tap any card to expand.</p>`;
 
   let globalNum = 1;
   ['easy','medium','hard'].forEach(diff => {
