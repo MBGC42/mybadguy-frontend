@@ -353,18 +353,33 @@ async function runScan() {
 
   // OS version extraction (best effort)
   let osVersion = '';
-  const iosMatch = ua.match(/OS (\d+[_\d]*) like/);
-  const androidMatch = ua.match(/Android ([\d.]+)/);
-  const winMatch = ua.match(/Windows NT ([\d.]+)/);
-  const macMatch = ua.match(/Mac OS X ([\d_]+)/);
-  if (iosMatch)     osVersion = 'iOS ' + iosMatch[1].replace(/_/g, '.');
-  else if (isIPad && iosMatch) osVersion = 'iPadOS ' + iosMatch[1].replace(/_/g, '.');
-  else if (androidMatch) osVersion = 'Android ' + androidMatch[1];
-  else if (winMatch) {
-    const v = {'10.0':'10/11','6.3':'8.1','6.2':'8','6.1':'7'}[winMatch[1]] || winMatch[1];
-    osVersion = 'Windows ' + v;
+  if (isIPhone) {
+    const m = ua.match(/CPU iPhone OS (\d+[_\d]*) like/);
+    if (m) osVersion = 'iOS ' + m[1].replace(/_/g, '.');
+  } else if (isIPad) {
+    const m = ua.match(/CPU OS (\d+[_\d]*) like/);
+    if (m) osVersion = 'iPadOS ' + m[1].replace(/_/g, '.');
+  } else if (isAndroid) {
+    const m = ua.match(/Android ([\d.]+)/);
+    if (m) osVersion = 'Android ' + m[1];
+  } else if (isWindows) {
+    const m = ua.match(/Windows NT ([\d.]+)/);
+    if (m) {
+      const v = {'10.0':'10 or 11','6.3':'8.1','6.2':'8','6.1':'7'}[m[1]] || m[1];
+      osVersion = 'Windows ' + v;
+    }
+  } else if (isMac) {
+    const m = ua.match(/Mac OS X (\d+[_\d]+)/);
+    if (m) {
+      const parts = m[1].split('_');
+      // Intel era: 10_15_7 → macOS 15.7, Apple Silicon era: 26_4_1 → macOS 26.4.1
+      if (parts[0] === '10') {
+        osVersion = 'macOS ' + (parts[1] || '15') + (parts[2] ? '.' + parts[2] : '');
+      } else {
+        osVersion = 'macOS ' + parts.join('.');
+      }
+    }
   }
-  else if (macMatch) osVersion = 'macOS ' + macMatch[1].replace(/_/g, '.');
 
   // Browser detection
   let browser = 'Unknown browser';
