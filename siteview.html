@@ -378,6 +378,19 @@ async function runScan() {
       } else {
         osVersion = 'macOS ' + parts.join('.');
       }
+      // UA omits the patch digit (e.g. 15_7 not 15_7_5)
+      // Enrich with latest point release from our OS versions API
+      try {
+        const major = parts[0] === '10' ? (parts[1] || '15') : parts[0];
+        const r = await fetch(`https://api.mybadguy.com/api/os-versions/mac`);
+        if (r.ok) {
+          const data = await r.json();
+          const cycle = (data.versions || []).find(v => String(v.cycle) === String(major));
+          if (cycle?.latest_version && cycle.latest_version.startsWith(osVersion.replace('macOS ', ''))) {
+            osVersion = 'macOS ' + cycle.latest_version;
+          }
+        }
+      } catch (_) { /* use UA version as fallback */ }
     }
   }
 
