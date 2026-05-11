@@ -64,7 +64,16 @@ function versionToPatchStatus(fullVersion, platform) {
   const major = String(parseInt(fullVersion) || fullVersion.split('.')[0]);
   const cycle = data.versions.find(v => String(v.cycle) === major)
              || data.versions.find(v => String(Math.floor(parseFloat(v.cycle))) === major);
-  if (!cycle)               return 'outdated'; // very old or not tracked
+
+  if (!cycle) {
+    // Version not found in DB — check if it's NEWER than anything we track
+    // (e.g. iOS 26 when DB only has up to iOS 18)
+    const majorInt = parseInt(major);
+    const maxTracked = Math.max(...data.versions.map(v => parseInt(v.cycle) || 0));
+    if (majorInt > maxTracked) return 'current'; // newer than DB — assume current
+    return 'outdated'; // older than anything tracked — very old
+  }
+
   if (!cycle.is_supported)  return 'outdated'; // vendor EOL
 
   // If user is on the latest point release of this cycle they are fully patched
@@ -737,6 +746,26 @@ async function renderCorrectBuilds() {
   const builds = buildVersionCards(TV.type);
   const dt     = DTYPES.find(d => d.id === TV.type);
   const NC = { current:'#22c55e', behind:'#EF9F27', outdated:'#E24B4A' };
+
+  // If the detected version isn't in the built card list, prepend it
+  // This handles versions newer than our DB (e.g. iOS 26 when DB has iOS 18)
+  if (DV.fullVersion && DV.type === TV.type) {
+    const detected = DV.fullVersion || DV.major;
+    const alreadyListed = builds.some(b => b.v === detected || b.v === DV.major);
+    if (!alreadyListed && detected) {
+      const detectedPatch = versionToPatchStatus(detected, TV.type);
+      builds.unshift({
+        v: detected,
+        cycle: DV.major,
+        l: `${prefix} ${detected}`,
+        p: detectedPatch,
+        n: detectedPatch === 'current' ? 'Your detected version — latest' : 'Your detected version',
+        d: ''
+      });
+      // Auto-select it
+      if (!TV.build) { TV.build = detected; TV.patch = detectedPatch; }
+    }
+  }
 
   const cards = builds.map(b => {
     const sel = TV.build === b.v;
