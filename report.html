@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/optiona.css">
+  <link rel="stylesheet" href="/css/actor.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
   <style>
     body { background: #fff; color: #1a1a1a; font-size: 17px; }
@@ -64,6 +65,41 @@
     .attribution { text-align: center; font-size: 13px; color: #888; padding: .75rem; border-top: 1px solid #dde3ea; margin-top: 1.5rem; }
 
     @media (max-width: 560px) { .ro-grid { grid-template-columns: 1fr; } }
+
+    /* ── Light mode overrides for actor.css ── */
+    body { background: #fff !important; }
+    .page { background: #fff !important; }
+    .eyebrow { color: #003F72 !important; }
+    .rem-card { background: #fff !important; border: 1px solid #dde3ea !important; }
+    .rem-card:hover { border-color: #003F72 !important; }
+    .rem-card-title { color: #1a1a1a !important; }
+    .rem-card-sub { color: #555 !important; }
+    .rem-expand { color: #666 !important; }
+    .rem-body { color: #444 !important; font-size: 15px; line-height: 1.7; background: #fff !important; }
+    .rem-num { background: rgba(0,63,114,.1) !important; color: #003F72 !important; }
+    .rem-row { border-bottom-color: #dde3ea !important; }
+    .pri-hdr-1 { background: #FCEBEB !important; border-left-color: #C41230 !important; }
+    .pri-hdr-2 { background: #FFF3CD !important; border-left-color: #7a4e00 !important; }
+    .pri-hdr-3 { background: #E6F1FB !important; border-left-color: #003F72 !important; }
+    .pri-hdr-1 .pri-title, .pri-hdr-1 .pri-count { color: #C41230 !important; }
+    .pri-hdr-2 .pri-title, .pri-hdr-2 .pri-count { color: #7a4e00 !important; }
+    .pri-hdr-3 .pri-title, .pri-hdr-3 .pri-count { color: #003F72 !important; }
+    .actor-hdr { background: #F0F4F8 !important; border: 1px solid #dde3ea !important; border-left: 4px solid #003F72 !important; }
+    .actor-hdr-name { color: #1a1a1a !important; font-size: 17px; }
+    .actor-hdr-sub { color: #555 !important; }
+    .report-card { background: #F0F4F8 !important; border: 1px solid #dde3ea !important; }
+    .report-card-title { color: #1a1a1a !important; }
+    .report-card-sub { color: #666 !important; }
+    .ro-label { color: #555 !important; font-size: 14px; }
+    .ro-val { color: #1a1a1a !important; font-size: 14px; font-weight: 600; }
+    .ro-section { color: #666 !important; }
+    .ro-row { border-bottom-color: #dde3ea !important; }
+    .profile-divider { background: #dde3ea !important; }
+    .dev-name-badge { color: #1a1a1a !important; }
+    .dev-summary { border-bottom-color: #dde3ea !important; }
+    .attribution { color: #888 !important; border-top-color: #dde3ea !important; }
+    .spinner { border-color: #dde3ea; border-top-color: #003F72; }
+    .loading { color: #666; }
   </style>
 </head>
 <body>
