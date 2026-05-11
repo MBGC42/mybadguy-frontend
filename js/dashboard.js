@@ -141,7 +141,7 @@ function score(a) {
   };
 }
 function combo(a) { const s=score(a); return Math.round((s.t+s.s)/2); }
-function scoreColor(v) { return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
+function scoreColor(v) { return v>=70?'#C41230':v>=45?'#7a4e00':'#007A53'; }
 
 // ── TOP QUICK WINS ────────────────────────────────────────
 const ACTOR_WINS = {
@@ -251,13 +251,13 @@ async function render() {
     </div>
     <div>
       <h1 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:.3rem;">${overallLabel}</h1>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;max-width:440px;">
+      <p style="font-size:13px;color:#555;line-height:1.6;max-width:440px;">
         ${overall>=70?'Several threat actors have strong interest in your profile. Review each actor below and work through their remediation steps.':
           overall>=45?'Some threat actors find your profile moderately attractive. Start with the highest-scored actors.':
           'Your profile is less attractive to most threat actors. A few targeted changes close the remaining gaps.'}
       </p>
       <div style="margin-top:.75rem;display:flex;gap:8px;flex-wrap:wrap;">
-        ${ranked.slice(0,3).map(a=>`<span style="font-size:11px;padding:3px 9px;border-radius:99px;background:${a.gc}22;color:${a.gc};font-weight:500;">${a.name}: ${a.co}</span>`).join('')}
+        ${ranked.slice(0,3).map(a=>`<span style="font-size:13px;padding:3px 9px;border-radius:99px;background:${a.gc}22;color:${a.gc};font-weight:500;">${a.name}: ${a.co}</span>`).join('')}
       </div>
     </div>
   </div>`;
@@ -266,7 +266,7 @@ async function render() {
   const devName   = p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
   const devVer    = await resolveVersionLabel(p);
   const patchTier = p.patchTier || (p.patchScore===0?'current':p.patchScore<30?'behind':'outdated');
-  const patchColor= patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
+  const patchColor= patchTier==='current'?'#007A53':patchTier==='behind'?'#7a4e00':'#C41230';
   const patchLabel= patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
   const patchBg   = patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
   const chip = (label, val) => `<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
@@ -321,15 +321,15 @@ async function render() {
           onclick="saveProfile()">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem;">
             <div class="actor-avatar" style="background:${a.ab};color:${a.ac};">${a.ini}</div>
-            <span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${cbg};color:${cc};font-weight:600;">${lbl}</span>
+            <span style="font-size:12px;padding:2px 8px;border-radius:99px;background:${cbg};color:${cc};font-weight:600;">${lbl}</span>
           </div>
           <div class="actor-score" style="color:${cc};">${a.co}</div>
           <div class="actor-name" style="margin:.15rem 0 .1rem;">${a.name}</div>
           <div class="actor-sub">${a.sub}</div>
-          <div style="margin-top:.75rem;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;">
+          <div style="margin-top:.75rem;height:3px;background:#dde3ea;border-radius:99px;overflow:hidden;">
             <div style="height:100%;width:${a.co}%;background:${cc};border-radius:99px;"></div>
           </div>
-          <div style="font-size:11px;color:#22d3ee;font-weight:500;margin-top:.65rem;text-align:center;">Tap for details →</div>
+          <div style="font-size:13px;color:#003F72;font-weight:500;margin-top:.65rem;text-align:center;">Tap for details →</div>
         </a>`;
     });
     h += `</div></div>`;
@@ -338,9 +338,9 @@ async function render() {
   // ── FULL REPORT CTA ──────────────────────────────────
   h += `<div class="eyebrow" style="margin-top:.25rem;">Actions</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;">
-    <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:var(--lcyan);color:var(--navy);text-decoration:none;transition:opacity .15s;white-space:nowrap;">Combined Risk Details →</a>
-    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:transparent;color:var(--slate);border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
-    <a href="detect.html" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:99px;background:transparent;color:var(--muted);border:1.5px solid rgba(255,255,255,.08);text-decoration:none;white-space:nowrap;">New detection →</a>
+    <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:#e8f0f8;color:#003F72;text-decoration:none;transition:opacity .15s;white-space:nowrap;">Combined Risk Details →</a>
+    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:transparent;color:#1a1a1a;border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
+    <a href="detect.html" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:99px;background:transparent;color:#555;border:1.5px solid #dde3ea;text-decoration:none;white-space:nowrap;">New detection →</a>
   </div>`;
 
   h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
