@@ -1357,7 +1357,18 @@ function render() {
 // ── BOOT ─────────────────────────────────────────────────
 // Fetch questions from API then render. Falls back to QSETS_FALLBACK if API fails.
 (async () => {
-  const qdata = await fetchQuestions();
-  buildQsets(qdata);
-  render();
+  try {
+    const qdata = await fetchQuestions();
+    buildQsets(qdata);
+  } catch (_) {
+    // API failed — QSETS_FALLBACK is already set, continue
+  }
+  try {
+    render();
+  } catch (err) {
+    // Last resort — show error in app container
+    const app = document.getElementById('app');
+    if (app) app.innerHTML = '<div style="padding:2rem;color:#C41230;">Failed to load. Please refresh the page.</div>';
+    console.error('Boot render failed:', err);
+  }
 })();
