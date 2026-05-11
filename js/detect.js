@@ -103,6 +103,10 @@ function getUpgradeHint(platform, fullVersion) {
   const cycle = data.versions.find(v => String(v.cycle) === major);
   if (!cycle || cycle.is_current) return null; // already on current major
 
+  // For macOS, we only have major.minor from the UA (e.g. 15.7 not 15.7.5)
+  // Don't show upgrade/Intel hint if we can't confirm they are fully patched on this cycle
+  if (platform === 'mac' && fullVersion.split('.').length < 3) return null;
+
   const current = data.versions.find(v => v.is_current);
   if (!current) return null;
 
