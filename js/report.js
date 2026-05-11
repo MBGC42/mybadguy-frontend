@@ -427,13 +427,13 @@ async function renderReport(){
       el.style.display = checked ? '' : 'none';
     });
 
-    // Hide pri-group sections that now have no visible cards
+    // Update step counts in each pri-group header in real time
     document.querySelectorAll('.pri-group').forEach(group => {
       const body    = group.querySelector('[id^="pri-group-"]');
       if (!body) return;
       const visible = body.querySelectorAll('.rem-card:not([style*="display: none"])').length;
-      const hdr     = group.querySelector('.pri-hdr');
-      if (hdr) hdr.style.opacity = visible === 0 ? '0.45' : '1';
+      const countEl = group.querySelector('.pri-count');
+      if (countEl) countEl.textContent = `${visible} step${visible !== 1 ? 's' : ''}`;
     });
   };
 }
