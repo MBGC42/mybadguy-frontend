@@ -95,7 +95,7 @@ function versionToPatchStatus(fullVersion, platform) {
 }
 
 // Returns upgrade hint for supported-but-not-current cycles
-// e.g. macOS 15.7.5 → { available: 'macOS Tahoe 26.4.1', canUpgrade: true|false|null }
+// e.g. macOS 15.7.7 → { available: 'macOS Tahoe 26.5', canUpgrade: true|false|null }
 function getUpgradeHint(platform, fullVersion) {
   const data = OSV[platform];
   if (!data?.versions?.length) return null;
@@ -103,9 +103,13 @@ function getUpgradeHint(platform, fullVersion) {
   const cycle = data.versions.find(v => String(v.cycle) === major);
   if (!cycle || cycle.is_current) return null; // already on current major
 
-  // For macOS, we only have major.minor from the UA (e.g. 15.7 not 15.7.5)
-  // Don't show upgrade/Intel hint if we can't confirm they are fully patched on this cycle
+  // For macOS, only show if we have a full 3-part version
   if (platform === 'mac' && fullVersion.split('.').length < 3) return null;
+
+  // Only show if the user is on the LATEST build in their cycle
+  // If they are behind within their cycle, show "update available" not upgrade hint
+  const isLatestInCycle = cycle.latest_version && fullVersion === cycle.latest_version;
+  if (!isLatestInCycle) return null;
 
   const current = data.versions.find(v => v.is_current);
   if (!current) return null;
@@ -115,10 +119,8 @@ function getUpgradeHint(platform, fullVersion) {
   let upgradeNote = null;
 
   if (platform === 'mac') {
-    // Apple Silicon can upgrade; Intel cannot go past macOS 15
-    canUpgrade = DV_MAC_SILICON; // true/false/null
+    canUpgrade = DV_MAC_SILICON; // true = Apple Silicon, false = Intel, null = unknown
   } else if (platform === 'iphone' || platform === 'ipad') {
-    // Cannot determine model compatibility from browser — direct to Apple's page
     canUpgrade = null;
     upgradeNote = 'check';
   }
