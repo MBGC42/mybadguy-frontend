@@ -762,7 +762,7 @@ async function renderCorrectBuilds() {
   }
   const builds = buildVersionCards(TV.type);
   const dt     = DTYPES.find(d => d.id === TV.type);
-  const NC = { current:'#22c55e', behind:'#EF9F27', outdated:'#E24B4A' };
+  const NC = { current:'#007A53', behind:'#7a4e00', outdated:'#C41230' };
 
   // If the detected version isn't in the built card list, prepend it
   // This handles versions newer than our DB (e.g. iOS 26 when DB has iOS 18)
@@ -795,7 +795,7 @@ async function renderCorrectBuilds() {
            data-p="${b.p}"
            aria-label="${b.l}, ${b.n}, released ${b.d}">
         <span class="ver-label">${b.l}</span>
-        <span class="ver-note" style="color:${sel?'rgba(15,23,42,.65)':NC[b.p]};">${b.n}</span>
+        <span class="ver-note" style="color:${sel?'rgba(0,63,114,.7)':NC[b.p]};">${b.n}</span>
         <span class="ver-date">Released ${b.d}</span>
       </div>`;
   }).join('');
@@ -805,15 +805,15 @@ async function renderCorrectBuilds() {
     iphone:  ['Open <strong>Settings</strong>', 'Tap <strong>General</strong>', 'Tap <strong>About</strong>', 'Look for <strong>Software Version</strong>'],
     ipad:    ['Open <strong>Settings</strong>', 'Tap <strong>General</strong>', 'Tap <strong>About</strong>', 'Look for <strong>Software Version</strong>'],
     android: ['Open <strong>Settings</strong>', 'Scroll down and tap <strong>About phone</strong>', 'Tap <strong>Software information</strong>', 'Look for <strong>Android version</strong>'],
-    mac:     ['Click the <strong>ἴE Apple menu</strong> (top-left corner)', 'Click <strong>About This Mac</strong>', 'Your macOS version is shown at the top'],
+    mac:     ['Click the <strong>Apple menu</strong> in the top-left corner of your screen', 'Click <strong>About This Mac</strong>', 'Your macOS version is shown at the top'],
     windows: ['Click <strong>Start</strong>', 'Click <strong>Settings</strong> (gear icon)', 'Click <strong>System</strong>', 'Click <strong>About</strong>', 'Look for <strong>Windows 11</strong> or <strong>Windows 10</strong> and the version number (e.g. 24H2)'],
   };
 
   const steps = VERSION_STEPS[TV.type] || VERSION_STEPS.iphone;
   const stepsHtml = steps.map((s, i) =>
     `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;">
-       <span style="flex-shrink:0;width:18px;height:18px;border-radius:50%;background:rgba(34,211,238,.15);color:#22d3ee;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">${i+1}</span>
-       <span style="font-size:16px;color:var(--muted);line-height:1.5;">${s}</span>
+       <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#003F72;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">${i+1}</span>
+       <span style="font-size:16px;color:#444;line-height:1.5;">${s}</span>
      </div>`
   ).join('');
 
@@ -826,9 +826,9 @@ async function renderCorrectBuilds() {
     <div class="screen">
       <p class="eyebrow">${eyebrow}</p>
       <h1 class="sec-title">${heading}</h1>
-      <details style="margin-bottom:1rem;background:rgba(34,211,238,.05);border:.5px solid rgba(34,211,238,.15);border-radius:8px;padding:.6rem .85rem;">
-        <summary style="font-size:16px;font-weight:500;color:#22d3ee;cursor:pointer;user-select:none;list-style:none;">
-          How to find your version &darr;
+      <details style="margin-bottom:1rem;background:#F0F4F8;border:1px solid #dde3ea;border-radius:8px;padding:.6rem .85rem;">
+        <summary style="font-size:16px;font-weight:600;color:#003F72;cursor:pointer;user-select:none;list-style:none;">
+          How to find your version ↓
         </summary>
         <div style="margin-top:.65rem;">${stepsHtml}</div>
       </details>
