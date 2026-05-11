@@ -217,9 +217,9 @@ async function renderReport(){
   const devName=p.ip?'iPhone':p.id?'iPad':p.an?'Android':p.mc?'Mac':p.wn?'Windows PC':'Unknown';
   const platform=p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
   const patchTier=p.patchTier||(p.patchScore===0?'current':p.patchScore<30?'behind':'outdated');
-  const patchColor=patchTier==='current'?'#22c55e':patchTier==='behind'?'#EF9F27':'#E24B4A';
+  const patchColor=patchTier==='current'?'#007A53':patchTier==='behind'?'#7a4e00':'#C41230';
   const patchLabel=patchTier==='current'?'Up to date':patchTier==='behind'?'Update available':'End of life';
-  const patchBg=patchTier==='current'?'rgba(34,197,94,.12)':patchTier==='behind'?'rgba(239,159,39,.12)':'rgba(226,75,74,.12)';
+  const patchBg=patchTier==='current'?'#D4EDDA':patchTier==='behind'?'#FFF3CD':'#FCEBEB';
   const devVer = await resolveVersionLabel(p);
   const chip=(label,val)=>`<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
 
@@ -241,22 +241,22 @@ async function renderReport(){
   let h='';
 
   const displayVer = devVer ? `${devName} ${devVer}` : devName;
-  h+=`<div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
-        <p style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important disclaimer</p>
-        <p style="font-size:12px;color:#555;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#1a1a1a;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
-      </div>
+  h+=`<div class="mbg-disclaimer" role="note" aria-label="Important disclaimer">
+      <p class="mbg-disclaimer-title">⚠️ Important disclaimer</p>
+      <p class="mbg-disclaimer-body">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong>You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
+    </div>
   <p class="eyebrow">Full report</p>
-  <h1 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,30px);font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em;">
-    ${devName}${devVer?` <span style="color:${patchColor};">${devVer}</span>`:''} &middot; <span style="color:${scoreColor(overall)};">${overall}</span> <span style="color:#1a1a1a;">combined risk</span>
+  <h1 style="font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:700;color:#1a1a1a;margin-bottom:.4rem;letter-spacing:-.01em;">
+    ${devName}${devVer?` · <span style="color:${patchColor};">${devVer}</span>`:''} · <span style="color:${scoreColor(overall)};">${overall} combined risk</span>
   </h1>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
-    <p style="font-size:13px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
-    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:99px;background:transparent;color:#1a1a1a;border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:border-color .15s;white-space:nowrap;">Save results</button>
+    <p style="font-size:15px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
+    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;padding:10px 22px;border-radius:99px;background:#003F72;color:#fff;border:none;cursor:pointer;">Save results</button>
   </div>`;
 
-  h+=`<p class="eyebrow">Detection</p>
+  h+=`<p class="eyebrow">Detection Profile</p>
   <div class="report-card">
-    <div class="report-card-hdr"><span class="report-card-title">Device &amp; profile</span></div>
+    <div class="report-card-hdr"><span class="report-card-title">Your Profile</span></div>
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
       ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
@@ -274,19 +274,20 @@ async function renderReport(){
   // ── ACTOR LINKS ───────────────────────────────────────
   h += `<p class="eyebrow" style="margin-top:1.5rem;">Threat actor profiles</p>
   <div class="report-card">
-    <p style="font-size:12px;color:#555;margin-bottom:.85rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
+    <p style="font-size:15px;color:#555;margin-bottom:1rem;">Explore the full profile, tactics, and remediations for each threat actor.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
       ${ranked.map(a => {
         const cc  = scoreColor(a.co);
-        const cbg = a.co>=70?'rgba(226,75,74,.08)':a.co>=45?'rgba(239,159,39,.08)':'rgba(34,197,94,.08)';
-        return `<a href="${a.page}" style="display:flex;align-items:center;gap:8px;padding:.6rem .85rem;border-radius:10px;border:.5px solid rgba(255,255,255,.08);background:${cbg};text-decoration:none;transition:border-color .15s;"
-          onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-          <div style="width:24px;height:24px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${a.ini}</div>
+        const cbg = a.co>=70?'#FCEBEB':a.co>=45?'#FFF3CD':'#D4EDDA';
+        const bdr = a.co>=70?'#f7c1c1':a.co>=45?'#f0c070':'#c3e6cb';
+        return `<a href="${a.page}" style="display:flex;align-items:center;gap:10px;padding:.85rem 1rem;border-radius:10px;border:1.5px solid ${bdr};background:${cbg};text-decoration:none;transition:border-color .15s;"
+          onmouseover="this.style.borderColor='#003F72'" onmouseout="this.style.borderColor='${bdr}'">
+          <div style="width:34px;height:34px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">${a.ini}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:12px;font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
-            <div style="font-size:12px;color:${cc};font-weight:600;">${a.co} / 99</div>
+            <div style="font-size:15px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+            <div style="font-size:15px;color:${cc};font-weight:700;">${a.co} / 99</div>
           </div>
-          <span style="font-size:13px;color:#666;">&rsaquo;</span>
+          <span style="font-size:16px;color:#666;">›</span>
         </a>`;
       }).join('')}
     </div>
