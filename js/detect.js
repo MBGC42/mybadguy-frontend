@@ -460,24 +460,8 @@ function detectDevice() {
         major = parts[0]; fullVersion = parts.join('.');
       }
     }
-    // UA only gives major.minor (e.g. 15.7) — patch digit is omitted by browsers.
-    // Enrich with latest_version from OSV only if the UA version has fewer parts
-    // than the latest_version (i.e. we have less precision than the DB).
-    // Never replace a specific detected version with a different one.
-    const macData = OSV['mac'];
-    if (macData?.versions) {
-      const cycle = macData.versions.find(v => String(v.cycle) === major);
-      if (cycle?.latest_version) {
-        const uaParts  = fullVersion.split('.').length;
-        const dbParts  = cycle.latest_version.split('.').length;
-        // Only enrich if UA has fewer version parts AND the DB version starts with the UA version
-        // e.g. UA says 15.7, DB says 15.7.7 → enrich to 15.7.7
-        // But UA says 15.7.5, DB says 15.7.7 → do NOT replace (different patch)
-        if (uaParts < dbParts && cycle.latest_version.startsWith(fullVersion + '.')) {
-          fullVersion = cycle.latest_version;
-        }
-      }
-    }
+    // Note: Safari UA only reports major.minor (e.g. 15.7) — patch digit is never included.
+    // The user must use "Correct it" to select their exact build from the version picker.
   }
   // Windows: UA always says NT 10.0 for both Win10 and Win11
   // User must self-select via the correction flow
