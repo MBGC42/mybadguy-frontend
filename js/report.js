@@ -224,21 +224,10 @@ async function renderReport(){
   const chip=(label,val)=>`<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
 
   // Fetch version-specific CVE count in the background and populate badge
-  if (devVer && platform) {
-    fetch(`${API}/api/cve-count/${platform}/${encodeURIComponent(devVer)}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        const badge = document.getElementById('cve-count-badge');
-        if (!badge || !data) return;
-        if (data.total > 0) {
-          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">
-            ${data.total} CVEs affect ${devVer}${data.in_wild > 0 ? ` · ${data.in_wild} actively exploited` : ''}
-          </span>`;
-        } else {
-          badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">No known CVEs for ${devVer}</span>`;
-        }
-      }).catch(() => {});
-  }
+  // Must run AFTER innerHTML=h so the badge element exists in the DOM
+  // Use raw version number for CVE count API — not the display label
+  const _cvePlatform = platform;
+  const _cveVersion  = p.deviceFullVersion || null; // e.g. '15.7.5', not 'macOS 15'
 
   const ranked=ACTORS.map(a=>({...a,sc:calcScore(a),co:calcScore(a).co})).sort((a,b)=>b.co-a.co);
   const overall=Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
@@ -393,6 +382,21 @@ async function renderReport(){
   h+='<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>';
 
   document.getElementById('report').innerHTML=h;
+
+  // Now that the DOM is set, fetch version-specific CVE count and populate badge
+  if (_cveVersion && _cvePlatform) {
+    fetch(`${API}/api/cve-count/${_cvePlatform}/${encodeURIComponent(_cveVersion)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const badge = document.getElementById('cve-count-badge');
+        if (!badge || !data) return;
+        if (data.total > 0) {
+          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">${data.total} CVEs affect ${_cveVersion}${data.in_wild > 0 ? ` · ${data.in_wild} actively exploited` : ''}</span>`;
+        } else {
+          badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">No known CVEs for ${_cveVersion}</span>`;
+        }
+      }).catch(() => {});
+  }
 
   document.getElementById('report').addEventListener('click',e=>{
     const card=e.target.closest('.rem-card');

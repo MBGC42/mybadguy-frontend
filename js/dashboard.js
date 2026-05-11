@@ -309,7 +309,7 @@ async function render() {
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
       ${devVer ? `<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>` : `<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
-      ${p.patchScore > 0 ? `<span class="dev-name-badge">Vulnerabilities</span><span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${p.patchScore} CVEs</span>` : ''}
+      <span id="dash-cve-badge"></span>
     </div>
     <div class="ro-grid">
       <div class="ro-section" style="grid-column:1/-1;">Personal</div>
@@ -374,6 +374,21 @@ async function render() {
   h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
 
   document.getElementById('page').innerHTML = h;
+
+  // Fetch version-specific CVE count after DOM is ready
+  const _dashPlatform = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
+  const _dashVersion  = p.deviceFullVersion || null;
+  if (_dashVersion && _dashPlatform) {
+    fetch(`https://api.mybadguy.com/api/cve-count/${_dashPlatform}/${encodeURIComponent(_dashVersion)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const badge = document.getElementById('dash-cve-badge');
+        if (!badge || !data) return;
+        if (data.total > 0) {
+          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:500;">${data.total} CVEs affect ${_dashVersion}${data.in_wild>0?` · ${data.in_wild} exploited`:''}</span>`;
+        }
+      }).catch(()=>{});
+  }
 }
 
 // ── ASYNC INIT ────────────────────────────────────────────
