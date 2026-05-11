@@ -223,6 +223,23 @@ async function renderReport(){
   const devVer = await resolveVersionLabel(p);
   const chip=(label,val)=>`<div class="ro-row"><span class="ro-label">${label}</span><span class="ro-val">${val}</span></div>`;
 
+  // Fetch version-specific CVE count in the background and populate badge
+  if (devVer && platform) {
+    fetch(`${API}/api/cve-count/${platform}/${encodeURIComponent(devVer)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const badge = document.getElementById('cve-count-badge');
+        if (!badge || !data) return;
+        if (data.total > 0) {
+          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">
+            ${data.total} CVEs affect ${devVer}${data.in_wild > 0 ? ` · ${data.in_wild} actively exploited` : ''}
+          </span>`;
+        } else {
+          badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">No known CVEs for ${devVer}</span>`;
+        }
+      }).catch(() => {});
+  }
+
   const ranked=ACTORS.map(a=>({...a,sc:calcScore(a),co:calcScore(a).co})).sort((a,b)=>b.co-a.co);
   const overall=Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
   const wins=getWins(ranked);
@@ -260,7 +277,7 @@ async function renderReport(){
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
       ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
-      ${p.patchScore>0?`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:500;">${p.patchScore} unpatched CVEs on this platform</span>`:''}
+      <span id="cve-count-badge"></span>
     </div>
     <div class="ro-grid">
       <div class="ro-section" style="grid-column:1/-1;">Personal</div>
