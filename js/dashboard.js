@@ -57,9 +57,9 @@ async function resolveVersionLabel(p) {
 
 // ── CHIP DISPLAY ──────────────────────────────────────────
 // ── PROFILE DISPLAY LABELS ───────────────────────────────
-// IMPORTANT: These arrays MUST match the answer options in detect.js QSETS exactly.
-// If you change question wording in detect.js, update these arrays to match.
-// Mismatch = consumer sees different text on dashboard than what they selected.
+// Fallback arrays — used if /api/questions is unavailable.
+// Primary labels are loaded from D1 via loadQuestions() at init.
+// To change a label: update D1 profile_answers table. No code deploy needed.
 const FIN_L  =['','Struggling','Working class','Middle income','Doing well','High wealth'];
 const FIN_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const TECH_L =['','Not at all','Basic user','Moderate','Tech-savvy','Expert / IT'];
@@ -72,12 +72,36 @@ const ROLE_L =['','No work data','Some work apps','Work email & files','Sensitiv
 const ROLE_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const PUB_L  =['','Very private','Low profile','Moderate','High visibility','Very public'];
 const PUB_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
-const MDM_L  =['','Personal only','Work apps','Work email','Corp account','MDM enrolled'];
+const MDM_L  =['','Personal only','Work apps installed','Work email linked','Corporate account','MDM enrolled'];
 const MDM_S  =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const HOME_L =['','Rural','Suburban','Urban','Dense urban'];
 const HOME_S =['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
 const USAGE_L=['','Mostly at home','Work / commute','Often in public','Frequent travel','International'];
 const USAGE_S=['','background:#EAF3DE;color:#27500A','background:#EAF3DE;color:#27500A','background:#FAEEDA;color:#854F0B','background:#FAEEDA;color:#854F0B','background:#FCEBEB;color:#A32D2D'];
+
+// ── DYNAMIC LABEL LOADER ──────────────────────────────────
+// Q_LABELS is populated from /api/questions at init.
+// Maps question_id → { value: label } for O(1) lookup.
+let Q_LABELS = {};
+
+async function loadQuestions() {
+  try {
+    const r = await fetch('https://api.mybadguy.com/api/questions');
+    if (!r.ok) return;
+    const data = await r.json();
+    for (const [qid, answers] of Object.entries(data.answers || {})) {
+      Q_LABELS[qid] = {};
+      for (const a of answers) { Q_LABELS[qid][a.value] = a.label; }
+    }
+  } catch (_) { /* use fallback arrays */ }
+}
+
+// Get label for a profile field — API first, fallback to static array
+function qLabel(id, value, fallbackArr) {
+  if (Q_LABELS[id] && Q_LABELS[id][value] !== undefined) return Q_LABELS[id][value];
+  return fallbackArr[value] || String(value);
+}
+
 
 // ── ACTOR DEFINITIONS (scores only — full detail in actor pages) ──
 // ── ACTOR CONFIGS (live from API, fallback to hardcoded) ──
@@ -290,17 +314,17 @@ async function render() {
     <div class="ro-grid">
       <div class="ro-section" style="grid-column:1/-1;">Personal</div>
       ${chip('Age', p.age)}
-      ${chip('Financial', FIN_L[p.fin]||p.fin)}
-      ${chip('Tech skill', TECH_L[p.tech]||p.tech)}
-      ${chip('Social', ISO_L[p.iso]||p.iso)}
-      ${chip('Social media', SM_L[p.sm]||p.sm)}
+      ${chip('Financial',    qLabel('fin',   p.fin,   FIN_L))}
+      ${chip('Tech skill',   qLabel('tech',  p.tech,  TECH_L))}
+      ${chip('Social',       qLabel('iso',   p.iso,   ISO_L))}
+      ${chip('Social media', qLabel('sm',    p.sm,    SM_L))}
       <div class="profile-divider" style="grid-column:1/-1;margin:.5rem 0;"></div>
       <div class="ro-section" style="grid-column:1/-1;padding-top:0;">Work &amp; context</div>
-      ${chip('Job data', ROLE_L[p.role+1]||'No work data')}
-      ${chip('Public profile', PUB_L[p.pub+1]||'Very private')}
-      ${chip('Work / MDM', MDM_L[p.mdm+1]||'Personal only')}
-      ${chip('Home', HOME_L[p.home]||'Rural')}
-      ${chip('Usage', USAGE_L[p.usage+1]||'At home')}
+      ${chip('Job data',   qLabel('role',  p.role,  ROLE_L))}
+      ${chip('Public profile', qLabel('pub', p.pub, PUB_L))}
+      ${chip('Work / MDM', qLabel('mdm', p.mdm,  MDM_L))}
+      ${chip('Home',         qLabel('home',  p.home,  HOME_L))}
+      ${chip('Usage',        qLabel('usage', p.usage, USAGE_L))}
     </div>
   </div>`;
 
@@ -376,6 +400,7 @@ async function init() {
   } catch (_) {
     // API unavailable — ACTORS already set to ACTORS_FALLBACK
   }
+  await loadQuestions();
   await render();
 }
 

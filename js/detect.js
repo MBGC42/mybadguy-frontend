@@ -220,7 +220,12 @@ function buildVersionCards(platform) {
 }
 
 // ── QUESTION SCREENS ─────────────────────────────────────
-const QSETS = [
+// Questions and answers are loaded from /api/questions (D1 database).
+// To add/remove questions or change answer text, update D1 directly.
+// QSETS is built dynamically from QDATA after fetchQuestions() resolves.
+// Fallback hardcoded QSETS used if API is unavailable.
+
+const QSETS_FALLBACK = [
   { lb:'About you', pc:25, qs:[
     { id:'age',  t:'How old are you?', ty:'slider' },
     { id:'fin',  t:'Your financial situation?', ty:'pills',
@@ -241,10 +246,28 @@ const QSETS = [
       o:['Personal only','Work apps installed','Work email linked','Corporate account','MDM enrolled'], v:[0,1,2,3,4] },
     { id:'home', t:'Where do you primarily live?', ty:'pills',
       o:['Rural','Suburban','Urban','Dense urban'], v:[1,2,3,4] },
-    { id:'usage',t:'Where do you usually use your phone?', ty:'pills',
+    { id:'usage',t:'Where do you usually use your device?', ty:'pills',
       o:['Mostly at home','Work / commute','Often in public','Frequent travel','International'], v:[0,1,2,3,4] },
   ]},
 ];
+
+let QSETS = QSETS_FALLBACK; // overwritten by buildQsets() once API responds
+
+function buildQsets(data) {
+  if (!data?.sets?.length) return;
+  QSETS = data.sets.map((s, si) => ({
+    lb: s.label,
+    pc: si === 0 ? 25 : 50,
+    qs: s.questions.map(q => ({
+      id: q.id,
+      t:  q.question,
+      ty: q.type,
+      o:  q.answers.map(a => a.label),
+      v:  q.answers.map(a => a.value),
+    })),
+  }));
+}
+
 
 // ── SCORING ENGINE ────────────────────────────────────────
 // Uses calcScore() from scoring.js (loaded before detect.js in detect.html).
@@ -432,6 +455,17 @@ function genId() {
                  'glacier','horizon','indigo','jasper','kestrel','lantern'];
   const pick = () => words[Math.floor(Math.random() * words.length)];
   return `${pick()} · ${pick()} · ${pick()} · ${pick()}`;
+}
+
+// ── FETCH PROFILE QUESTIONS ──────────────────────────────
+async function fetchQuestions() {
+  if (QDATA) return QDATA;
+  try {
+    const r = await fetch(`${API}/api/questions`);
+    if (!r.ok) throw new Error(r.status);
+    QDATA = await r.json();
+  } catch (_) { QDATA = null; }
+  return QDATA;
 }
 
 // ── DEVICE DETECTION ─────────────────────────────────────
@@ -1321,4 +1355,9 @@ function render() {
 }
 
 // ── BOOT ─────────────────────────────────────────────────
-render();
+// Fetch questions from API then render. Falls back to QSETS_FALLBACK if API fails.
+(async () => {
+  const qdata = await fetchQuestions();
+  buildQsets(qdata);
+  render();
+})();
