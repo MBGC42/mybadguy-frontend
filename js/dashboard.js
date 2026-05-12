@@ -396,7 +396,7 @@ async function render() {
   h += `<div class="eyebrow" style="margin-top:.25rem;">Actions</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;">
     <a href="report.html" onclick="saveProfile()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:#003F72;color:#fff;text-decoration:none;transition:opacity .15s;white-space:nowrap;">Combined Risk Details →</a>
-    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;background:#003F72;color:#fff;border:none;cursor:pointer;transition:opacity .15s;white-space:nowrap;">Save results</button>
+    <button onclick="openSaveModal()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 24px;border-radius:99px;background:#fff;color:#003F72;border:1.5px solid #22d3ee;cursor:pointer;transition:background .15s;white-space:nowrap;">Save results</button>
     <a href="detect.html" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:99px;background:transparent;color:#555;border:1.5px solid #dde3ea;text-decoration:none;white-space:nowrap;">New detection →</a>
   </div>`;
 

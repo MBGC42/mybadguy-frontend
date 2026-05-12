@@ -1072,7 +1072,7 @@ function renderResults() {
 
       <div class="btn-row" style="margin-top:1.5rem;">
         <button class="btn-primary" data-action="go-dashboard">Threat Actor Details →</button>
-        <button class="btn-primary" data-action="go-save">Save results</button>
+        <button class="btn-outline" data-action="go-save">Save results</button>
         <button class="btn-ghost" data-action="go-home">← Home</button>
       </div>
       <p style="text-align:center;margin-top:1rem;font-size:15px;color:var(--dim);">
