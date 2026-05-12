@@ -70,14 +70,14 @@ a { color: var(--navy); }
   padding: 1rem 1.25rem;
   background: #FFF3CD;
   border: 1px solid #f0c070;
-  border-left: 4px solid #EF9F27;
+  border-left: 5px solid #EF9F27;
   border-radius: 10px;
 }
 .mbg-disclaimer-title {
   font-size: 15px;
   font-weight: 700;
   color: #7a4e00;
-  margin-bottom: .4rem;
+  margin-bottom: 6px;
 }
 .mbg-disclaimer-body {
   font-size: 14px;
