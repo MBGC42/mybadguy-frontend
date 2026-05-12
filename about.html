@@ -8,84 +8,9 @@
   <title>MyBadGuy — About</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/optiona.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
-  <style>
-    :root{--navy:#003F72;--red:#C41230;--green:#007A53;--slate:#1a1a1a;--mid:#444;--muted:#555;--dim:#666;--light:#F0F4F8;--border:#dde3ea;--white:#fff;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'DM Sans',system-ui,sans-serif;background:#fff;color:var(--slate);font-size:17px;line-height:1.7;overflow-x:hidden;}
-    a{color:var(--navy);}
-    a:hover{text-decoration:underline;}
-    img,svg{display:block;}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-
-    .nav{background:var(--navy);padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
-    .nav-wordmark{font-size:19px;font-weight:600;color:#fff;letter-spacing:-.01em;}
-    .nav-links{display:flex;gap:24px;}
-    .nav-link{font-size:15px;color:rgba(255,255,255,.85);text-decoration:none;}
-    .nav-link:hover{color:#fff;text-decoration:none;}
-    .nav-back{font-size:15px;color:rgba(255,255,255,.85);text-decoration:none;}
-    .nav-back:hover{color:#fff;}
-
-    .page-header{background:var(--navy);padding:32px 20px 28px;}
-    .page-header-inner{max-width:680px;margin:0 auto;}
-    .page-eyebrow{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
-    .page-h1{font-size:clamp(26px,5vw,36px);font-weight:600;color:#fff;line-height:1.2;margin-bottom:12px;}
-    .page-intro{font-size:18px;color:rgba(255,255,255,.88);line-height:1.7;}
-
-    .page-content{max-width:680px;margin:0 auto;padding:32px 20px 40px;}
-
-    .belief-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:36px;}
-    .belief-card{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:16px;}
-    .belief-icon{font-size:24px;margin-bottom:8px;}
-    .belief-title{font-size:16px;font-weight:600;color:var(--slate);margin-bottom:4px;}
-    .belief-body{font-size:14px;color:var(--muted);line-height:1.6;}
-
-    .section{margin-bottom:36px;padding-bottom:36px;border-bottom:1px solid var(--border);}
-    .section:last-of-type{border-bottom:none;}
-    .section-h2{font-size:22px;font-weight:600;color:var(--slate);margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid var(--navy);display:inline-block;}
-    .prose{font-size:16px;color:var(--mid);line-height:1.75;margin-bottom:14px;}
-    .prose:last-child{margin-bottom:0;}
-    .prose strong{color:var(--slate);}
-    .prose a{color:var(--navy);}
-
-    .callout{background:var(--light);border:1px solid var(--border);border-left:5px solid var(--navy);border-radius:6px;padding:16px 18px;margin-bottom:18px;font-size:16px;color:var(--mid);line-height:1.7;}
-    .callout strong{color:var(--slate);}
-
-    .check-list{list-style:none;padding:0;margin:0 0 14px;}
-    .check-list li{font-size:16px;color:var(--mid);line-height:1.7;padding:10px 0 10px 32px;border-bottom:1px solid var(--border);position:relative;}
-    .check-list li:last-child{border-bottom:none;}
-    .check-list li::before{content:"\2713";position:absolute;left:0;top:10px;font-size:16px;color:var(--green);font-weight:700;}
-    .check-list strong{color:var(--slate);}
-
-    .data-list{list-style:none;padding:0;margin:0 0 14px;}
-    .data-list li{font-size:16px;color:var(--mid);line-height:1.7;padding:10px 0 10px 32px;border-bottom:1px solid var(--border);position:relative;}
-    .data-list li:last-child{border-bottom:none;}
-    .data-list li::before{content:"\25CF";position:absolute;left:0;top:12px;font-size:10px;color:var(--navy);}
-    .data-list strong{color:var(--slate);}
-
-    .cta-block{background:var(--navy);border-radius:10px;padding:28px 24px;text-align:center;margin-top:36px;}
-    .cta-title{font-size:22px;font-weight:600;color:#fff;margin-bottom:6px;}
-    .cta-sub{font-size:15px;color:rgba(255,255,255,.8);margin-bottom:20px;}
-    .cta-btn{display:inline-block;background:#fff;color:var(--navy);font-size:17px;font-weight:600;padding:14px 28px;border-radius:6px;text-decoration:none;}
-    .cta-btn:hover{background:#e8f0f8;text-decoration:none;}
-
-    .footer{background:var(--navy);padding:28px 20px;}
-    .footer-inner{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
-    .footer-brand{display:flex;align-items:center;gap:8px;}
-    .footer-wordmark{font-size:16px;font-weight:600;color:#fff;}
-    .footer-tagline{font-size:13px;color:rgba(255,255,255,.6);margin-top:2px;}
-    .footer-links{display:flex;flex-wrap:wrap;gap:16px;}
-    .footer-link{font-size:14px;color:rgba(255,255,255,.8);text-decoration:none;}
-    .footer-link:hover{color:#fff;}
-
-    @media(max-width:500px){
-      .belief-grid{grid-template-columns:1fr;}
-      .nav-links{display:none;}
-    }
-  </style>
 </head>
 <body>
 
@@ -124,17 +49,17 @@
         <div class="belief-body">Telling people to "use strong passwords" does not work. Showing them that a cybercriminal has already scored their profile does.</div>
       </div>
       <div class="belief-card" role="listitem">
-        <div class="belief-icon" aria-hidden="true">&#128;&#147;</div>
+        <div class="belief-icon" aria-hidden="true">&#127757;</div>
         <div class="belief-title">Security advice should be free</div>
         <div class="belief-body">The people most at risk are rarely the ones who can afford a professional assessment. We built this to close that gap.</div>
       </div>
       <div class="belief-card" role="listitem">
-        <div class="belief-icon" aria-hidden="true">&#129;&#141;</div>
+        <div class="belief-icon" aria-hidden="true">&#128214;</div>
         <div class="belief-title">Educate, do not alarm</div>
         <div class="belief-body">We are here to inform and empower — not to shame, scare, or upsell. Every recommendation is practical, free to act on, and specific to you.</div>
       </div>
       <div class="belief-card" role="listitem">
-        <div class="belief-icon" aria-hidden="true">&#128;&#146;</div>
+        <div class="belief-icon" aria-hidden="true">&#128274;</div>
         <div class="belief-title">We protect what we preach</div>
         <div class="belief-body">No cookies, no tracking, no advertising. We never sell your data. We apply the same security practices we recommend to you.</div>
       </div>
