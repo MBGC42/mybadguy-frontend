@@ -1335,6 +1335,7 @@ document.addEventListener('input', e => {
   }
 });
 function render() {
+  window.scrollTo(0, 0);
   renderDots();
   CQ = ST === 2 ? 1 : 0;
 
