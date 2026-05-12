@@ -327,9 +327,11 @@ function init() {
         <div class="actor-hdr-name">${A.name}</div>
         <div class="actor-hdr-sub">${A.sub}</div>
         <div class="score-chips">
-          <span class="score-chip chip-t">Technical: ${sc.t}/99</span>
-          <span class="score-chip chip-s">Social: ${sc.s}/99</span>
-          <span class="score-chip ${coc}">Combined: ${sc.co}/99 — ${scoreLabel(sc.co)}</span>
+          <span class="score-chip chip-t">Technical: ${sc.t}</span>
+          <span class="score-chip chip-op">+</span>
+          <span class="score-chip chip-s">Social: ${sc.s}</span>
+          <span class="score-chip chip-op">=</span>
+          <span class="score-chip ${coc}">Combined: ${sc.co} — ${scoreLabel(sc.co)}</span>
         </div>
       </div>
     </div>
