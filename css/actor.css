@@ -169,10 +169,10 @@ a { color: var(--navy); }
 
 /* ── Panel ───────────────────────────────────────────────── */
 .panel {
-  background: var(--mid);
+  background: #fff;
   border-radius: 14px;
   padding: 1.25rem;
-  border: .5px solid rgba(255,255,255,.06);
+  border: 1px solid #dde3ea;
 }
 .panel-title { font-size: 17px; font-weight: 500; margin-bottom: .85rem; color: var(--slate); }
 
@@ -296,32 +296,33 @@ a { color: var(--navy); }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: .45rem .75rem;
+  padding: .6rem 1rem;
   border-radius: 8px;
-  border-left: 3px solid;
-  margin-bottom: .5rem;
+  border-left: 4px solid;
+  margin-bottom: 0;
+  user-select: none;
 }
-.pri-hdr-1 { background: #FCEBEB; border-left-color: #E24B4A; }
-.pri-hdr-2 { background: #FAEEDA; border-left-color: #EF9F27; }
-.pri-hdr-3 { background: #E6F1FB; border-left-color: #378ADD; }
-.pri-title { font-size: 16px; font-weight: 500; }
-.pri-hdr-1 .pri-title { color: #A32D2D; }
-.pri-hdr-2 .pri-title { color: #854F0B; }
-.pri-hdr-3 .pri-title { color: #0C447C; }
-.pri-count { font-size: 14px; margin-left: auto; opacity: .65; }
-.pri-hdr-1 .pri-count { color: #A32D2D; }
-.pri-hdr-2 .pri-count { color: #854F0B; }
-.pri-hdr-3 .pri-count { color: #0C447C; }
+.pri-hdr-1 { background: #FCEBEB; border-left-color: #C41230; }
+.pri-hdr-2 { background: #FFF3CD; border-left-color: #7a4e00; }
+.pri-hdr-3 { background: #E6F1FB; border-left-color: #003F72; }
+.pri-title { font-size: 15px; font-weight: 600; flex: 1; }
+.pri-hdr-1 .pri-title { color: #C41230; }
+.pri-hdr-2 .pri-title { color: #7a4e00; }
+.pri-hdr-3 .pri-title { color: #003F72; }
+.pri-count { font-size: 14px; font-weight: 500; }
+.pri-hdr-1 .pri-count { color: #C41230; }
+.pri-hdr-2 .pri-count { color: #7a4e00; }
+.pri-hdr-3 .pri-count { color: #003F72; }
 
 .rem-card {
-  background: var(--lift);
-  border: .5px solid rgba(255,255,255,.07);
-  border-radius: 12px;
-  margin-bottom: 6px;
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: 10px;
+  margin-bottom: 8px;
   cursor: pointer;
   transition: border-color .15s;
 }
-.rem-card:hover { border-color: rgba(255,255,255,.15); }
+.rem-card:hover { border-color: #003F72; }
 .rem-card-hdr {
   display: flex;
   align-items: center;
