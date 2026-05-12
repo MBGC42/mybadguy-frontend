@@ -187,7 +187,11 @@ function renderRemediationCards(data) {
   const diffClass = { easy:'diff-easy', medium:'diff-medium', hard:'diff-hard' };
   const diffLabel = { easy:'Easy', medium:'Medium', hard:'Hard' };
 
-  let h   = `<p class="panel-title">Your recommendation plan — ${data.platform === 'all' ? 'all platforms' : data.platform}</p><p style="font-size:15px;color:#666;margin-bottom:1rem;">Tap a section to expand. Sorted from easiest to hardest.</p>`;
+  // Build device label from PR profile
+  const devName = PR.ip ? 'iPhone' : PR.id ? 'iPad' : PR.an ? 'Android' : PR.mc ? 'Mac' : PR.wn ? 'Windows PC' : data.platform;
+  const devVer  = PR.deviceFullVersion || '';
+  const devLabel = devVer ? `${devName} ${devVer}` : devName;
+  let h   = `<p class="panel-title">Your recommendation plan — ${devLabel}</p><p style="font-size:15px;color:#666;margin-bottom:1rem;">Tap a section to expand. Sorted from easiest to hardest.</p>`;
   let num = 1;
 
   [1,2,3,4].forEach(pri => {
