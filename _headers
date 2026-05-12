@@ -17,10 +17,9 @@
   Cache-Control: max-age=86400
 
 # ── Actor pages ───────────────────────────────────────────
-# Must allow 'unsafe-inline' in style-src for the inline <style> light-theme overrides.
-# No inline scripts — script-src stays strict.
+# All styles are in actor.css — no inline styles needed. Strictest CSP.
 /actors/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
 
 # ── What sites see — needs external IP geolocation APIs ──
 /siteview.html
