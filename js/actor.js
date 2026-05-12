@@ -194,15 +194,15 @@ function renderRemediationCards(data) {
     const items = groups[pri];
     if (!items.length) return;
     const groupId = `actor-group-${pri}`;
-    h += `<div class="pri-group" style="margin-bottom:8px;">
+    h += `<div class="pri-group">
       <div class="pri-hdr ${priClass[pri]}" data-toggle-group="${groupId}">
         <span class="pri-title">${priLabels[pri]}</span>
-        <div style="display:flex;align-items:center;gap:10px;">
+        <span class="pri-hdr-right">
           <span class="pri-count" id="${groupId}-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
           <span id="${groupId}-chevron" class="pri-chevron">&#9654;</span>
-        </div>
+        </span>
       </div>
-      <div id="${groupId}" style="display:none;">`;
+      <div class="pri-body" id="${groupId}">`;
     items.forEach(r => {
       const dc  = diffClass[r.difficulty] || 'diff-easy';
       const dl  = diffLabel[r.difficulty] || 'Easy';
@@ -299,9 +299,9 @@ document.addEventListener('click', e => {
     const body    = document.getElementById(id);
     const chevron = document.getElementById(id + '-chevron');
     if (!body) return;
-    const isOpen  = body.style.display !== 'none';
-    body.style.display = isOpen ? 'none' : 'block';
-    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+    const isOpen  = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (chevron) chevron.classList.toggle('open', !isOpen);
     return;
   }
   const remCard = e.target.closest('.rem-card');
