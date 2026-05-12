@@ -207,6 +207,32 @@ async function fetchRem(actorId, platform, cveStats){
 
 
 
+// Fetch CVE delta between user's version and latest version
+async function fetchCveDelta(platform, userVersion, latestVersion, patchBg, patchColor, badgeId, API_BASE) {
+  const badge = document.getElementById(badgeId);
+  if (!badge) return;
+  if (!userVersion) return;
+  if (userVersion === latestVersion) {
+    badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date — no additional CVEs from updates</span>`;
+    return;
+  }
+  try {
+    const [userRes, latestRes] = await Promise.all([
+      fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(userVersion)}`),
+      latestVersion ? fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(latestVersion)}`) : Promise.resolve(null),
+    ]);
+    const userData   = userRes.ok    ? await userRes.json()   : null;
+    const latestData = latestRes?.ok ? await latestRes.json() : null;
+    if (!userData) return;
+    const fixedTotal = Math.max(0, (userData.total   || 0) - (latestData?.total   || 0));
+    const fixedWild  = Math.max(0, (userData.in_wild || 0) - (latestData?.in_wild || 0));
+    if (fixedTotal === 0) {
+      badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ No additional CVEs fixed by updating to ${latestVersion}</span>`;
+    } else {
+      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">Updating to ${latestVersion} would patch ${fixedTotal} CVE${fixedTotal>1?'s':''}${fixedWild>0?` · including ${fixedWild} actively exploited`:''}</span>`;
+    }
+  } catch(_) {}
+}
 async function renderReport(){
   await loadQuestions();
   const p=PR;
@@ -387,18 +413,19 @@ async function renderReport(){
   document.getElementById('report').innerHTML=h;
 
   // Now that the DOM is set, fetch version-specific CVE count and populate badge
+  // Get latest version for this platform/cycle to compute delta
   if (_cveVersion && _cvePlatform) {
-    fetch(`${API}/api/cve-count/${_cvePlatform}/${encodeURIComponent(_cveVersion)}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        const badge = document.getElementById('cve-count-badge');
-        if (!badge || !data) return;
-        if (data.total > 0) {
-          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">${data.total} CVEs affect ${_cveVersion}${data.in_wild > 0 ? ` · ${data.in_wild} actively exploited` : ''}</span>`;
-        } else {
-          badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;">No known CVEs for ${_cveVersion}</span>`;
-        }
-      }).catch(() => {});
+    let latestVer = _cveVersion;
+    try {
+      const ovResp = await fetch(`${API}/api/os-versions/${_cvePlatform}`);
+      if (ovResp.ok) {
+        const ovData = await ovResp.json();
+        const major  = String(parseInt(_cveVersion));
+        const cycle  = (ovData.versions || []).find(v => String(v.cycle) === major);
+        if (cycle?.latest_version) latestVer = cycle.latest_version;
+      }
+    } catch(_) {}
+    fetchCveDelta(_cvePlatform, _cveVersion, latestVer, patchBg, patchColor, 'cve-count-badge', API);
   }
 
   document.getElementById('report').addEventListener('click', e => {

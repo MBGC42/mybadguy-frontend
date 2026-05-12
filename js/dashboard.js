@@ -379,15 +379,17 @@ async function render() {
   const _dashPlatform = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
   const _dashVersion  = p.deviceFullVersion || null;
   if (_dashVersion && _dashPlatform) {
-    fetch(`https://api.mybadguy.com/api/cve-count/${_dashPlatform}/${encodeURIComponent(_dashVersion)}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        const badge = document.getElementById('dash-cve-badge');
-        if (!badge || !data) return;
-        if (data.total > 0) {
-          badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:13px;padding:3px 10px;border-radius:99px;font-weight:500;">${data.total} CVEs affect ${_dashVersion}${data.in_wild>0?` · ${data.in_wild} exploited`:''}</span>`;
-        }
-      }).catch(()=>{});
+    let latestVer = _dashVersion;
+    try {
+      const ovResp = await fetch(`https://api.mybadguy.com/api/os-versions/${_dashPlatform}`);
+      if (ovResp.ok) {
+        const ovData = await ovResp.json();
+        const major  = String(parseInt(_dashVersion));
+        const cycle  = (ovData.versions || []).find(v => String(v.cycle) === major);
+        if (cycle?.latest_version) latestVer = cycle.latest_version;
+      }
+    } catch(_) {}
+    fetchCveDelta(_dashPlatform, _dashVersion, latestVer, patchBg, patchColor, 'dash-cve-badge', 'https://api.mybadguy.com');
   }
 }
 
