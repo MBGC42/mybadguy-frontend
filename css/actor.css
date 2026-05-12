@@ -181,19 +181,7 @@ a { color: var(--navy); }
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,63,114,.25);
 }
-.seg-score {
-  display: block;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 2px;
-  line-height: 1;
-}
-.seg-label {
-  font-size: 13px;
-  font-weight: 500;
-  opacity: .8;
-  display: block;
-}
+.seg-label { font-size: 16px; font-weight: 600; }
 
 .tab {
   font-size: 16px;
