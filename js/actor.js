@@ -272,7 +272,7 @@ function renderAnalysis(sc) {
     { id:'weighted',  label:'Factors',   score:null },
   ];
   const segments = subs.map(s =>
-    `<button class="seg-btn${ANALYSIS_SUB === s.id ? ' on' : ''}" data-sub="${s.id}">${s.score !== null ? `<span class="seg-score">${s.score}</span>` : '<span class="seg-score">—</span>'}<span class="seg-label">${s.label}</span></button>`
+    `<button class="seg-btn${ANALYSIS_SUB === s.id ? ' on' : ''}" data-sub="${s.id}"><span class="seg-label">${s.label}</span></button>`
   ).join('');
 
   let content = '';
