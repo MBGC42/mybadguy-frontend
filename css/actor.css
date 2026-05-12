@@ -220,11 +220,11 @@ a { color: var(--navy); }
   flex-wrap: wrap;
 }
 .leg-sw {
-  width: 10px; height: 10px; border-radius: 2px;
-  display: inline-block; margin-right: 3px; vertical-align: middle;
+  width: 14px; height: 14px; border-radius: 3px;
+  display: inline-block; margin-right: 5px; vertical-align: middle;
 }
-.leg-match { background: #FCEBEB; border: .5px solid #F09595; }
-.leg-na    { background: rgba(255,255,255,.05); border: .5px solid rgba(255,255,255,.1); }
+.leg-match { background: #FCEBEB; border: 1.5px solid #C41230; }
+.leg-na    { background: #F0F4F8; border: 1.5px solid #aab4c0; }
 
 .ideal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: .85rem; }
 .ideal-card {
