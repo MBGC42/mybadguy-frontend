@@ -616,9 +616,9 @@ function renderScan() {
     <div class="screen" style="text-align:center;">
       <div class="scan-eye-wrap" aria-hidden="true">
         <svg width="200" height="120" viewBox="0 0 100 60" aria-hidden="true">
-          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.15)"/>
-          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.55)" stroke-width="2"/>
-          <circle cx="50" cy="30" r="9" fill="none" stroke="rgba(0,63,114,.7)" stroke-width="1.5"/>
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.35)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.85)" stroke-width="2.5"/>
+          <circle cx="50" cy="30" r="9" fill="none" stroke="#003F72" stroke-width="2"/>
           <circle cx="50" cy="30" r="3.5" fill="#003F72"/>
         </svg>
         <div class="scan-ring scan-ring-1"></div>
@@ -976,8 +976,8 @@ function renderCalc() {
     <div class="screen" style="text-align:center;">
       <div class="calc-ring" aria-hidden="true">
         <svg width="50" height="30" viewBox="0 0 100 60" aria-hidden="true">
-          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.2)"/>
-          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.55)" stroke-width="3"/>
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.4)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.85)" stroke-width="3"/>
           <circle cx="50" cy="30" r="7" fill="#003F72"/>
         </svg>
       </div>
@@ -1072,7 +1072,7 @@ function renderResults() {
 
       <div class="btn-row" style="margin-top:1.5rem;">
         <button class="btn-primary" data-action="go-dashboard">Threat Actor Details →</button>
-        <button class="btn-outline" data-action="go-save">Save results</button>
+        <button class="btn-primary" data-action="go-save">Save results</button>
         <button class="btn-ghost" data-action="go-home">← Home</button>
       </div>
       <p style="text-align:center;margin-top:1rem;font-size:15px;color:var(--dim);">
