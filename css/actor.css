@@ -4,8 +4,64 @@
    No inline style="..." anywhere — strict CSP compliant.
 */
 
-/* ── Page layout ─────────────────────────────────────────── */
-.page {
+/* ── CSS Variables (Option A light theme) ─────────────────── */
+:root {
+  --navy:  #003F72;
+  --lift:  #F0F4F8;
+  --mid:   #F0F4F8;
+  --cyan:  #003F72;
+  --lcyan: #e8f0f8;
+  --slate: #1a1a1a;
+  --muted: #555;
+  --dim:   #666;
+  --bdr:   #dde3ea;
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 17px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: var(--navy); }
+a:hover { text-decoration: underline; }
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.nav {
+  background: #003F72;
+  padding: 0 20px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-name  { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.btn-back {
+  font-size: 14px; color: rgba(255,255,255,.8);
+  text-decoration: none; padding: 7px 14px; border-radius: 99px;
+}
+.btn-back:hover { color: #fff; text-decoration: none; }
+.btn-rescan {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  padding: 8px 20px; border-radius: 99px;
+  background: #fff; color: #003F72;
+  border: none; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn-rescan:hover { background: #e8f0f8; text-decoration: none; }
+
+
   max-width: 720px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
