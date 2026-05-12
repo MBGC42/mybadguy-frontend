@@ -181,23 +181,28 @@ function renderRemediationCards(data) {
   const groups = { 1:[], 2:[], 3:[], 4:[] };
   data.remediations.forEach(r => { (groups[r.priority] || groups[4]).push(r); });
 
-  const priLabels = { 1:'Critical — do these first', 2:'High — do these next', 3:'Medium — when you have time', 4:'Additional' };
+  const priLabels = { 1:'Easy wins', 2:'Medium effort', 3:'Harder steps', 4:'Additional steps' };
   const priClass  = { 1:'pri-hdr-1', 2:'pri-hdr-2', 3:'pri-hdr-3', 4:'pri-hdr-3' };
   const numClass  = { 1:'rem-num-1', 2:'rem-num-2', 3:'rem-num-3', 4:'rem-num-3' };
   const diffClass = { easy:'diff-easy', medium:'diff-medium', hard:'diff-hard' };
   const diffLabel = { easy:'Easy', medium:'Medium', hard:'Hard' };
 
-  let h   = `<p class="panel-title">Your remediation plan — ${data.platform === 'all' ? 'all platforms' : data.platform}</p>`;
+  let h   = `<p class="panel-title">Your recommendation plan — ${data.platform === 'all' ? 'all platforms' : data.platform}</p><p style="font-size:15px;color:#666;margin-bottom:1rem;">Tap a section to expand. Sorted from easiest to hardest.</p>`;
   let num = 1;
 
   [1,2,3,4].forEach(pri => {
     const items = groups[pri];
     if (!items.length) return;
-    h += `<div class="pri-group">
-      <div class="pri-hdr ${priClass[pri]}">
+    const groupId = `actor-group-${pri}`;
+    h += `<div class="pri-group" style="margin-bottom:8px;">
+      <div class="pri-hdr ${priClass[pri]}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;" data-toggle-group="${groupId}">
         <span class="pri-title">${priLabels[pri]}</span>
-        <span class="pri-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
-      </div>`;
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="pri-count" id="${groupId}-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
+          <span id="${groupId}-chevron" style="font-size:16px;color:inherit;transition:transform .2s;">&#9654;</span>
+        </div>
+      </div>
+      <div id="${groupId}" style="display:none;">`;
     items.forEach(r => {
       const dc  = diffClass[r.difficulty] || 'diff-easy';
       const dl  = diffLabel[r.difficulty] || 'Easy';
@@ -232,8 +237,9 @@ function renderRemediationCards(data) {
         </div>
       </div>`;
     });
-    h += `</div>`;
+    h += `</div></div>`;
   });
+
   return h;
 }
 
@@ -270,8 +276,9 @@ function renderPanel(sc) {
 
 function renderTabs() {
   const tabs = ['technical','social','bio','weighted','remediation'];
+  const tabLabels = { technical:'Technical', social:'Social', bio:'Bio', weighted:'Factors', remediation:'Recommendations' };
   return tabs.map(t =>
-    `<button class="tab${t === TAB ? ' on' : ''}" data-tab="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</button>`
+    `<button class="tab${t === TAB ? ' on' : ''}" data-tab="${t}">${tabLabels[t] || t.charAt(0).toUpperCase() + t.slice(1)}</button>`
   ).join('');
 }
 
@@ -283,6 +290,17 @@ document.addEventListener('click', e => {
     document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
     tabBtn.classList.add('on');
     TAB === 'remediation' ? fetchRemediations() : setPanel(renderPanel(SCORES));
+    return;
+  }
+  const groupHdr = e.target.closest('[data-toggle-group]');
+  if (groupHdr) {
+    const id      = groupHdr.dataset.toggleGroup;
+    const body    = document.getElementById(id);
+    const chevron = document.getElementById(id + '-chevron');
+    if (!body) return;
+    const isOpen  = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
     return;
   }
   const remCard = e.target.closest('.rem-card');
