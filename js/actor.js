@@ -195,11 +195,11 @@ function renderRemediationCards(data) {
     if (!items.length) return;
     const groupId = `actor-group-${pri}`;
     h += `<div class="pri-group" style="margin-bottom:8px;">
-      <div class="pri-hdr ${priClass[pri]}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;" data-toggle-group="${groupId}">
+      <div class="pri-hdr ${priClass[pri]}" data-toggle-group="${groupId}">
         <span class="pri-title">${priLabels[pri]}</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="pri-count" id="${groupId}-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
-          <span id="${groupId}-chevron" style="font-size:16px;color:inherit;transition:transform .2s;">&#9654;</span>
+          <span id="${groupId}-chevron" class="pri-chevron">&#9654;</span>
         </div>
       </div>
       <div id="${groupId}" style="display:none;">`;
@@ -294,6 +294,7 @@ document.addEventListener('click', e => {
   }
   const groupHdr = e.target.closest('[data-toggle-group]');
   if (groupHdr) {
+    e.stopPropagation();
     const id      = groupHdr.dataset.toggleGroup;
     const body    = document.getElementById(id);
     const chevron = document.getElementById(id + '-chevron');
@@ -304,7 +305,9 @@ document.addEventListener('click', e => {
     return;
   }
   const remCard = e.target.closest('.rem-card');
-  if (remCard) remCard.classList.toggle('open');
+  if (remCard && !e.target.closest('[data-toggle-group]')) {
+    remCard.classList.toggle('open');
+  }
 });
 
 /* ── Initial render ──────────────────────────────────────── */
