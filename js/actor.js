@@ -275,7 +275,7 @@ function renderPanel(sc) {
 }
 
 function renderTabs() {
-  const tabs = ['technical','social','bio','weighted','remediation'];
+  const tabs = ['bio','remediation','technical','social','weighted'];
   const tabLabels = { technical:'Technical', social:'Social', bio:'Bio', weighted:'Factors', remediation:'Recommendations' };
   return tabs.map(t =>
     `<button class="tab${t === TAB ? ' on' : ''}" data-tab="${t}">${tabLabels[t] || t.charAt(0).toUpperCase() + t.slice(1)}</button>`
