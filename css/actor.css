@@ -152,35 +152,47 @@ a { color: var(--navy); }
 /* ── Segmented control (Analysis sub-tabs) ───────────────── */
 .seg-control {
   display: flex;
-  gap: 6px;
+  gap: 0;
   margin-bottom: 1.25rem;
   background: #F0F4F8;
-  border: 1px solid #dde3ea;
+  border: 1.5px solid #dde3ea;
   border-radius: 10px;
-  padding: 5px;
+  padding: 4px;
 }
 .seg-btn {
   flex: 1;
   font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: #555;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
   background: transparent;
   border: none;
   border-radius: 7px;
-  padding: 9px 12px;
+  padding: 12px 10px;
   cursor: pointer;
-  transition: background .15s, color .15s;
+  transition: background .15s, color .15s, box-shadow .15s;
   text-align: center;
+  line-height: 1.2;
 }
-.seg-btn:hover { background: #dde3ea; color: #1a1a1a; }
-.seg-btn.on { background: #003F72; color: #fff; font-weight: 600; }
-.seg-score {
-  display: inline-block;
-  font-size: 13px;
+.seg-btn:hover { background: #fff; color: #003F72; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.seg-btn.on {
+  background: #003F72;
+  color: #fff;
   font-weight: 700;
-  margin-left: 5px;
-  opacity: .85;
+  box-shadow: 0 2px 8px rgba(0,63,114,.25);
+}
+.seg-score {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  line-height: 1;
+}
+.seg-label {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: .8;
+  display: block;
 }
 
 .tab {
