@@ -6,15 +6,113 @@
   <title>MyBadGuy — Cybercriminal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23f1f5f9' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23f1f5f9'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../css/base.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23003F72'/%3E%3Cpath d='M20,50 Q35,28 50,28 L50,72 Q35,72 20,50 Z' fill='%2322d3ee'/%3E%3Cpath d='M50,28 Q65,28 80,50 Q65,72 50,72 Z' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='2' fill='%2322d3ee'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="../css/actor.css">
+  <style>
+    /* ── Option A light overrides ── */
+    body { background: #fff !important; color: #1a1a1a !important; font-size: 17px; }
+    :root {
+      --navy: #003F72; --mid: #F0F4F8; --lift: #F0F4F8;
+      --cyan: #003F72; --lcyan: #e8f0f8;
+      --slate: #1a1a1a; --muted: #555; --dim: #666;
+    }
+    .nav { background: #003F72; border-bottom: none; padding: 0 20px; height: 64px; }
+    .nav-brand { gap: 10px; }
+    .nav-name { font-size: 18px; color: #fff; }
+    .btn-back { font-size: 14px; color: rgba(255,255,255,.8); }
+    .btn-back:hover { color: #fff; }
+    .btn-rescan { font-size: 14px; background: #fff; color: #003F72; padding: 8px 20px; }
+    .btn-rescan:hover { background: #e8f0f8; opacity: 1; }
+    .page { background: #fff; }
+    .eyebrow { color: #003F72 !important; font-size: 13px; }
+    .actor-hdr { background: #F0F4F8 !important; border: 1px solid #dde3ea !important; border-left: 4px solid var(--gc, #003F72) !important; }
+    .actor-hdr-name { color: #1a1a1a !important; font-size: 18px; }
+    .actor-hdr-sub  { color: #555 !important; font-size: 15px; }
+    .panel-title { color: #1a1a1a !important; font-size: 15px; }
+    .vec-label { color: #555 !important; font-size: 15px; }
+    .score-chip { font-size: 14px !important; }
+    .bio-text { color: #555 !important; font-size: 15px; }
+    .ideal-section-title { color: #1a1a1a !important; font-size: 15px; }
+    .ideal-lbl { color: #666 !important; font-size: 13px; }
+    .ideal-val  { color: #444 !important; font-size: 14px; }
+    .cf-name { color: #555 !important; font-size: 13px; }
+    .cf-val  { color: #1a1a1a !important; font-size: 13px; }
+    .boost-lbl { color: #555 !important; font-size: 13px; }
+    .tab { color: #555 !important; font-size: 15px; }
+    .tab.active { color: #003F72 !important; border-bottom-color: #003F72 !important; }
+    .tab:hover { color: #003F72 !important; }
+    .pri-hdr-1 { background: #FCEBEB; border-left-color: #C41230; }
+    .pri-hdr-2 { background: #FFF3CD; border-left-color: #7a4e00; }
+    .pri-hdr-3 { background: #E6F1FB; border-left-color: #003F72; }
+    .pri-hdr-1 .pri-title, .pri-hdr-1 .pri-count { color: #C41230; }
+    .pri-hdr-2 .pri-title, .pri-hdr-2 .pri-count { color: #7a4e00; }
+    .pri-hdr-3 .pri-title, .pri-hdr-3 .pri-count { color: #003F72; }
+    .pri-title { font-size: 15px; }
+    .pri-count { font-size: 14px; }
+    .rem-card { background: #fff !important; border: 1px solid #dde3ea !important; }
+    .rem-card:hover { border-color: #003F72 !important; }
+    .rem-card-title { color: #1a1a1a !important; font-size: 16px; }
+    .rem-card-sub { color: #555 !important; font-size: 13px; }
+    .rem-expand { color: #666 !important; font-size: 14px; }
+    .rem-body { color: #444 !important; font-size: 15px; line-height: 1.7; background: #fff !important; }
+    .rem-action-label, .rem-why-label { color: #666 !important; font-size: 13px; }
+    .rem-action, .rem-why { color: #444 !important; font-size: 15px; }
+    .rem-title { font-size: 16px; font-weight: 600; color: #1a1a1a !important; }
+    .rem-num { background: rgba(0,63,114,.1) !important; color: #003F72 !important; font-size: 13px; }
+    .rem-row { border-bottom-color: #dde3ea !important; }
+    .rbadge { font-size: 13px; }
+    .attribution { color: #888 !important; border-top-color: #dde3ea !important; font-size: 13px; }
+    .panel { background: #F0F4F8 !important; border: 1px solid #dde3ea !important; }
+    /* Disclaimer */
+    .mbg-disclaimer { background: #FFF3CD; border: 1px solid #f0c070; border-left: 5px solid #EF9F27; border-radius: 10px; padding: 14px 16px; margin-bottom: 1.5rem; }
+    .mbg-disclaimer-title { font-size: 15px; font-weight: 700; color: #7a4e00; margin-bottom: 6px; }
+    .mbg-disclaimer-body { font-size: 14px; color: #5a3e00; line-height: 1.7; margin: 0; }
+    .mbg-disclaimer-body strong { color: #003F72; font-weight: 700; }
+    /* Illo */
+    .actor-illo { border-radius: 10px; overflow: hidden; border: 1px solid #dde3ea; margin-bottom: 1rem; }
+    /* ── Font sizes matching Report page ── */
+    body { font-size: 17px !important; }
+    .actor-hdr-name   { font-size: 18px !important; font-weight: 700; }
+    .actor-hdr-sub    { font-size: 15px !important; }
+    .score-chip       { font-size: 14px !important; padding: 4px 14px; }
+    .panel-title      { font-size: 16px !important; font-weight: 600; }
+    .bio-text         { font-size: 16px !important; line-height: 1.75; }
+    .vec-label        { font-size: 15px !important; }
+    .tab              { font-size: 16px !important; }
+    .ideal-section-title { font-size: 16px !important; }
+    .ideal-lbl        { font-size: 13px !important; }
+    .ideal-val        { font-size: 15px !important; }
+    .cf-name          { font-size: 13px !important; }
+    .cf-val           { font-size: 14px !important; }
+    .boost-lbl        { font-size: 13px !important; }
+    .pri-title        { font-size: 15px !important; font-weight: 600; }
+    .pri-count        { font-size: 14px !important; }
+    .rem-title        { font-size: 16px !important; font-weight: 600; line-height: 1.4; }
+    .rem-expand       { font-size: 14px !important; }
+    .rem-body         { font-size: 15px !important; line-height: 1.75; }
+    .rem-action-label { font-size: 13px !important; }
+    .rem-action       { font-size: 15px !important; }
+    .rem-why-label    { font-size: 13px !important; }
+    .rem-why          { font-size: 15px !important; }
+    .rbadge           { font-size: 13px !important; padding: 3px 10px; }
+    .rem-num          { font-size: 13px !important; width: 24px; height: 24px; }
+    .rem-pills .rem-tactic,
+    .rem-pills .rem-source { font-size: 13px !important; padding: 3px 10px; }
+    .eyebrow          { font-size: 13px !important; }
+    .attribution      { font-size: 13px !important; }
+    .page-intro       { font-size: 16px !important; }
+  </style>
 </head>
 <body>
 <nav class="nav">
   <a href="/" class="nav-brand">
-    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true"><path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/><path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#f1f5f9" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="30" r="7" fill="#f1f5f9"/><circle cx="50" cy="30" r="2.5" fill="#22d3ee"/></svg>
+    <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
+      <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
+      <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="30" r="7" fill="#fff"/>
+      <circle cx="50" cy="30" r="2.5" fill="#22d3ee"/>
+    </svg>
     <span class="nav-name">MyBadGuy</span>
   </a>
   <div class="nav-actions">
@@ -26,26 +124,16 @@
 <div class="page" id="page"></div>
 
 <template id="actor-illo">
-  <svg viewBox="0 0 340 160" role="img" aria-label="Cybercriminal — terminal window with credential streams">
-    <rect width="340" height="160" fill="#0f1a0d"/>
-    <rect x="50" y="22" width="240" height="120" rx="8" fill="#0a1208" stroke="#3B6D11" stroke-width="0.8"/>
-    <rect x="50" y="22" width="240" height="20" rx="8" fill="#1a3a12"/>
-    <circle cx="66" cy="32" r="4" fill="#E24B4A" opacity="0.6"/>
-    <circle cx="80" cy="32" r="4" fill="#EF9F27" opacity="0.6"/>
-    <circle cx="94" cy="32" r="4" fill="#639922" opacity="0.6"/>
-    <rect x="66" y="52" width="55" height="5" rx="2" fill="#639922" opacity="0.7"/>
-    <rect x="125" y="52" width="8" height="5" rx="1" fill="#22c55e" opacity="0.9"/>
-    <rect x="66" y="64" width="18" height="4" rx="2" fill="#27500A" opacity="0.6"/>
-    <rect x="88" y="64" width="46" height="4" rx="2" fill="#639922" opacity="0.5"/>
-    <rect x="138" y="64" width="28" height="4" rx="2" fill="#E24B4A" opacity="0.5"/>
-    <rect x="66" y="76" width="38" height="4" rx="2" fill="#27500A" opacity="0.6"/>
-    <rect x="108" y="76" width="65" height="4" rx="2" fill="#639922" opacity="0.4"/>
-    <rect x="66" y="88" width="10" height="4" rx="2" fill="#639922" opacity="0.8"/>
-    <rect x="80" y="88" width="74" height="4" rx="2" fill="#E24B4A" opacity="0.6"/>
-    <rect x="66" y="100" width="50" height="4" rx="2" fill="#639922" opacity="0.5"/>
-    <rect x="66" y="112" width="8" height="8" rx="1" fill="#22c55e"/>
-    <path d="M250 125 Q264 112 268 94 Q268 76 260 71 Q252 66 247 80" fill="none" stroke="#EF9F27" stroke-width="1.2" opacity="0.7"/>
-    <circle cx="247" cy="80" r="4" fill="none" stroke="#EF9F27" stroke-width="1" opacity="0.7"/>
+  <svg viewBox="0 0 340 160" role="img" aria-label="Cybercriminal — financial theft">
+    <rect width="340" height="160" fill="#F0F4F8"/>
+    <rect x="110" y="45" width="120" height="80" rx="8" fill="#dde3ea" stroke="#EF9F27" stroke-width="1.5"/>
+    <rect x="110" y="45" width="120" height="22" rx="8" fill="#EF9F27" opacity="0.8"/>
+    <rect x="110" y="57" width="120" height="10" fill="#EF9F27" opacity="0.8"/>
+    <rect x="122" y="80" width="40" height="6" rx="3" fill="#003F72" opacity="0.4"/>
+    <rect x="122" y="92" width="60" height="6" rx="3" fill="#003F72" opacity="0.3"/>
+    <rect x="122" y="104" width="50" height="6" rx="3" fill="#003F72" opacity="0.3"/>
+    <circle cx="215" cy="104" r="14" fill="#EF9F27" opacity="0.15" stroke="#EF9F27" stroke-width="1"/>
+    <text x="215" y="109" text-anchor="middle" font-size="14" fill="#EF9F27" font-weight="700">$</text>
   </svg>
 </template>
 
