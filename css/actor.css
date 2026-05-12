@@ -295,11 +295,13 @@ a { color: var(--navy); }
 .pri-hdr {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   padding: .6rem 1rem;
   border-radius: 8px;
   border-left: 4px solid;
   margin-bottom: 0;
+  cursor: pointer;
   user-select: none;
 }
 .pri-hdr-1 { background: #FCEBEB; border-left-color: #C41230; }
@@ -310,6 +312,7 @@ a { color: var(--navy); }
 .pri-hdr-2 .pri-title { color: #7a4e00; }
 .pri-hdr-3 .pri-title { color: #003F72; }
 .pri-count { font-size: 14px; font-weight: 500; }
+.pri-chevron { font-size: 16px; color: inherit; transition: transform .2s; display: inline-block; }
 .pri-hdr-1 .pri-count { color: #C41230; }
 .pri-hdr-2 .pri-count { color: #7a4e00; }
 .pri-hdr-3 .pri-count { color: #003F72; }
