@@ -616,16 +616,16 @@ function renderScan() {
     <div class="screen" style="text-align:center;">
       <div class="scan-eye-wrap" aria-hidden="true">
         <svg width="200" height="120" viewBox="0 0 100 60" aria-hidden="true">
-          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(34,211,238,.18)"/>
-          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="2"/>
-          <circle cx="50" cy="30" r="9" fill="none" stroke="rgba(34,211,238,.35)" stroke-width="1.5"/>
-          <circle cx="50" cy="30" r="3.5" fill="rgba(34,211,238,.55)"/>
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.15)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.55)" stroke-width="2"/>
+          <circle cx="50" cy="30" r="9" fill="none" stroke="rgba(0,63,114,.7)" stroke-width="1.5"/>
+          <circle cx="50" cy="30" r="3.5" fill="#003F72"/>
         </svg>
         <div class="scan-ring scan-ring-1"></div>
         <div class="scan-ring scan-ring-2"></div>
         <div class="scan-line"></div>
       </div>
-      <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:.6rem;">
+      <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:.6rem;">
         Detecting your device
       </h1>
       <div class="scan-status-wrap" role="status" aria-live="polite">
@@ -976,15 +976,15 @@ function renderCalc() {
     <div class="screen" style="text-align:center;">
       <div class="calc-ring" aria-hidden="true">
         <svg width="50" height="30" viewBox="0 0 100 60" aria-hidden="true">
-          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(34,211,238,.3)"/>
-          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(34,211,238,.4)" stroke-width="3"/>
-          <circle cx="50" cy="30" r="7" fill="rgba(34,211,238,.5)"/>
+          <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.2)"/>
+          <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.55)" stroke-width="3"/>
+          <circle cx="50" cy="30" r="7" fill="#003F72"/>
         </svg>
       </div>
-      <h1 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:.5rem;">
+      <h1 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:.5rem;">
         Calculating your risk profile
       </h1>
-      <p style="font-size:15px;color:var(--muted);" aria-live="polite">
+      <p style="font-size:15px;color:#333;" aria-live="polite">
         Matching your profile against 7 threat actor models…
       </p>
     </div>`;
@@ -1339,9 +1339,8 @@ function render() {
   renderDots();
   CQ = ST === 2 ? 1 : 0;
 
-  // Light background for intro, questions, results, save
-  // Dark background for scan animation, device confirm, calculating
-  const lightSteps = [0, 1, 2, 4, 6, 7];
+  // Light background for all steps — site-wide consistency
+  const lightSteps = [0, 1, 2, 3, 4, 5, 6, 7];
   document.body.classList.toggle('light-screen', lightSteps.includes(ST));
 
   if      (ST === 0) renderIntro();
