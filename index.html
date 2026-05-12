@@ -119,10 +119,7 @@
     .product-cta:hover{opacity:.88;text-decoration:none;}
     .product-cta-ghost{display:block;border:1.5px solid var(--accent,var(--navy));color:var(--accent,var(--navy));font-size:15px;font-weight:500;padding:11px 18px;border-radius:8px;text-align:center;text-decoration:none;}
     .product-cta-ghost:hover{background:var(--accent-bg,#F0F4F8);text-decoration:none;}
-    .notify-form{display:flex;gap:8px;}
-    .notify-input{flex:1;font-size:15px;padding:11px 14px;border:1.5px solid var(--border);border-radius:6px;color:var(--slate);outline:none;min-width:0;}
-    .notify-input:focus{border-color:var(--navy);}
-    .notify-btn{font-size:15px;font-weight:600;padding:11px 16px;border-radius:6px;background:var(--navy);color:#fff;border:none;cursor:pointer;white-space:nowrap;}
+    .product-cta-muted{display:block;background:#E7EBEF;color:#999;font-size:16px;font-weight:600;padding:13px 18px;border-radius:8px;text-align:center;cursor:not-allowed;user-select:none;}
 
     /* STATS */
     .stats{background:var(--navy);padding:24px 20px;}
@@ -317,10 +314,7 @@
             <span class="product-tag">SSL grade</span>
             <span class="product-tag">Malware check</span>
           </div>
-          <div class="notify-form" role="form" aria-label="Get notified when Link scanner launches">
-            <input type="email" class="notify-input" placeholder="Your email address" aria-label="Email address" id="notify-link">
-            <button class="notify-btn" onclick="handleNotify('notify-link',this)" type="button">Notify me</button>
-          </div>
+          <span class="product-cta-muted" aria-disabled="true">Scan a link →</span>
         </div>
       </div>
 
@@ -339,10 +333,7 @@
             <span class="product-tag">Border risk</span>
             <span class="product-tag">Travel checklist</span>
           </div>
-          <div class="notify-form" role="form" aria-label="Get notified when Travel mode launches">
-            <input type="email" class="notify-input" placeholder="Your email address" aria-label="Email address" id="notify-travel">
-            <button class="notify-btn" onclick="handleNotify('notify-travel',this)" type="button">Notify me</button>
-          </div>
+          <span class="product-cta-muted" aria-disabled="true">Plan a trip →</span>
         </div>
       </div>
 
@@ -432,17 +423,6 @@
     for(const[id,v]of Object.entries(m)){const el=document.getElementById(id);if(el&&v)el.textContent=v.toLocaleString();}
   }catch(_){}
 })();
-function handleNotify(inputId,btn){
-  const input=document.getElementById(inputId);
-  const email=(input?.value||'').trim();
-  if(!email||!email.includes('@')){input.focus();return;}
-  btn.textContent='You\'re on the list ✓';
-  btn.disabled=true;
-  btn.style.background='#007A53';
-  input.value='';
-  input.placeholder='We\'ll let you know';
-  input.disabled=true;
-}
 </script>
 </body>
 </html>
