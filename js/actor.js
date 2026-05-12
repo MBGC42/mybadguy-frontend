@@ -12,6 +12,7 @@ document.body.classList.add(A.colorClass || 'theme-red');
 const SCORES  = calcScore(A);
 let   TAB     = 'bio';
 let   REM_DATA = null;
+let   ANALYSIS_SUB = 'technical'; // sub-section within Analysis tab
 
 /* ── Platform detection ──────────────────────────────────── */
 function detectPlatform() {
@@ -263,6 +264,25 @@ async function fetchRemediations() {
   }
 }
 
+/* ── Analysis tab — segmented control ───────────────────── */
+function renderAnalysis(sc) {
+  const subs = [
+    { id:'technical', label:'Technical', score:sc.t },
+    { id:'social',    label:'Social',    score:sc.s },
+    { id:'weighted',  label:'Factors',   score:null },
+  ];
+  const segments = subs.map(s =>
+    `<button class="seg-btn${ANALYSIS_SUB === s.id ? ' on' : ''}" data-sub="${s.id}">${s.label}${s.score !== null ? ` <span class="seg-score">${s.score}</span>` : ''}</button>`
+  ).join('');
+
+  let content = '';
+  if (ANALYSIS_SUB === 'technical') content = renderVecs(A.tvecs, 'Technical attack vectors', sc.t);
+  if (ANALYSIS_SUB === 'social')    content = renderVecs(A.svecs, 'Social engineering vectors', sc.s);
+  if (ANALYSIS_SUB === 'weighted')  content = renderWeighted(sc);
+
+  return `<div class="seg-control">${segments}</div>${content}`;
+}
+
 /* ── Tab rendering ───────────────────────────────────────── */
 function setPanel(html) {
   const panel = document.getElementById('panel');
@@ -271,18 +291,16 @@ function setPanel(html) {
 }
 
 function renderPanel(sc) {
-  if (TAB === 'technical')   return renderVecs(A.tvecs, 'Technical attack vectors', sc.t);
-  if (TAB === 'social')      return renderVecs(A.svecs, 'Social engineering vectors', sc.s);
   if (TAB === 'bio')         return renderBio();
-  if (TAB === 'weighted')    return renderWeighted(sc);
+  if (TAB === 'analysis')    return renderAnalysis(sc);
   return '';
 }
 
 function renderTabs() {
-  const tabs = ['bio','remediation','technical','social','weighted'];
-  const tabLabels = { technical:'Technical', social:'Social', bio:'Bio', weighted:'Factors', remediation:'Recommendations' };
+  const tabs = ['bio','remediation','analysis'];
+  const tabLabels = { bio:'Bio', remediation:'Recommendations', analysis:'Analysis' };
   return tabs.map(t =>
-    `<button class="tab${t === TAB ? ' on' : ''}" data-tab="${t}">${tabLabels[t] || t.charAt(0).toUpperCase() + t.slice(1)}</button>`
+    `<button class="tab${t === TAB ? ' on' : ''}" data-tab="${t}">${tabLabels[t]}</button>`
   ).join('');
 }
 
@@ -294,6 +312,12 @@ document.addEventListener('click', e => {
     document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
     tabBtn.classList.add('on');
     TAB === 'remediation' ? fetchRemediations() : setPanel(renderPanel(SCORES));
+    return;
+  }
+  const subBtn = e.target.closest('[data-sub]');
+  if (subBtn) {
+    ANALYSIS_SUB = subBtn.dataset.sub;
+    setPanel(renderAnalysis(SCORES));
     return;
   }
   const groupHdr = e.target.closest('[data-toggle-group]');
