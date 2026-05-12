@@ -73,20 +73,20 @@
 
 .actor-hdr-name {
   font-family: 'Syne', sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   margin-bottom: 2px;
 }
 
 .actor-hdr-sub {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--muted);
   margin-bottom: .75rem;
 }
 
 /* ── Score chips ─────────────────────────────────────────── */
 .score-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.score-chip  { font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
+.score-chip  { font-size: 15px; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
 .chip-t  { background: #FCEBEB; color: #A32D2D; }
 .chip-s  { background: #E6F1FB; color: #0C447C; }
 .chip-hi { background: rgba(226,75,74,.13);  color: #E24B4A; }
@@ -121,7 +121,7 @@
   padding: 1.25rem;
   border: .5px solid rgba(255,255,255,.06);
 }
-.panel-title { font-size: 14px; font-weight: 500; margin-bottom: .85rem; color: var(--slate); }
+.panel-title { font-size: 17px; font-weight: 500; margin-bottom: .85rem; color: var(--slate); }
 
 /* ── Vector rows ─────────────────────────────────────────── */
 .vec-row {
@@ -133,7 +133,7 @@
   border-bottom: .5px solid rgba(255,255,255,.04);
 }
 .vec-row:last-child { border-bottom: none; }
-.vec-label { color: var(--muted); flex: 1; padding-right: 8px; line-height: 1.4; }
+.vec-label { color: var(--muted); flex: 1; padding-right: 8px; line-height: 1.4; font-size: 15px; }
 .vec-bar   { width: 80px; height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; flex-shrink: 0; }
 .vec-fill  { height: 100%; border-radius: 2px; width: 0; transition: width .3s; }
 .vec-val   { font-weight: 500; min-width: 28px; text-align: right; flex-shrink: 0; }
@@ -151,11 +151,11 @@
 .fill-good { background: #22c55e; }
 
 /* ── Bio tab ─────────────────────────────────────────────── */
-.bio-text { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
+.bio-text { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
 .illo-wrap { border-radius: 10px; overflow: hidden; margin-bottom: .85rem; }
 .illo-wrap svg { display: block; width: 100%; }
 
-.ideal-section-title { font-size: 13px; font-weight: 500; margin-bottom: .5rem; }
+.ideal-section-title { font-size: 16px; font-weight: 500; margin-bottom: .5rem; }
 
 .match-legend {
   display: flex;
@@ -181,9 +181,9 @@
 }
 .ideal-card.match { background: #FCEBEB; border-color: #F09595; }
 .ideal-card.na    { opacity: .25; }
-.ideal-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; margin-bottom: 2px; }
+.ideal-lbl { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; margin-bottom: 2px; }
 .ideal-card.match .ideal-lbl { color: #A32D2D; }
-.ideal-val { font-size: 12px; color: var(--slate); line-height: 1.45; }
+.ideal-val { font-size: 15px; color: var(--slate); line-height: 1.45; }
 .ideal-card.match .ideal-val { color: #791F1F; font-weight: 500; }
 .ideal-why {
   margin-top: .85rem;
@@ -203,10 +203,10 @@
   padding: .55rem .75rem;
   border: .5px solid rgba(255,255,255,.06);
 }
-.cf-name { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.cf-name { font-size: 14px; color: var(--muted); margin-bottom: 3px; }
 .cf-bar  { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
 .cf-fill { height: 100%; border-radius: 2px; width: 0; }
-.cf-val  { font-size: 11px; font-weight: 500; }
+.cf-val  { font-size: 14px; font-weight: 500; }
 
 .boost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .boost-card {
@@ -215,7 +215,7 @@
   border-radius: 8px;
   padding: .55rem .75rem;
 }
-.boost-lbl { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.boost-lbl { font-size: 14px; color: var(--muted); margin-bottom: 2px; }
 .boost-val { font-weight: 500; }
 .boost-pos  { color: #A32D2D; }   /* positive boost = bad for user = red */
 .boost-zero { color: var(--slate); }
@@ -251,11 +251,11 @@
 .pri-hdr-1 { background: #FCEBEB; border-left-color: #E24B4A; }
 .pri-hdr-2 { background: #FAEEDA; border-left-color: #EF9F27; }
 .pri-hdr-3 { background: #E6F1FB; border-left-color: #378ADD; }
-.pri-title { font-size: 12px; font-weight: 500; }
+.pri-title { font-size: 16px; font-weight: 500; }
 .pri-hdr-1 .pri-title { color: #A32D2D; }
 .pri-hdr-2 .pri-title { color: #854F0B; }
 .pri-hdr-3 .pri-title { color: #0C447C; }
-.pri-count { font-size: 11px; margin-left: auto; opacity: .65; }
+.pri-count { font-size: 14px; margin-left: auto; opacity: .65; }
 .pri-hdr-1 .pri-count { color: #A32D2D; }
 .pri-hdr-2 .pri-count { color: #854F0B; }
 .pri-hdr-3 .pri-count { color: #0C447C; }
@@ -290,14 +290,14 @@
 .rem-num-3 { background: #E6F1FB; color: #0C447C; }
 
 .rem-title-wrap { flex: 1; }
-.rem-title { font-size: 13px; font-weight: 500; line-height: 1.35; }
+.rem-title { font-size: 17px; font-weight: 500; line-height: 1.35; }
 .rem-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
-.rbadge { font-size: 11px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+.rbadge { font-size: 14px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
 .diff-easy   { background: #EAF3DE; color: #27500A; }
 .diff-medium { background: #FAEEDA; color: #854F0B; }
 .diff-hard   { background: #FCEBEB; color: #A32D2D; }
 
-.rem-expand { font-size: 11px; color: var(--dim); padding: .1rem .5rem; flex-shrink: 0; }
+.rem-expand { font-size: 14px; color: var(--dim); padding: .1rem .5rem; flex-shrink: 0; }
 
 .rem-body {
   padding: 0 .9rem .75rem 2.75rem;
@@ -312,7 +312,7 @@
   line-height: 1.65;
   margin-bottom: .5rem;
 }
-.rem-action-label { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
+.rem-action-label { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
 
 .rem-why {
   font-size: 12px;
@@ -320,7 +320,7 @@
   line-height: 1.6;
   margin-bottom: .6rem;
 }
-.rem-why-label { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
+.rem-why-label { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
 
 .rem-source {
   display: inline-flex;
