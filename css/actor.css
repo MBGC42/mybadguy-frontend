@@ -440,35 +440,39 @@ a { color: var(--navy); }
   gap: 4px;
   font-size: 13px;
   font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 99px;
-  background: rgba(34,211,238,.07);
-  border: .5px solid rgba(34,211,238,.2);
-  color: var(--cyan);
+  padding: 4px 11px;
+  border-radius: 14px;
+  background: #E6F1FB;
+  border: 1px solid #B8D4ED;
+  color: #003F72;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
   transition: background .15s, border-color .15s;
 }
-.rem-source:hover { background: rgba(34,211,238,.12); border-color: rgba(34,211,238,.4); text-decoration: none; }
+.rem-source:hover { background: #D1E4F5; border-color: #003F72; text-decoration: none; }
 .rem-tactic {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 13px;
   font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 99px;
-  background: rgba(226,75,74,.1);
-  border: .5px solid rgba(226,75,74,.3);
-  color: #E24B4A;
-  white-space: nowrap;
+  padding: 4px 11px;
+  border-radius: 14px;
+  background: #FCEBEB;
+  border: 1px solid #F0B5B5;
+  color: #C41230;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
   text-decoration: none;
   cursor: pointer;
   transition: background .15s, border-color .15s;
 }
 a.rem-tactic:hover {
-  background: rgba(226,75,74,.2);
-  border-color: rgba(226,75,74,.5);
+  background: #F8D7D7;
+  border-color: #C41230;
   text-decoration: none;
 }
 .rem-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: .5rem; }
