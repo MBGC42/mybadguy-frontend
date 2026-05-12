@@ -336,7 +336,7 @@ const ACTOR_CONFIGS_FALLBACK = [
     tBase:22, sBase:88,
     cf:{age:.95,fin:.7,tech:-.9,iso:.85,pub:.1,sm:.3,role:.05},
     ds:{ip:.9,id:.6,an:.7,mc:.5,wn:.55}, mdmW:.02, lw:{home:.05,usage:.05} },
-  { nm:'Partner abuser',      g:'social',
+  { nm:'Stalker / abusive partner',      g:'social',
     tBase:58, sBase:90,
     cf:{age:.2,fin:.1,tech:-.3,iso:.9,pub:.1,sm:.5,role:.1},
     ds:{ip:.9,id:.7,an:.85,mc:.5,wn:.4}, mdmW:.05, lw:{home:-.20,usage:.10} },
