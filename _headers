@@ -1,7 +1,5 @@
 # MyBadGuy — Cloudflare Pages _headers
-# Note: Cloudflare Pages injects analytics scripts into served HTML.
-# unsafe-inline is required in script-src to allow these injected scripts.
-# All MyBadGuy JS is external — unsafe-inline only affects Cloudflare's own injections.
+# Security headers applied to all pages with page-specific overrides below.
 
 # ── Global security headers ───────────────────────────────
 /*
@@ -18,12 +16,20 @@
   Content-Type: text/plain; charset=utf-8
   Cache-Control: max-age=86400
 
-# ── Actor pages — strictest CSP (no unsafe-inline anywhere) ──
+# ── Actor pages ───────────────────────────────────────────
+# Must allow 'unsafe-inline' in style-src for the inline <style> light-theme overrides.
+# No inline scripts — script-src stays strict.
 /actors/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
 
+# ── What sites see — needs external IP geolocation APIs ──
+/siteview.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com https://ipapi.co https://ipwho.is https://freeipapi.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
+
+# ── Return page ───────────────────────────────────────────
 /return.html
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
 
+# ── Report page ───────────────────────────────────────────
 /report.html
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.mybadguy.com https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; frame-src 'none'; form-action 'self'; upgrade-insecure-requests
