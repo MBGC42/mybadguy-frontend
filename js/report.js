@@ -257,7 +257,7 @@ async function renderReport(){
   </h1>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
     <p style="font-size:15px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
-    <button onclick="openSaveModal()" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;padding:10px 22px;border-radius:99px;background:#003F72;color:#fff;border:none;cursor:pointer;">Save results</button>
+    <button class="report-save-btn" data-action="save">Save results</button>
   </div>`;
 
   h+=`<p class="eyebrow">Detection Profile</p>
@@ -290,7 +290,7 @@ async function renderReport(){
         return `<div style="display:flex;align-items:center;gap:10px;padding:.85rem 1rem;border-radius:10px;border:1.5px solid ${bdr};background:${cbg};transition:opacity .2s;" id="actor-card-${a.id}">
           <input type="checkbox" id="actor-chk-${a.id}" checked
             style="width:20px;height:20px;cursor:pointer;accent-color:#003F72;flex-shrink:0;"
-            onchange="toggleActor('${a.id}', this.checked)"
+            data-actor-toggle="${a.id}"
             aria-label="Include ${a.name} recommendations">
           <div style="width:34px;height:34px;border-radius:50%;background:${a.ab};color:${a.ac};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">${a.ini}</div>
           <div style="flex:1;min-width:0;">
@@ -337,14 +337,14 @@ async function renderReport(){
     if (!items.length) return;
     const groupId = `pri-group-${diff}`;
     h += `<div class="pri-group" style="margin-bottom:8px;">
-      <div class="pri-hdr ${diffPriClass[diff]}" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;" onclick="toggleGroup('${groupId}')">
+      <div class="pri-hdr ${diffPriClass[diff]}" data-toggle-group="${groupId}">
         <span class="pri-title">${diffLabels[diff]}</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="pri-count">${items.length} step${items.length > 1 ? 's' : ''}</span>
-          <span id="${groupId}-chevron" style="font-size:16px;color:inherit;transition:transform .2s;">&#9654;</span>
+          <span id="${groupId}-chevron" class="pri-chevron">&#9654;</span>
         </div>
       </div>
-      <div id="${groupId}" style="display:none;">`;
+      <div class="pri-body" id="${groupId}">`;
     items.forEach(r => {
       const a   = r.actor;
       const nc  = numClass[r.priority] || 'rem-num-3';
@@ -401,20 +401,38 @@ async function renderReport(){
       }).catch(() => {});
   }
 
-  document.getElementById('report').addEventListener('click',e=>{
-    const card=e.target.closest('.rem-card');
-    if(card) card.classList.toggle('open');
+  document.getElementById('report').addEventListener('click', e => {
+    // Group header toggle
+    const groupHdr = e.target.closest('[data-toggle-group]');
+    if (groupHdr) {
+      e.stopPropagation();
+      const id      = groupHdr.dataset.toggleGroup;
+      const body    = document.getElementById(id);
+      const chevron = document.getElementById(id + '-chevron');
+      if (!body) return;
+      const isOpen  = body.classList.contains('open');
+      body.classList.toggle('open', !isOpen);
+      if (chevron) chevron.classList.toggle('open', !isOpen);
+      return;
+    }
+    // Actor checkbox toggle
+    const chk = e.target.closest('input[data-actor-toggle]');
+    if (chk) {
+      toggleActor(chk.dataset.actorToggle, chk.checked);
+      return;
+    }
+
+    // Save button
+    if (e.target.closest('[data-action="save"]')) {
+      openSaveModal();
+      return;
+    }
+    // Rem card expand
+    const card = e.target.closest('.rem-card');
+    if (card) card.classList.toggle('open');
   });
 
-  // Expose toggleGroup globally for onclick handlers
-  window.toggleGroup = function(id) {
-    const body    = document.getElementById(id);
-    const chevron = document.getElementById(id + '-chevron');
-    if (!body) return;
-    const isOpen = body.style.display !== 'none';
-    body.style.display = isOpen ? 'none' : 'block';
-    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
-  };
+  // Group toggle via event delegation — no inline handlers, CSP safe
 
   // Toggle all recommendations for a given actor
   window.toggleActor = function(actorId, checked) {
@@ -424,7 +442,7 @@ async function renderReport(){
 
     // Show/hide all rem-cards for this actor using data-hidden attribute
     document.querySelectorAll(`.rem-card[data-actor="${actorId}"]`).forEach(el => {
-      el.style.display = checked ? '' : 'none';
+      el.classList.toggle('rem-hidden', !checked);
       el.dataset.hidden = checked ? '' : '1';
     });
 
