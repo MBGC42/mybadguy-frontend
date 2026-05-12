@@ -555,11 +555,11 @@ function renderIntro() {
         No account. No software. No data stored without your consent.
       </p>
 
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem;">
 
         <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
           <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">~2 min</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.35);line-height:1;margin-bottom:.65rem;">01</div>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:#003F72;line-height:1;margin-bottom:.65rem;">01</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">Tell us about yourself</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">10 questions about your financial situation, tech habits, and how you use your device. Generic enough to protect your privacy.</p>
           <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:100%;background:#003F72;border-radius:1px;"></div></div>
@@ -567,7 +567,7 @@ function renderIntro() {
 
         <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
           <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">~1 min</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.35);line-height:1;margin-bottom:.65rem;">02</div>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:#003F72;line-height:1;margin-bottom:.65rem;">02</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">We detect your device</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">Your browser tells us your device type, OS, and version automatically. We pull live CVE counts updated every 2 hours from NIST NVD.</p>
           <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:66%;background:#003F72;border-radius:1px;"></div></div>
@@ -575,7 +575,7 @@ function renderIntro() {
 
         <div style="background:#F0F4F8;border:1px solid #dde3ea;border-radius:14px;padding:1.25rem;position:relative;">
           <span style="position:absolute;top:.85rem;right:.85rem;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:#003F72;opacity:.7;">Instant</span>
-          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:rgba(0,63,114,.35);line-height:1;margin-bottom:.65rem;">03</div>
+          <div style="font-family:'Syne',sans-serif;font-size:42px;font-weight:700;color:#003F72;line-height:1;margin-bottom:.65rem;">03</div>
           <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:.3rem;">See what they see</div>
           <p style="font-size:16px;color:var(--muted);line-height:1.6;">Seven threat actor scores, ranked by how attractive your profile is to each. Remediations ranked by what is being actively exploited right now.</p>
           <div style="height:2px;background:#dde3ea;border-radius:1px;margin-top:1rem;overflow:hidden;"><div style="height:100%;width:33%;background:#003F72;border-radius:1px;"></div></div>
@@ -583,9 +583,9 @@ function renderIntro() {
 
       </div>
 
-      <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
-        <p style="font-size:16px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important disclaimer</p>
-        <p style="font-size:16px;color:#555;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#003F72;font-weight:700;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
+      <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:#FFF3CD;border:1px solid #f0c070;border-left:5px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
+        <p style="font-size:15px;font-weight:700;color:#7a4e00;margin-bottom:6px;">⚠️ Important disclaimer</p>
+        <p style="font-size:14px;color:#5a3e00;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#003F72;font-weight:700;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
       </div>
 
       <div style="text-align:center;">
@@ -1043,9 +1043,9 @@ function renderResults() {
 
   document.getElementById('app').innerHTML = `
     <div class="screen" style="padding-bottom:2rem;">
-      <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:rgba(239,159,39,.06);border:.5px solid rgba(239,159,39,.25);border-left:3px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
-        <p style="font-size:16px;font-weight:600;color:#EF9F27;margin-bottom:.35rem;">⚠️ Important disclaimer</p>
-        <p style="font-size:16px;color:#555;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#003F72;font-weight:700;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
+      <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:#FFF3CD;border:1px solid #f0c070;border-left:5px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
+        <p style="font-size:15px;font-weight:700;color:#7a4e00;margin-bottom:6px;">⚠️ Important disclaimer</p>
+        <p style="font-size:14px;color:#5a3e00;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#003F72;font-weight:700;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
         <p class="eyebrow" style="margin:0;">Your risk profile</p>
