@@ -428,13 +428,14 @@ async function renderReport(){
       el.dataset.hidden = checked ? '' : '1';
     });
 
-    // Update step counts — count cards without data-hidden="1"
-    document.querySelectorAll('.pri-group').forEach(group => {
-      const body    = group.querySelector('[id^="pri-group-"]');
-      if (!body) return;
+    // Update step counts — query ALL rem-cards in the group (even if group is collapsed)
+    // by using the group ID directly, not the inner body div
+    ['easy','medium','hard'].forEach(diff => {
+      const body    = document.getElementById(`pri-group-${diff}`);
+      const countEl = document.querySelector(`#pri-group-${diff}-chevron`)?.closest('.pri-hdr')?.querySelector('.pri-count');
+      if (!body || !countEl) return;
       const visible = body.querySelectorAll('.rem-card:not([data-hidden="1"])').length;
-      const countEl = group.querySelector('.pri-count');
-      if (countEl) countEl.textContent = `${visible} step${visible !== 1 ? 's' : ''}`;
+      countEl.textContent = `${visible} step${visible !== 1 ? 's' : ''}`;
     });
   };
 }
