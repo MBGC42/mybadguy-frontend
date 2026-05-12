@@ -55,10 +55,25 @@
 
 /* Principles list */
 .principles-list { list-style: none; padding: 0; margin: 0 0 1.5rem; }
-.principles-list li { display: flex; gap: 12px; align-items: flex-start; padding: .8rem 0; border-bottom: 1px solid #dde3ea; font-size: 15px; color: #444; line-height: 1.65; }
+.principles-list li {
+  position: relative;
+  padding: .8rem 0 .8rem 1.85rem;
+  border-bottom: 1px solid #dde3ea;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.65;
+}
 .principles-list li:last-child { border-bottom: none; }
-.principles-list li::before { content: "→"; color: #003F72; flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+.principles-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: .8rem;
+  color: #003F72;
+  font-weight: 700;
+}
 .principles-list strong { color: #1a1a1a; font-weight: 600; }
+.principles-list a { color: #003F72; text-decoration: underline; }
 
 /* CTA block */
 .cta-block { background: #F0F4F8; border: 1px solid #dde3ea; border-radius: 14px; padding: 2rem 1.5rem; text-align: center; margin-top: 3rem; }
