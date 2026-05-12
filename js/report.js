@@ -290,9 +290,9 @@ async function renderReport(){
     <button class="report-save-btn" data-action="save">Save results</button>
   </div>`;
 
-  h+=`<p class="eyebrow">Detection Profile</p>
+  h+=`<p class="eyebrow">Your profile</p>
   <div class="report-card">
-    <div class="report-card-hdr"><span class="report-card-title">Your Profile</span></div>
+    <div class="report-card-hdr"><span class="report-card-title">Detection profile</span></div>
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
       ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
