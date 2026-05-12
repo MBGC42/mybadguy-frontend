@@ -53,7 +53,7 @@ function renderBio() {
 
   let h = `<p class="panel-title panel-title-flex">
     Ideal target profile
-    ${mc > 0 ? `<span class="rbadge diff-hard">${mc} field${mc > 1 ? 's' : ''} match your profile</span>` : ''}
+    ${mc > 0 ? `<span class="rbadge diff-hard">${mc} of your answers match this actor</span>` : ''}
   </p>`;
   h += illo;
   h += `<p class="bio-text">${A.bio}</p>`;
