@@ -10,7 +10,7 @@ document.body.classList.add(A.colorClass || 'theme-red');
 
 /* ── State ───────────────────────────────────────────────── */
 const SCORES  = calcScore(A);
-let   TAB     = 'technical';
+let   TAB     = 'bio';
 let   REM_DATA = null;
 
 /* ── Platform detection ──────────────────────────────────── */
