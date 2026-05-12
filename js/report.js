@@ -207,7 +207,56 @@ async function fetchRem(actorId, platform, cveStats){
 
 
 
-// Fetch CVE delta between user's version and latest version
+// CVE exposure badge — shows user's CVE exposure vs latest
+async function fetchCveDelta(platform, userVersion, latestVersion, patchBg, patchColor, badgeId, API_BASE) {
+  const badge = document.getElementById(badgeId);
+  if (!badge) return;
+
+  const isCurrent = !userVersion || userVersion === latestVersion;
+  const isPartial = userVersion && userVersion.split('.').length < 3 && latestVersion && latestVersion.split('.').length >= 3;
+
+  try {
+    if (isCurrent) {
+      // On latest — show total CVEs on this platform/version
+      const r = await fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(userVersion || latestVersion)}`);
+      const d = r.ok ? await r.json() : null;
+      if (!d || d.total === 0) {
+        badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date · No unpatched CVEs detected</span>`;
+      } else {
+        badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date · ${d.total} platform CVEs${d.in_wild>0?` · ${d.in_wild} actively exploited`:''}</span>`;
+      }
+      return;
+    }
+
+    if (isPartial) {
+      // Partial version (e.g. macOS 15.7 from UA) — can't compute exact delta
+      // Just show that update is available
+      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">Update available — use Correct it to see exact CVE count for your build</span>`;
+      return;
+    }
+
+    // Behind on a known full version — fetch both and show delta
+    const [userRes, latestRes] = await Promise.all([
+      fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(userVersion)}`),
+      fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(latestVersion)}`),
+    ]);
+    const ud = userRes.ok   ? await userRes.json()   : null;
+    const ld = latestRes.ok ? await latestRes.json() : null;
+    if (!ud) return;
+
+    const fixedTotal = Math.max(0, (ud.total   ||0) - (ld?.total   ||0));
+    const fixedWild  = Math.max(0, (ud.in_wild ||0) - (ld?.in_wild ||0));
+
+    if (fixedTotal > 0) {
+      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">Updating to ${latestVersion} patches ${fixedTotal} CVE${fixedTotal>1?'s':''}${fixedWild>0?` · including ${fixedWild} actively exploited`:''}</span>`;
+    } else {
+      // Same count — still behind, just no measurable delta at version-range level
+      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">Update available — ${latestVersion} available · ${ud.total} CVEs on this platform</span>`;
+    }
+  } catch(_) {}
+}
+
+
 async function fetchCveDelta(platform, userVersion, latestVersion, patchBg, patchColor, badgeId, API_BASE) {
   const badge = document.getElementById(badgeId);
   if (!badge) return;

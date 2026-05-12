@@ -377,7 +377,7 @@ async function render() {
 
   // Fetch version-specific CVE count after DOM is ready
   const _dashPlatform = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
-  const _dashVersion  = p.deviceFullVersion || null;
+  const _dashVersion  = p.deviceFullVersion || p.deviceVersion || null;
   if (_dashVersion && _dashPlatform) {
     let latestVer = _dashVersion;
     try {
