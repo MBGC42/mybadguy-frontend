@@ -22,6 +22,29 @@
 .callout { background: #FFF3CD; border: 1px solid #f0c070; border-left: 5px solid #EF9F27; border-radius: 10px; padding: 1rem 1.25rem; font-size: 15px; color: #5a3e00; line-height: 1.7; margin-bottom: 1.25rem; }
 .callout strong { color: #003F72; font-weight: 700; }
 
+/* Data list — aligned with prose paragraphs */
+.data-list { list-style: none; padding: 0; margin: 0 0 1rem; }
+.data-list li {
+  position: relative;
+  padding: .5rem 0 .5rem 1.5rem;
+  font-size: 16px;
+  color: #444;
+  line-height: 1.65;
+  border-bottom: 1px solid #dde3ea;
+}
+.data-list li:last-child { border-bottom: none; }
+.data-list li::before {
+  content: "•";
+  position: absolute;
+  left: .35rem;
+  top: .5rem;
+  color: #003F72;
+  font-weight: 700;
+  font-size: 16px;
+}
+.data-list strong { color: #1a1a1a; font-weight: 600; }
+.data-list a { color: #003F72; text-decoration: underline; }
+
 /* Check list */
 .check-list { list-style: none; padding: 0; margin: 0; }
 .check-list li { position: relative; padding: .6rem 0 .6rem 1.85rem; font-size: 15px; color: #444; line-height: 1.65; border-bottom: 1px solid #dde3ea; }
@@ -31,11 +54,11 @@
 .check-list strong { color: #1a1a1a; font-weight: 600; }
 
 /* Principles list */
-.principles { list-style: none; padding: 0; margin: 0 0 1.5rem; }
-.principles li { display: flex; gap: 12px; align-items: flex-start; padding: .8rem 0; border-bottom: 1px solid #dde3ea; font-size: 15px; color: #444; line-height: 1.65; }
-.principles li:last-child { border-bottom: none; }
-.principles li::before { content: "→"; color: #003F72; flex-shrink: 0; margin-top: 1px; font-weight: 700; }
-.principles strong { color: #1a1a1a; font-weight: 600; }
+.principles-list { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+.principles-list li { display: flex; gap: 12px; align-items: flex-start; padding: .8rem 0; border-bottom: 1px solid #dde3ea; font-size: 15px; color: #444; line-height: 1.65; }
+.principles-list li:last-child { border-bottom: none; }
+.principles-list li::before { content: "→"; color: #003F72; flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+.principles-list strong { color: #1a1a1a; font-weight: 600; }
 
 /* CTA block */
 .cta-block { background: #F0F4F8; border: 1px solid #dde3ea; border-radius: 14px; padding: 2rem 1.5rem; text-align: center; margin-top: 3rem; }
