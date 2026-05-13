@@ -226,6 +226,13 @@ function getWins(ranked) {
   const type = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':p.wn?'windows':'iphone';
   const all  = ACTOR_WINS[type] || ACTOR_WINS.iphone;
   const topGroups = ranked.slice(0,3).map(a => a.g);
+
+  // Map each group to its top actor's combined score (0-99 → 0-10 risk)
+  const groupRisk = {};
+  ranked.forEach(a => {
+    if (groupRisk[a.g] === undefined || a.co > groupRisk[a.g]) groupRisk[a.g] = a.co;
+  });
+
   return all
     .filter(w => topGroups.includes(w.g))
     .filter(w => {
@@ -234,6 +241,7 @@ function getWins(ranked) {
           w.t.toLowerCase().includes('update to the latest')) return false;
       return true;
     })
+    .map(w => ({ ...w, r: Math.min(10, Math.max(1, Math.round((groupRisk[w.g] || 0) / 10))) }))
     .slice(0, 5);
 }
 
