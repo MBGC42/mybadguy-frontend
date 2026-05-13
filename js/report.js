@@ -144,7 +144,7 @@ async function resolveVersionLabel(p) {
   } catch (_) { return ''; }
 }
 
-function scoreColor(v){ return v>=70?'#E24B4A':v>=45?'#EF9F27':'#22c55e'; }
+function scoreColor(v){ return v>=70?'#C41230':v>=45?'#7a4e00':'#007A53'; }
 
 const TACTIC_LABELS={
   'initial-access':'Initial Access','execution':'Execution','persistence':'Persistence',
@@ -284,7 +284,7 @@ async function renderReport(){
     </div>
   <p class="eyebrow">Full report</p>
   <h1 style="font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:700;color:#1a1a1a;margin-bottom:.4rem;letter-spacing:-.01em;">
-    ${devName}${devVer?` · <span style="color:#1a1a1a;">${devVer}</span>`:''} · <span style="color:${scoreColor(overall)};">${overall} combined risk</span>
+    <span style="color:#1a1a1a;">${devName}</span>${devVer?` · <span style="color:${patchColor};">${devVer}</span>`:''} · <span style="color:${scoreColor(overall)};">${overall}</span> <span style="color:#1a1a1a;">combined risk</span>
   </h1>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
     <p style="font-size:15px;color:#555;margin:0;">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</p>
