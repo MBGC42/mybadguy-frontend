@@ -887,6 +887,17 @@ async function renderCorrectBuilds() {
         </button>
       </div>
     </div>`;
+
+  // Scroll the pre-selected card into the middle of the viewport
+  // If nothing is selected, just go to top of the page.
+  requestAnimationFrame(() => {
+    const selCard = document.querySelector('.ver-card.sel');
+    if (selCard) {
+      selCard.scrollIntoView({ block: 'center', behavior: 'instant' });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  });
 }
 
 function selectBuild(v, p, cardEl) {
