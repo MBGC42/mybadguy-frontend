@@ -820,6 +820,17 @@ async function renderCorrectBuilds() {
     }
   }
 
+  // Pre-select the card matching the detected version
+  // Tries exact full-version match first, falls back to major-version match
+  if (!TV.build && DV.type === TV.type) {
+    const detected = DV.fullVersion || DV.major;
+    if (detected) {
+      let match = builds.find(b => b.v === detected);
+      if (!match) match = builds.find(b => b.v.startsWith(detected + '.') || b.cycle === DV.major);
+      if (match) { TV.build = match.v; TV.patch = match.p; }
+    }
+  }
+
   const cards = builds.map(b => {
     const sel = TV.build === b.v;
     return `
