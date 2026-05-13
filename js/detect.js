@@ -820,13 +820,23 @@ async function renderCorrectBuilds() {
     }
   }
 
-  // Pre-select the card matching the detected version
-  // Tries exact full-version match first, falls back to major-version match
+  // Pre-select the card matching the detected version.
+  // Only auto-selects on a confident match (exact full version, or exact
+  // major.minor like 15.7 matching the latest patch in that cycle).
+  // If the detected version isn't in the list at all, no card is selected —
+  // the picker just loads with no selection so the user picks manually.
   if (!TV.build && DV.type === TV.type) {
     const detected = DV.fullVersion || DV.major;
     if (detected) {
+      // 1. Exact match — e.g. 15.7.5 finds 15.7.5
       let match = builds.find(b => b.v === detected);
-      if (!match) match = builds.find(b => b.v.startsWith(detected + '.') || b.cycle === DV.major);
+
+      // 2. Major.minor prefix match — e.g. 15.7 (from UA) finds 15.7.7
+      //    Only when detected has at least major.minor (one dot)
+      if (!match && detected.includes('.')) {
+        match = builds.find(b => b.v.startsWith(detected + '.'));
+      }
+
       if (match) { TV.build = match.v; TV.patch = match.p; }
     }
   }
@@ -888,8 +898,8 @@ async function renderCorrectBuilds() {
       </div>
     </div>`;
 
-  // Scroll the pre-selected card into the middle of the viewport
-  // If nothing is selected, just go to top of the page.
+  // If a card is pre-selected, scroll it into the middle of the viewport.
+  // If not (detected version isn't in the list), just load page at the top.
   requestAnimationFrame(() => {
     const selCard = document.querySelector('.ver-card.sel');
     if (selCard) {
