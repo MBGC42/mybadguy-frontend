@@ -118,7 +118,7 @@
 
 <a href="#main" class="sr-only">Skip to main content</a>
 
-<nav class="nav" role="navigation" aria-label="Main navigation">
+<nav class="nav" role="navigation" aria-label="Main navigation" id="nav-bar" style="display:none;">
   <a href="/" class="nav-brand" aria-label="MyBadGuy home">
     <svg width="26" height="16" viewBox="0 0 100 60" aria-hidden="true">
       <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="#22d3ee"/>
@@ -201,7 +201,7 @@
 
 </main>
 
-<footer class="footer" role="contentinfo">
+<footer class="footer" role="contentinfo" id="footer-bar" style="display:none;">
   <div class="footer-inner">
     <div>
       <div class="footer-brand">
@@ -673,8 +673,10 @@ async function runScan() {
 
   // Show results, hide loading
   document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('nav-bar').style.display = 'flex';
   document.getElementById('page-hdr').style.display = 'block';
   document.getElementById('results-state').style.display = 'block';
+  document.getElementById('footer-bar').style.display = 'block';
 }
 
 // Run on load
