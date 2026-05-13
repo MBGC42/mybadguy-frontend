@@ -663,13 +663,30 @@ function renderDevice() {
 
   // Low confidence signal — shown when we can't determine the exact patch version
   // Suppressed if the user has already corrected their version via the version picker
-  const partialDetection = DV.type === 'mac'
+  const isMacPartial = DV.type === 'mac'
     && (DV.fullVersion || DV.major).split('.').length < 3
-    && !TV.build; // TV.build is set when user selects exact version via Correct it
+    && !TV.build;
+  // Apple froze Safari's reported iOS version at 18.6 / 18.7 for fingerprinting
+  // protection starting Sept 2025. iPhone/iPad users on iOS 26.x still see UA
+  // saying "18.6" or "18.7". We can never trust the major when it's 18 — the
+  // user could be on iOS 18.x OR on iOS 26.x with frozen Safari UA.
+  const isIosFrozen = (DV.type === 'iphone' || DV.type === 'ipad')
+    && DV.major === '18'
+    && !TV.build;
+  const partialDetection = isMacPartial || isIosFrozen;
+
+  let lowConfidenceText = '';
+  if (isMacPartial) {
+    lowConfidenceText = `Browsers on macOS only report your major version number. We cannot detect your exact build automatically. Tap <strong>Correct it</strong> to confirm your version from <strong> → About This Mac</strong>.`;
+  } else if (isIosFrozen) {
+    const settings = DV.type === 'iphone' ? 'iPhone' : 'iPad';
+    lowConfidenceText = `Safari freezes its reported iOS version at 18.6 or 18.7 for privacy reasons — even if your ${settings} is actually on iOS 26 or newer. Tap <strong>Correct it</strong> to confirm your real version from <strong>Settings → General → About</strong>.`;
+  }
+
   const lowConfidence = partialDetection
     ? `<div style="margin-top:.75rem;padding:12px 14px;background:#FFF3CD;border:1px solid #f0c070;border-left:4px solid #EF9F27;border-radius:6px;font-size:15px;color:#7a4e00;line-height:1.6;">
-        <strong style="display:block;margin-bottom:3px;color:#7a4e00;">⚠️ Partial detection — action needed</strong>
-        Browsers on macOS only report your major version number. We cannot detect your exact build automatically. Tap <strong>Correct it</strong> to confirm your version from <strong> → About This Mac</strong>.
+        <strong style="display:block;margin-bottom:3px;color:#7a4e00;">⚠️ We could not detect your exact version</strong>
+        ${lowConfidenceText}
       </div>`
     : '';
 
