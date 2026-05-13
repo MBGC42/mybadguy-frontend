@@ -52,10 +52,13 @@
     .rem-row { display: flex; align-items: flex-start; gap: 10px; padding: .65rem 0; border-bottom: 1px solid #dde3ea; }
     .rem-row:last-child { border-bottom: none; }
     .rem-num { width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; background: rgba(0,63,114,.1); color: #003F72; }
-    .rem-source { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: rgba(0,63,114,.07); border: .5px solid rgba(0,63,114,.2); color: #003F72; text-decoration: none; white-space: nowrap; }
-    .rem-tactic { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: rgba(196,18,48,.08); border: .5px solid rgba(196,18,48,.2); color: #C41230; text-decoration: none; white-space: nowrap; }
-    a.rem-tactic:hover { background: rgba(196,18,48,.15); }
-    .rem-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: .5rem; }
+    .rem-source { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 14px; background: #E6F1FB; border: 1px solid #B8D4ED; color: #003F72; text-decoration: none; white-space: normal; overflow-wrap: anywhere; word-break: break-word; line-height: 1.4; max-width: 100%; }
+    .rem-source:hover { background: #D1E4F5; border-color: #003F72; text-decoration: none; }
+    .rem-tactic { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 14px; background: #FCEBEB; border: 1px solid #F0B5B5; color: #C41230; text-decoration: none; white-space: normal; overflow-wrap: anywhere; word-break: break-word; line-height: 1.4; max-width: 100%; }
+    a.rem-tactic:hover { background: #F8D7D7; border-color: #C41230; }
+    .rem-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: .5rem; max-width: 100%; }
+    .rem-pills-tactics { margin-top: .75rem; }
+    .rem-pills-sources { margin-top: .35rem; }
 
     /* LOADING */
     .loading { text-align: center; padding: 3rem 1rem; color: #666; font-size: 16px; }
@@ -101,7 +104,7 @@
     .report-card-title { font-size: 17px !important; }
     .report-card-sub  { font-size: 14px !important; }
     .rem-pills .rem-tactic,
-    .rem-pills .rem-source { font-size: 13px !important; padding: 3px 10px; }
+    .rem-pills .rem-source { font-size: 13px !important; }
 
     /* ── Light mode overrides for actor.css ── */
     body { background: #fff !important; }
