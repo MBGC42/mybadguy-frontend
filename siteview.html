@@ -39,7 +39,7 @@
     .page-sub{font-size:17px;color:rgba(255,255,255,.88);line-height:1.65;margin:0;}
 
     /* LOADING */
-    .loading{background:#fff;padding:64px 20px 56px;text-align:center;}
+    .loading{background:#fff;padding:80px 20px 80px;text-align:center;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
     .loading-text{font-size:13px;color:#003F72;letter-spacing:.08em;text-transform:uppercase;}
 
     /* Scan animation — matches Detect */
@@ -131,7 +131,7 @@
   <a href="/" class="nav-back">← Home</a>
 </nav>
 
-<div class="page-hdr">
+<div class="page-hdr" id="page-hdr" style="display:none;">
   <div class="page-hdr-inner">
     <p class="eyebrow">Browser exposure</p>
     <h1 class="page-h1">What websites learn the moment you visit</h1>
@@ -673,6 +673,7 @@ async function runScan() {
 
   // Show results, hide loading
   document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('page-hdr').style.display = 'block';
   document.getElementById('results-state').style.display = 'block';
 }
 
