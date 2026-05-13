@@ -60,6 +60,21 @@
     .group-hdr-label { font-size: 15px; font-weight: 600; color: #1a1a1a; flex: 1; }
     .group-hdr-avg { font-size: 13px; color: #666; }
 
+    /* THREAT ACTOR SCORES — ranked list (same style as Detect) */
+    .rank-card { background: #fff; border: 1px solid #dde3ea; border-radius: 14px; padding: .85rem 1.1rem; margin-bottom: 1.25rem; }
+    .rank-row  { display: grid; grid-template-columns: 14px 1fr 100px 36px; gap: 12px; align-items: center; padding: .55rem 0; border-bottom: 1px solid #F0F4F8; }
+    .rank-row:last-child { border-bottom: none; }
+    .rank-dot  { width: 10px; height: 10px; border-radius: 50%; }
+    .rank-name { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+    .rank-bar-wrap { height: 6px; background: #F0F4F8; border-radius: 99px; overflow: hidden; }
+    .rank-bar-fill { height: 100%; border-radius: 99px; transition: width .35s ease-out; }
+    .rank-score { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; text-align: right; }
+    @media (max-width: 480px) {
+      .rank-row { grid-template-columns: 12px 1fr 60px 32px; gap: 8px; }
+      .rank-name { font-size: 14px; }
+      .rank-score { font-size: 15px; }
+    }
+
     /* ACTOR CARDS */
     .actor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 4px; }
     .actor-card { display: block; background: #fff; border: 1.5px solid #dde3ea; border-radius: 14px; padding: 1.1rem; text-decoration: none; transition: border-color .15s, transform .15s; cursor: pointer; }
