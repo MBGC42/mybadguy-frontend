@@ -39,10 +39,19 @@
     .page-sub{font-size:17px;color:rgba(255,255,255,.88);line-height:1.65;margin:0;}
 
     /* LOADING */
-    .loading{background:var(--light);padding:40px 20px;text-align:center;}
-    .loading-spinner{width:48px;height:48px;border:4px solid #dde3ea;border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .loading-text{font-size:17px;color:var(--muted);}
+    .loading{background:#fff;padding:64px 20px 56px;text-align:center;}
+    .loading-text{font-size:13px;color:#003F72;letter-spacing:.08em;text-transform:uppercase;}
+
+    /* Scan animation — matches Detect */
+    .scan-eye-wrap{position:relative;display:inline-block;margin-bottom:1.5rem;}
+    .scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#003F72,transparent);animation:scanDown 1.8s ease-in-out infinite;}
+    @keyframes scanDown{0%{top:0;opacity:.8;}100%{top:100%;opacity:0;}}
+    .scan-ring{position:absolute;border-radius:50%;border:1.5px solid #003F72;top:50%;left:50%;transform:translate(-50%,-50%);}
+    .scan-ring-1{width:230px;height:138px;animation:ringPulse 2s ease-out infinite;}
+    .scan-ring-2{width:270px;height:162px;animation:ringPulse 2s ease-out infinite .5s;}
+    @keyframes ringPulse{0%{opacity:.55;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1);}}
+    .scan-heading{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:.6rem;}
+    .scan-sub{font-size:15px;color:#333;margin-bottom:1.5rem;}
 
     /* SCORE BAR */
     .score-bar{background:var(--light);padding:20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:16px;}
@@ -132,9 +141,21 @@
 
 <main id="main">
 
-  <!-- Loading state -->
-  <div class="loading" id="loading-state" aria-live="polite" aria-label="Reading browser data">
-    <div class="loading-spinner" aria-hidden="true"></div>
+  <!-- Loading state — Detect-style scan animation -->
+  <div class="loading" id="loading-state" aria-live="polite" aria-label="Scanning browser exposure">
+    <div class="scan-eye-wrap" aria-hidden="true">
+      <svg width="200" height="120" viewBox="0 0 100 60" aria-hidden="true">
+        <path d="M3,30 Q22,4 50,4 L50,56 Q22,56 3,30 Z" fill="rgba(0,63,114,.35)"/>
+        <path d="M50,4 Q78,4 97,30 Q78,56 50,56 Z" fill="none" stroke="rgba(0,63,114,.85)" stroke-width="2.5"/>
+        <circle cx="50" cy="30" r="9" fill="none" stroke="#003F72" stroke-width="2"/>
+        <circle cx="50" cy="30" r="3.5" fill="#003F72"/>
+      </svg>
+      <div class="scan-ring scan-ring-1"></div>
+      <div class="scan-ring scan-ring-2"></div>
+      <div class="scan-line"></div>
+    </div>
+    <h2 class="scan-heading">Detecting what sites see</h2>
+    <p class="scan-sub">Reading your browser fingerprint and IP exposure</p>
     <p class="loading-text" id="loading-text">Reading your browser data...</p>
   </div>
 
@@ -343,6 +364,7 @@ async function getIPData() {
 // ── Main scan ────────────────────────────────────────────
 async function runScan() {
   const loadingText = document.getElementById('loading-text');
+  const startTime   = Date.now();
 
   loadingText.textContent = 'Checking your location...';
   const ipData = await getIPData();
@@ -641,6 +663,13 @@ async function runScan() {
     'Private or incognito browsing hides your history from others on your device, but websites you visit can still see your IP address, device details, and browser fingerprint. It does not make you anonymous online.');
 
   document.getElementById('results-body').innerHTML = html;
+
+  // Ensure scan animation displays for at least 2 seconds
+  const elapsed = Date.now() - startTime;
+  const minMs   = 2000;
+  if (elapsed < minMs) {
+    await new Promise(r => setTimeout(r, minMs - elapsed));
+  }
 
   // Show results, hide loading
   document.getElementById('loading-state').style.display = 'none';
