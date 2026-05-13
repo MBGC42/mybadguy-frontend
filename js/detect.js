@@ -1260,7 +1260,20 @@ document.addEventListener('click', e => {
   // Device confirm screen
   if (action === 'intro-continue') { ST = 1; render(); return; }
   if (action === 'confirm-device') { ST = 5; render(); return; }
-  if (action === 'correct-device') { TV = { type: DV.type, os: DV.os }; renderCorrectBuilds().catch(console.error); return; }
+  if (action === 'correct-device') {
+    if (!DV || !DV.type) {
+      console.error('Correct it: DV is empty', DV);
+      return;
+    }
+    TV = { type: DV.type, os: DV.os };
+    renderCorrectBuilds().catch(err => {
+      console.error('renderCorrectBuilds failed:', err);
+      document.getElementById('app').innerHTML = `<div class="screen" style="text-align:center;padding:2rem;">
+        <p style="color:#C41230;font-size:16px;">Could not load version data. <a href="#" data-action="correct-device" style="color:#003F72;text-decoration:underline;">Try again</a></p>
+      </div>`;
+    });
+    return;
+  }
 
   // Device type selection
   if (action === 'select-dtype') {
