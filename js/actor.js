@@ -212,9 +212,11 @@ function renderRemediationCards(data) {
       const dc  = diffClass[r.difficulty] || 'diff-easy';
       const dl  = diffLabel[r.difficulty] || 'Easy';
       const nc  = numClass[pri];
-      const url    = r.source_url   || '#';
-      const lbl    = r.source_label || 'Source';
       const tactics = parseTactics(r.tactic_tags);
+      // Multi-source support — falls back to single source_label/source_url if no sources array
+      const sources = Array.isArray(r.sources) && r.sources.length
+        ? r.sources
+        : (r.source_url ? [{ label: r.source_label || 'Source', url: r.source_url }] : []);
       h += `<div class="rem-card" data-rem="${num}">
         <div class="rem-card-hdr">
           <div class="rem-num ${nc}">${num++}</div>
@@ -237,7 +239,9 @@ function renderRemediationCards(data) {
                 ? `<a class="rem-tactic" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="MITRE ATT&CK: Tactic ${t}">Tactic: ${t}</a>`
                 : `<span class="rem-tactic">Tactic: ${t}</span>`;
             }).join('')}
-            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
+            ${sources.map(s =>
+              `<a href="${s.url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${s.label}</a>`
+            ).join('')}
           </div>
         </div>
       </div>`;

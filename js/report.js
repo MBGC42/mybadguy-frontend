@@ -378,8 +378,9 @@ async function renderReport(){
     items.forEach(r => {
       const a   = r.actor;
       const nc  = numClass[r.priority] || 'rem-num-3';
-      const url = r.source_url   || '#';
-      const lbl = r.source_label || 'Source';
+      const sources = Array.isArray(r.sources) && r.sources.length
+        ? r.sources
+        : (r.source_url ? [{ label: r.source_label || 'Source', url: r.source_url }] : []);
       h += `<div class="rem-card" data-rem="all-${globalNum}" data-actor="${r.actor.id}">
         <div class="rem-card-hdr">
           <div class="rem-num ${nc}">${globalNum++}</div>
@@ -404,7 +405,9 @@ async function renderReport(){
                 ?`<a class="rem-tactic" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="MITRE ATT&CK: Tactic ${t}">Tactic: ${t}</a>`
                 :`<span class="rem-tactic">Tactic: ${t}</span>`;
             }).join('')}
-            <a href="${url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${lbl}</a>
+            ${sources.map(s =>
+              `<a href="${s.url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${s.label}</a>`
+            ).join('')}
           </div>
         </div>
       </div>`;
