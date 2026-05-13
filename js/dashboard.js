@@ -234,7 +234,7 @@ function getWins(ranked) {
           w.t.toLowerCase().includes('update to the latest')) return false;
       return true;
     })
-    .slice(0, 3);
+    .slice(0, 5);
 }
 
 // ── PROFILE CHIP UPDATE ───────────────────────────────────
@@ -414,6 +414,28 @@ async function render() {
     });
     h += `</div></div>`;
   });
+
+  // ── TOP RECOMMENDATIONS ──────────────────────────────
+  const wins = getWins(ranked);
+  const devLabel = p.ip?'iPhone':p.id?'iPad':p.an?'Android phone':p.mc?'Mac':p.wn?'Windows PC':'device';
+  if (wins.length) {
+    h += `<div class="eyebrow" style="margin-top:.25rem;">Top recommendations for your ${devLabel}</div>
+    <div class="wins-list">`;
+    wins.forEach((w, i) => {
+      h += `<div class="win-card">
+        <div class="win-num">${i + 1}</div>
+        <div class="win-body">
+          <p class="win-title">${w.t}</p>
+          <p class="win-where">${w.w}</p>
+          <div class="win-chips">
+            <span class="win-chip win-chip-risk">Risk: ${w.r}/10</span>
+            <span class="win-chip win-chip-impact">Impact: None</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  }
 
   // ── FULL REPORT CTA ──────────────────────────────────
   h += `<div class="eyebrow" style="margin-top:.25rem;">Actions</div>

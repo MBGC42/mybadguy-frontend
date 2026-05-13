@@ -383,70 +383,6 @@ function calcScores() {
   return results;
 }
 
-function getTopWins() {
-  const type = DV.type || 'iphone';
-  const topG  = SC.slice(0,3).map(a => a.g);
-
-  const ALL = {
-    iphone: [
-      { t:'Enable Stolen Device Protection',        w:'Settings → Face ID & Passcode → Stolen Device Protection', g:'financial', r:10 },
-      { t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
-      { t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical', r:9 },
-      { t:'Update to the latest iOS',               w:'Settings → General → Software Update', g:'technical', r:9 },
-      { t:'Silence Unknown Callers',                w:'Settings → Phone → Silence Unknown Callers → On', g:'social', r:8 },
-      { t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
-      { t:'Use Face ID in public',                  w:'Never enter your passcode where someone can watch — if Face ID fails, move somewhere private', g:'financial', r:9 },
-      { t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial', r:9 },
-    ],
-    ipad: [
-      { t:'Enable two-factor authentication',       w:'Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
-      { t:'Disable cross-app tracking',             w:'Settings → Privacy & Security → Tracking → turn Off', g:'technical', r:9 },
-      { t:'Update to the latest iPadOS',            w:'Settings → General → Software Update', g:'technical', r:9 },
-      { t:'Set a strong alphanumeric passcode',     w:'Settings → Face ID & Passcode → Change Passcode → Passcode Options → Custom Alphanumeric', g:'financial', r:10 },
-      { t:'Restrict location to While Using only',  w:'Settings → Privacy & Security → Location Services', g:'technical', r:8 },
-      { t:'Use unique passwords for every account', w:'Settings → Passwords → use the built-in generator', g:'financial', r:9 },
-      { t:'Enable iCloud Backup',                   w:'Settings → [Your Name] → iCloud → iCloud Backup → On', g:'technical', r:8 },
-    ],
-    android: [
-      { t:'Enable two-factor authentication',       w:'Google account → Security → 2-Step Verification', g:'financial', r:9 },
-      { t:'Update to the latest Android version',   w:'Settings → About phone → Software update', g:'technical', r:9 },
-      { t:'Use Google Play Protect',                w:'Google Play Store → Profile icon → Play Protect → turn On', g:'technical', r:9 },
-      { t:'Only install apps from Google Play',     w:'Settings → Apps → Special app access → Install unknown apps — deny all', g:'technical', r:10 },
-      { t:'Set a strong screen lock',               w:'Settings → Security → Screen lock → Password or PIN (6+ digits)', g:'financial', r:10 },
-      { t:'Review app permissions',                 w:'Settings → Privacy → Permission manager — revoke unnecessary access', g:'technical', r:8 },
-      { t:'Use unique passwords for every account', w:'Settings → Passwords & accounts or use Google Password Manager', g:'financial', r:9 },
-    ],
-    mac: [
-      { t:'Enable FileVault disk encryption',       w:'System Settings → Privacy & Security → FileVault → Turn On', g:'technical', r:10 },
-      { t:'Enable two-factor authentication',       w:'System Settings → [Your Name] → Password & Security → Two-Factor Authentication', g:'financial', r:9 },
-      { t:'Update to the latest macOS',             w:'System Settings → General → Software Update', g:'technical', r:9 },
-      { t:'Enable the Firewall',                    w:'System Settings → Network → Firewall → turn On', g:'technical', r:9 },
-      { t:'Lock screen when stepping away',         w:'System Settings → Lock Screen → Require password → Immediately', g:'financial', r:8 },
-      { t:'Review app privacy permissions',         w:'System Settings → Privacy & Security — review Camera, Microphone, Location', g:'technical', r:8 },
-      { t:'Use unique passwords for every account', w:'System Settings → Passwords → use the built-in generator', g:'financial', r:9 },
-    ],
-    windows: [
-      { t:'Enable BitLocker disk encryption',       w:'Start → Settings → Privacy & Security → Device Encryption → turn On', g:'technical', r:10 },
-      { t:'Enable two-factor authentication',       w:'Microsoft account → Security → Advanced security → Two-step verification', g:'financial', r:9 },
-      { t:'Keep Windows Update current',            w:'Start → Settings → Windows Update → Check for updates', g:'technical', r:9 },
-      { t:'Enable Windows Defender Firewall',       w:'Start → Settings → Privacy & Security → Windows Security → Firewall', g:'technical', r:9 },
-      { t:'Use unique passwords for every account', w:'Use Microsoft Edge built-in password manager or a dedicated password manager', g:'financial', r:9 },
-      { t:'Lock your screen when stepping away',    w:'Windows key + L to instantly lock — make it a habit', g:'financial', r:8 },
-      { t:'Review app permissions',                 w:'Start → Settings → Privacy & Security → App permissions — review Camera, Microphone, Location', g:'technical', r:8 },
-    ],
-  };
-
-  const wins = ALL[type] || ALL.iphone;
-  return wins
-    .filter(w => topG.includes(w.g))
-    .filter(w => {
-      // Don't suggest updating the OS if already on latest
-      if (DV.patch === 'current' && w.t.toLowerCase().includes('update to the latest')) return false;
-      return true;
-    })
-    .slice(0, 3);
-}
-
 // ── ID GENERATOR ─────────────────────────────────────────
 function genId() {
   const words = ['ocean','violet','thunder','mercury','silver','falcon','ember',
@@ -534,13 +470,13 @@ function detectDevice() {
 function renderDots() {
   const el = document.getElementById('stepDots');
   let h = '';
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 6; i++) {
     const cls = i === ST ? 'active' : i < ST ? 'done' : '';
     h += `<div class="step-dot ${cls}" aria-hidden="true"></div>`;
   }
   el.innerHTML = h;
   el.setAttribute('aria-valuenow', ST);
-  el.setAttribute('aria-valuemax', 7);
+  el.setAttribute('aria-valuemax', 6);
 }
 
 // ── STEP 0: HOW IT WORKS INTRO ───────────────────────────
@@ -1044,87 +980,8 @@ function renderCalc() {
     // the full profile, causing a score mismatch.
     Object.assign(PR, buildProfile());
     SC = calcScores();
-    ST = 6;
-    render();
+    goToDashboard();
   }, 2000);
-}
-
-// ── STEP 5: RESULTS ───────────────────────────────────────
-function renderResults() {
-  const overall = Math.round(SC.reduce((s,a) => s + a.co, 0) / SC.length);
-  const rc = overall >= 70 ? '#E24B4A' : overall >= 45 ? '#EF9F27' : '#22c55e';
-  const rl = overall >= 70 ? 'High combined risk profile' : overall >= 45 ? 'Medium combined risk profile' : 'Low combined risk profile';
-  const rd = overall >= 70
-    ? 'Several threat actors have strong interest in your profile. Start with the top recommendations below.'
-    : overall >= 45
-    ? 'Some threat actors find your profile moderately attractive. A few targeted changes will meaningfully reduce your exposure.'
-    : 'Your profile is less attractive to most threat actors. These recommendations close the remaining gaps.';
-
-  const GC = { technical:'#E24B4A', social:'#378ADD', financial:'#EF9F27' };
-  const wins = getTopWins();
-
-  let actorRows = SC.map(a => `
-    <div class="actor-row">
-      <div class="actor-dot" style="background:${GC[a.g]}" aria-hidden="true"></div>
-      <span class="actor-name">${a.nm}</span>
-      <div class="actor-bar-wrap" role="presentation">
-        <div class="actor-bar-fill" style="width:${a.co}%;background:${GC[a.g]}"></div>
-      </div>
-      <span class="actor-score" style="color:${GC[a.g]}" aria-label="Score ${a.co} out of 99">${a.co}</span>
-    </div>`).join('');
-
-  let winCards = wins.map((w,i) => `
-    <div class="win-card">
-      <div class="win-num" aria-hidden="true">${i+1}</div>
-      <div>
-        <p class="win-title">${w.t}</p>
-        <p class="win-where">${w.w}</p>
-        <div class="win-chips">
-          <span class="win-chip" style="background:rgba(34,211,238,.1);color:var(--cyan)">Risk: ${w.r}/10</span>
-          <span class="win-chip" style="background:rgba(34,197,94,.1);color:var(--green)">Impact: None</span>
-        </div>
-      </div>
-    </div>`).join('');
-
-  document.getElementById('app').innerHTML = `
-    <div class="screen" style="padding-bottom:2rem;">
-      <div style="margin-bottom:1.5rem;padding:1rem 1.25rem;background:#FFF3CD;border:1px solid #f0c070;border-left:5px solid #EF9F27;border-radius:10px;" role="note" aria-label="Important disclaimer">
-        <p style="font-size:15px;font-weight:700;color:#7a4e00;margin-bottom:6px;">⚠️ Important disclaimer</p>
-        <p style="font-size:14px;color:#5a3e00;line-height:1.7;margin:0;">This site is built with the assistance of artificial intelligence and may occasionally provide information that is inaccurate or out of date. All results are general in nature and based on publicly available threat intelligence data. <strong style="color:#003F72;font-weight:700;">You are solely responsible for validating any changes you make to your device or accounts.</strong> Before making any changes to your device settings or accounts, create a backup of your device. MyBadGuy is a free security awareness tool, not a professional security assessment. For a professional assessment, consult a qualified cybersecurity professional.</p>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <p class="eyebrow" style="margin:0;">Your risk profile</p>
-        <p style="font-size:15px;color:var(--muted);">${DV.name} · ${DV.os} ${DV.fullVersion || DV.major}</p>
-      </div>
-
-      <div class="score-hero" role="region" aria-label="Overall risk score">
-        <div class="score-ring" style="border-color:${rc}" aria-label="Risk score ${overall} out of 99">
-          <span class="score-num" style="color:${rc}">${overall}</span>
-          <span class="score-of">of 99</span>
-        </div>
-        <div>
-          <h1 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:.3rem;">${rl}</h1>
-          <p style="font-size:15px;color:var(--muted);line-height:1.55;">${rd}</p>
-        </div>
-      </div>
-
-      <p class="eyebrow" style="margin:.75rem 0 .5rem;">Threat actor scores</p>
-      <div class="actor-list" role="list" aria-label="Threat actor scores ranked by interest in your profile">
-        ${actorRows}
-      </div>
-
-      <p class="wins-title">Top recommendations for your ${DV.name}</p>
-      ${winCards}
-
-      <div class="btn-row" style="margin-top:1.5rem;">
-        <button class="btn-primary" data-action="go-dashboard">Threat Actor Details →</button>
-        <button class="btn-outline" data-action="go-save">Save results</button>
-        <button class="btn-ghost" data-action="go-home">← Home</button>
-      </div>
-      <p style="text-align:center;margin-top:1rem;font-size:15px;color:var(--dim);">
-        All calculations happen in your browser · Scores update as new CVEs are published
-      </p>
-    </div>`;
 }
 
 // ── STEP 6: SAVE ─────────────────────────────────────────
@@ -1365,7 +1222,7 @@ document.addEventListener('click', e => {
 
   // Save screen
   if (action === 'do-save')   { doSave(); return; }
-  if (action === 'skip-save') { ST = 6; render(); return; }
+  if (action === 'skip-save') { goToDashboard(); return; }
 });
 
 // Keyboard support for role=button elements (dtype-card, ver-card)
@@ -1408,7 +1265,6 @@ function render() {
   else if (ST === 3) renderScan();
   else if (ST === 4) renderDevice();
   else if (ST === 5) renderCalc();
-  else if (ST === 6) renderResults();
   else if (ST === 7) renderSave();
 }
 
