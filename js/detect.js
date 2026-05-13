@@ -799,6 +799,7 @@ async function renderCorrectBuilds() {
   const builds = buildVersionCards(TV.type);
   const dt     = DTYPES.find(d => d.id === TV.type);
   const NC = { current:'#007A53', behind:'#7a4e00', outdated:'#C41230' };
+  const prefix = { iphone:'iOS', ipad:'iPadOS', android:'Android', mac:'macOS', windows:'Windows' }[TV.type] || '';
 
   // If the detected version isn't in the built card list, prepend it
   // This handles versions newer than our DB (e.g. iOS 26 when DB has iOS 18)
