@@ -364,12 +364,16 @@ async function render() {
   groups.forEach(g => {
     const groupActors = ranked.filter(a => a.g === g.id);
     if (!groupActors.length) return;
+    const groupId = `dash-group-${g.id}`;
     h += `<div class="group-block">
-      <div class="group-hdr" style="background:${g.hbg};border-left-color:${g.bc};">
+      <div class="group-hdr" data-toggle-group="${groupId}" style="background:${g.hbg};border-left-color:${g.bc};cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;">
         <span class="group-hdr-label" style="color:${g.htc};">${g.label}</span>
-        <span class="group-hdr-avg" style="color:${g.htc};">${groupActors.length} actor${groupActors.length>1?'s':''}</span>
+        <span style="display:inline-flex;align-items:center;gap:10px;">
+          <span class="group-hdr-avg" style="color:${g.htc};">${groupActors.length} actor${groupActors.length>1?'s':''}</span>
+          <span id="${groupId}-chevron" style="font-size:14px;color:${g.htc};transition:transform .2s;display:inline-block;">&#9654;</span>
+        </span>
       </div>
-      <div class="actor-grid">`;
+      <div class="actor-grid" id="${groupId}" style="display:none;">`;
     groupActors.forEach(a => {
       const cc  = scoreColor(a.co);
       const cbg = a.co>=70?'rgba(226,75,74,.1)':a.co>=45?'rgba(239,159,39,.1)':'rgba(34,197,94,.1)';
@@ -405,6 +409,21 @@ async function render() {
   h += `<div class="attribution">This product uses data from the NVD API but is not endorsed or certified by the NVD.</div>`;
 
   document.getElementById('page').innerHTML = h;
+
+  // Group toggle — collapsible threat actor categories
+  document.getElementById('page').addEventListener('click', e => {
+    const hdr = e.target.closest('[data-toggle-group]');
+    if (!hdr) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const id      = hdr.dataset.toggleGroup;
+    const body    = document.getElementById(id);
+    const chevron = document.getElementById(id + '-chevron');
+    if (!body) return;
+    const isOpen  = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'grid';
+    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+  });
 
   // Fetch version-specific CVE count after DOM is ready
   const _dashPlatform = p.ip?'iphone':p.id?'ipad':p.an?'android':p.mc?'mac':'windows';
