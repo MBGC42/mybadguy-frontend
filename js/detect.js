@@ -816,8 +816,14 @@ async function renderCorrectBuilds() {
         n: detectedPatch === 'current' ? 'Your detected version — latest' : 'Your detected version',
         d: ''
       });
-      // Auto-select it
-      if (!TV.build) { TV.build = detected; TV.patch = detectedPatch; }
+      // Auto-select it — set ALL fields that selectBuild() sets
+      if (!TV.build) {
+        TV.build       = detected;
+        TV.fullVersion = detected;
+        TV.patch       = detectedPatch;
+        const numMatch = detected.match(/^(\d+)/);
+        TV.major       = numMatch ? numMatch[1] : detected;
+      }
     }
   }
 
@@ -838,7 +844,14 @@ async function renderCorrectBuilds() {
         match = builds.find(b => b.v.startsWith(detected + '.'));
       }
 
-      if (match) { TV.build = match.v; TV.patch = match.p; }
+      if (match) {
+        // Set ALL fields that selectBuild() sets so Confirm works on first click
+        TV.build       = match.v;
+        TV.fullVersion = match.v;
+        TV.patch       = match.p;
+        const numMatch = match.v.match(/^(\d+)/);
+        TV.major       = numMatch ? numMatch[1] : match.v;
+      }
     }
   }
 
