@@ -289,7 +289,6 @@ async function render() {
   const overall = Math.round(ranked.reduce((s,a)=>s+a.co,0)/ranked.length);
   const overallColor = scoreColor(overall);
   const overallLabel = overall>=70?'High combined risk profile':overall>=45?'Medium combined risk profile':'Low combined risk profile';
-  const wins = getWins(ranked);
 
   // Group actors
   const groups = [
