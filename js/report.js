@@ -209,31 +209,32 @@ async function fetchRem(actorId, platform, cveStats){
 
 
 // CVE exposure badge
-async function fetchCveDelta(platform, userVersion, latestVersion, patchBg, patchColor, badgeId, API_BASE) {
-  const badge = document.getElementById(badgeId);
-  if (!badge || !userVersion) return;
+async function fetchCveDelta(platform, userVersion, latestVersion, patchBg, patchColor, patchLabel, cveBadgeId, updateBadgeId, API_BASE) {
+  const cveBadge    = document.getElementById(cveBadgeId);
+  const updateBadge = document.getElementById(updateBadgeId);
+  if (!cveBadge || !userVersion) return;
   const isCurrent = userVersion === latestVersion;
   try {
     const userRes = await fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(userVersion)}`);
     const ud = userRes.ok ? await userRes.json() : null;
     if (!ud) return;
     if (isCurrent) {
-      if (ud.total === 0) {
-        badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date · No unpatched CVEs detected</span>`;
-      } else {
-        badge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date · ${ud.total} CVE${ud.total>1?'s':''} on platform${ud.in_wild>0?' · '+ud.in_wild+' actively exploited':''}</span>`;
-      }
+      if (updateBadge) updateBadge.innerHTML = `<span style="background:#D4EDDA;color:#007A53;font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">✓ Up to date</span>`;
+      const cveColor = ud.in_wild > 0 ? '#C41230' : (ud.total > 0 ? '#7a4e00' : '#007A53');
+      const cveBg    = ud.in_wild > 0 ? '#FCEBEB' : (ud.total > 0 ? '#FFF3CD' : '#D4EDDA');
+      cveBadge.innerHTML = ud.total === 0
+        ? `<span style="background:${cveBg};color:${cveColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">No unpatched CVEs detected</span>`
+        : `<span style="background:${cveBg};color:${cveColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">${ud.total} CVE${ud.total>1?'s':''} on platform${ud.in_wild>0?' · '+ud.in_wild+' actively exploited':''}</span>`;
       return;
     }
     const latestRes = await fetch(`${API_BASE}/api/cve-count/${platform}/${encodeURIComponent(latestVersion)}`);
     const ld = latestRes.ok ? await latestRes.json() : null;
     const fixedTotal = Math.max(0, (ud.total||0) - (ld?.total||0));
     const fixedWild  = Math.max(0, (ud.in_wild||0) - (ld?.in_wild||0));
-    if (fixedTotal > 0) {
-      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">Updating to ${latestVersion} patches ${fixedTotal} CVE${fixedTotal>1?'s':''}${fixedWild>0?' · including '+fixedWild+' actively exploited':''}</span>`;
-    } else {
-      badge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">${latestVersion} available · ${ud.total||0} CVE${(ud.total||0)>1?'s':''} affect ${userVersion}${(ud.in_wild||0)>0?' · '+(ud.in_wild)+' actively exploited':''}</span>`;
-    }
+    if (updateBadge) updateBadge.innerHTML = `<span style="background:${patchBg};color:${patchColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">${patchLabel} - ${latestVersion}</span>`;
+    const cveColor = (ud.in_wild||0) > 0 ? '#C41230' : ((ud.total||0) > 0 ? '#7a4e00' : '#007A53');
+    const cveBg    = (ud.in_wild||0) > 0 ? '#FCEBEB' : ((ud.total||0) > 0 ? '#FFF3CD' : '#D4EDDA');
+    cveBadge.innerHTML = `<span style="background:${cveBg};color:${cveColor};font-size:14px;padding:4px 12px;border-radius:99px;font-weight:600;">${ud.total||0} CVE${(ud.total||0)>1?'s':''} affect ${userVersion}${(ud.in_wild||0)>0?' · '+(ud.in_wild)+' actively exploited':''}</span>`;
   } catch(_) {}
 }
 
@@ -295,7 +296,8 @@ async function renderReport(){
     <div class="report-card-hdr"><span class="report-card-title">Detection profile</span></div>
     <div class="dev-summary">
       <span class="dev-name-badge">${devName}</span>
-      ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer} · ${patchLabel}</span>`:`<span class="dev-patch-badge" style="background:${patchBg};color:${patchColor};">${patchLabel}</span>`}
+      ${devVer?`<span class="dev-ver-badge" style="background:${patchBg};color:${patchColor};">${devVer}</span>`:''}
+      <span id="cve-update-badge"></span>
       <span id="cve-count-badge"></span>
     </div>
     <div class="ro-grid">
@@ -434,7 +436,7 @@ async function renderReport(){
         if (cycle?.latest_version) latestVer = cycle.latest_version;
       }
     } catch(_) {}
-    fetchCveDelta(_cvePlatform, _cveVersion, latestVer, patchBg, patchColor, 'cve-count-badge', API);
+    fetchCveDelta(_cvePlatform, _cveVersion, latestVer, patchBg, patchColor, patchLabel, 'cve-count-badge', 'cve-update-badge', API);
   }
 
   document.getElementById('report').addEventListener('click', e => {
