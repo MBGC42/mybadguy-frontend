@@ -231,7 +231,7 @@ function renderRemediationCards(data) {
           <div class="rem-action">${r.action}</div>
           <div class="rem-why-label">Why this matters</div>
           <div class="rem-why">${r.why}</div>
-          <div class="rem-pills">
+          ${tactics.length ? `<div class="rem-pills rem-pills-tactics">
             ${tactics.map(t => {
               const key = Object.keys(TACTIC_LABELS).find(k => TACTIC_LABELS[k] === t);
               const url = key ? TACTIC_URLS[key] : '';
@@ -239,10 +239,12 @@ function renderRemediationCards(data) {
                 ? `<a class="rem-tactic" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="MITRE ATT&CK: Tactic ${t}">Tactic: ${t}</a>`
                 : `<span class="rem-tactic">Tactic: ${t}</span>`;
             }).join('')}
+          </div>` : ''}
+          ${sources.length ? `<div class="rem-pills rem-pills-sources">
             ${sources.map(s =>
               `<a href="${s.url}" class="rem-source" target="_blank" rel="noopener noreferrer">Source: ${s.label}</a>`
             ).join('')}
-          </div>
+          </div>` : ''}
         </div>
       </div>`;
     });
