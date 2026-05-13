@@ -359,6 +359,23 @@ async function render() {
     </div>
   </div>`;
 
+  // ── THREAT ACTOR SCORES (ranked list) ─────────────────
+  const RANK_GC = { technical:'#C41230', social:'#003F72', financial:'#7a4e00' };
+  const rankRows = ranked.map(a => `
+    <div class="rank-row">
+      <div class="rank-dot" style="background:${RANK_GC[a.g]||'#003F72'};" aria-hidden="true"></div>
+      <span class="rank-name">${a.name}</span>
+      <div class="rank-bar-wrap" role="presentation">
+        <div class="rank-bar-fill" style="width:${a.co}%;background:${RANK_GC[a.g]||'#003F72'};"></div>
+      </div>
+      <span class="rank-score" style="color:${RANK_GC[a.g]||'#003F72'};" aria-label="Score ${a.co} out of 99">${a.co}</span>
+    </div>`).join('');
+
+  h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actor scores</div>
+  <div class="rank-card" role="list" aria-label="Threat actor scores ranked by interest in your profile">
+    ${rankRows}
+  </div>`;
+
   // ── ACTOR GROUPS ──────────────────────────────────────
   h += `<div class="eyebrow" style="margin-top:.25rem;">Threat actors — tap any card for details and remediations</div>`;
   groups.forEach(g => {
