@@ -23,13 +23,12 @@ function detectBrowser() {
   // before falling through to Safari (the default iOS browser).
   if (isIOSPlatform) {
     let m;
-    if ((m = ua.match(/CriOS\/([\d.]+)/)))      { window.__brDbg='ios-chrome';      return { id:'chrome',     name:'Chrome',     engine:'webkit', frozen:true, version:m[1] }; }
-    if ((m = ua.match(/EdgiOS\/([\d.]+)/)))     { window.__brDbg='ios-edge';        return { id:'edge',       name:'Edge',       engine:'webkit', frozen:true, version:m[1] }; }
-    if ((m = ua.match(/FxiOS\/([\d.]+)/)))      { window.__brDbg='ios-firefox';     return { id:'firefox',    name:'Firefox',    engine:'webkit', frozen:true, version:m[1] }; }
-    if ((m = ua.match(/DuckDuckGo\/([\d.]+)/))) { window.__brDbg='ios-duckduckgo';  return { id:'duckduckgo', name:'DuckDuckGo', engine:'webkit', frozen:true, version:m[1] }; }
-    if ((m = ua.match(/OPT\/([\d.]+)/)))        { window.__brDbg='ios-opera';       return { id:'opera',      name:'Opera',      engine:'webkit', frozen:true, version:m[1] }; }
-    if ((m = ua.match(/Version\/([\d.]+).*Mobile.*Safari/))) { window.__brDbg='ios-safari'; return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:m[1] }; }
-    window.__brDbg = 'ios-safari-fallback';
+    if ((m = ua.match(/CriOS\/([\d.]+)/)))                  return { id:'chrome',     name:'Chrome',     engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/EdgiOS\/([\d.]+)/)))                 return { id:'edge',       name:'Edge',       engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/FxiOS\/([\d.]+)/)))                  return { id:'firefox',    name:'Firefox',    engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/(?:Ddg|DuckDuckGo)\/([\d.]+)/)))     return { id:'duckduckgo', name:'DuckDuckGo', engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/OPT\/([\d.]+)/)))                    return { id:'opera',      name:'Opera',      engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/Version\/([\d.]+).*Mobile.*Safari/))) return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:m[1] };
     return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:'' };
   }
 
@@ -39,7 +38,7 @@ function detectBrowser() {
   if ((m = ua.match(/OPR\/([\d.]+)/)))        return { id:'opera',      name:'Opera',      engine:'blink',  frozen:false, version:m[1] };
   if ((m = ua.match(/SamsungBrowser\/([\d.]+)/))) return { id:'samsung',    name:'Samsung Internet', engine:'blink',  frozen:false, version:m[1] };
   if ((m = ua.match(/Firefox\/([\d.]+)/)))    return { id:'firefox',    name:'Firefox',    engine:'gecko',  frozen:false, version:m[1] };
-  if ((m = ua.match(/DuckDuckGo\/([\d.]+)/))) return { id:'duckduckgo', name:'DuckDuckGo', engine:'blink',  frozen:false, version:m[1] };
+  if ((m = ua.match(/(?:Ddg|DuckDuckGo)\/([\d.]+)/))) return { id:'duckduckgo', name:'DuckDuckGo', engine:'blink',  frozen:false, version:m[1] };
   // Chrome detection — must come AFTER Edge/Opera/Brave since they all include "Chrome" in UA
   if ((m = ua.match(/Chrome\/([\d.]+)/)))     return { id:'chrome',     name:'Chrome',     engine:'blink',  frozen:false, version:m[1] };
   if ((m = ua.match(/Version\/([\d.]+).*Safari/))) return { id:'safari', name:'Safari', engine:'webkit', frozen:false, version:m[1] };
