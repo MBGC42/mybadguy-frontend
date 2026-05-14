@@ -14,6 +14,8 @@
 
 function detectBrowser() {
   const ua = navigator.userAgent;
+  // Expose for debugging — open browser console and run: console.log(window.__lastUA)
+  window.__lastUA = ua;
   const isIOSPlatform = /iPhone|iPad|iPod/.test(ua) ||
     (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
 
@@ -21,12 +23,13 @@ function detectBrowser() {
   // before falling through to Safari (the default iOS browser).
   if (isIOSPlatform) {
     let m;
-    if ((m = ua.match(/CriOS\/([\d.]+)/)))      return { id:'chrome',     name:'Chrome',     engine:'webkit', frozen:true, version:m[1] };
-    if ((m = ua.match(/EdgiOS\/([\d.]+)/)))     return { id:'edge',       name:'Edge',       engine:'webkit', frozen:true, version:m[1] };
-    if ((m = ua.match(/FxiOS\/([\d.]+)/)))      return { id:'firefox',    name:'Firefox',    engine:'webkit', frozen:true, version:m[1] };
-    if ((m = ua.match(/DuckDuckGo\/([\d.]+)/))) return { id:'duckduckgo', name:'DuckDuckGo', engine:'webkit', frozen:true, version:m[1] };
-    if ((m = ua.match(/OPT\/([\d.]+)/)))        return { id:'opera',      name:'Opera',      engine:'webkit', frozen:true, version:m[1] };
-    if ((m = ua.match(/Version\/([\d.]+).*Mobile.*Safari/))) return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:m[1] };
+    if ((m = ua.match(/CriOS\/([\d.]+)/)))      { window.__brDbg='ios-chrome';      return { id:'chrome',     name:'Chrome',     engine:'webkit', frozen:true, version:m[1] }; }
+    if ((m = ua.match(/EdgiOS\/([\d.]+)/)))     { window.__brDbg='ios-edge';        return { id:'edge',       name:'Edge',       engine:'webkit', frozen:true, version:m[1] }; }
+    if ((m = ua.match(/FxiOS\/([\d.]+)/)))      { window.__brDbg='ios-firefox';     return { id:'firefox',    name:'Firefox',    engine:'webkit', frozen:true, version:m[1] }; }
+    if ((m = ua.match(/DuckDuckGo\/([\d.]+)/))) { window.__brDbg='ios-duckduckgo';  return { id:'duckduckgo', name:'DuckDuckGo', engine:'webkit', frozen:true, version:m[1] }; }
+    if ((m = ua.match(/OPT\/([\d.]+)/)))        { window.__brDbg='ios-opera';       return { id:'opera',      name:'Opera',      engine:'webkit', frozen:true, version:m[1] }; }
+    if ((m = ua.match(/Version\/([\d.]+).*Mobile.*Safari/))) { window.__brDbg='ios-safari'; return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:m[1] }; }
+    window.__brDbg = 'ios-safari-fallback';
     return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:'' };
   }
 
