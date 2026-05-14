@@ -10,7 +10,26 @@
              protection. All iOS browsers are frozen because they all use WebKit
              under Apple's App Store policy.
    version — browser app version reported in UA (not the engine version)
+
+   When detection returns id:'other' the UA is anonymously logged to D1 so we
+   can update the regexes when browser vendors change their UA tokens
+   (e.g. DuckDuckGo went from 'DuckDuckGo/' to 'Ddg/' in iOS 26.x).
+   The logger is fire-and-forget — never blocks rendering.
 */
+
+const BROWSER_LOG_API = 'https://api.mybadguy.com/api/log-unknown-browser';
+
+function logUnknownBrowser(ua) {
+  // Fire-and-forget, throttled server-side. Never await.
+  try {
+    fetch(BROWSER_LOG_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ua }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (_) {}
+}
 
 function detectBrowser() {
   const ua = navigator.userAgent;
@@ -29,6 +48,10 @@ function detectBrowser() {
     if ((m = ua.match(/(?:Ddg|DuckDuckGo)\/([\d.]+)/)))     return { id:'duckduckgo', name:'DuckDuckGo', engine:'webkit', frozen:true, version:m[1] };
     if ((m = ua.match(/OPT\/([\d.]+)/)))                    return { id:'opera',      name:'Opera',      engine:'webkit', frozen:true, version:m[1] };
     if ((m = ua.match(/Version\/([\d.]+).*Mobile.*Safari/))) return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:m[1] };
+    // No iOS browser token matched — likely Safari, but could be a new
+    // app that hasn't shipped a recognized UA token yet. Log so we can
+    // update detection if a pattern emerges.
+    logUnknownBrowser(ua);
     return { id:'safari', name:'Safari', engine:'webkit', frozen:true, version:'' };
   }
 
@@ -42,6 +65,8 @@ function detectBrowser() {
   // Chrome detection — must come AFTER Edge/Opera/Brave since they all include "Chrome" in UA
   if ((m = ua.match(/Chrome\/([\d.]+)/)))     return { id:'chrome',     name:'Chrome',     engine:'blink',  frozen:false, version:m[1] };
   if ((m = ua.match(/Version\/([\d.]+).*Safari/))) return { id:'safari', name:'Safari', engine:'webkit', frozen:false, version:m[1] };
+  // Unknown browser — log the UA anonymously so we can update detection
+  logUnknownBrowser(ua);
   return { id:'other', name:'Unknown browser', engine:'unknown', frozen:false, version:'' };
 }
 
