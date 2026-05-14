@@ -463,7 +463,8 @@ function detectDevice() {
 
   const patch = versionToPatchStatus(fullVersion || major, type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
-  return { type, os, major, fullVersion: fullVersion || major, icon, patch, name: NAMES[type] || 'Device' };
+  const browser = (typeof detectBrowser === 'function') ? detectBrowser() : null;
+  return { type, os, major, fullVersion: fullVersion || major, icon, patch, name: NAMES[type] || 'Device', browser };
 }
 
 // ── PROGRESS DOTS ─────────────────────────────────────────
@@ -668,8 +669,8 @@ function renderDevice() {
     && !TV.build;
   // Apple froze Safari's reported iOS version at 18.6 / 18.7 for fingerprinting
   // protection starting Sept 2025. iPhone/iPad users on iOS 26.x still see UA
-  // saying "18.6" or "18.7". We can never trust the major when it's 18 — the
-  // user could be on iOS 18.x OR on iOS 26.x with frozen Safari UA.
+  // saying "18.6" or "18.7". All iOS browsers (Chrome, Edge, Firefox, DuckDuckGo)
+  // use WebKit under Apple's policy, so they ALL inherit this freezing.
   const isIosFrozen = (DV.type === 'iphone' || DV.type === 'ipad')
     && DV.major === '18'
     && !TV.build;
@@ -680,7 +681,11 @@ function renderDevice() {
     lowConfidenceText = `Browsers on macOS only report your major version number. We cannot detect your exact build automatically. Tap <strong>Correct it</strong> to confirm your version from <strong> → About This Mac</strong>.`;
   } else if (isIosFrozen) {
     const settings = DV.type === 'iphone' ? 'iPhone' : 'iPad';
-    lowConfidenceText = `Safari freezes its reported iOS version at 18.6 or 18.7 for privacy reasons — even if your ${settings} is actually on iOS 26 or newer. Tap <strong>Correct it</strong> to confirm your real version from <strong>Settings → General → About</strong>.`;
+    const browserName = (DV.browser && DV.browser.name) ? DV.browser.name : 'Safari';
+    const browserNote = (DV.browser && DV.browser.id !== 'safari')
+      ? `${browserName} on iOS uses Apple's WebKit engine, which freezes the reported iOS version at 18.6 or 18.7 for privacy reasons`
+      : `Safari freezes its reported iOS version at 18.6 or 18.7 for privacy reasons`;
+    lowConfidenceText = `${browserNote} — even if your ${settings} is actually on iOS 26 or newer. Tap <strong>Correct it</strong> to confirm your real version from <strong>Settings → General → About</strong>.`;
   }
 
   const lowConfidence = partialDetection
@@ -696,7 +701,7 @@ function renderDevice() {
       <div class="device-card" role="region" aria-label="Detected device information">
         <div class="device-icon-wrap" aria-hidden="true">${DV.icon}</div>
         <h1 class="device-name">${DV.name}</h1>
-        <p class="device-meta">${DV.os} ${DV.fullVersion || DV.major}</p>
+        <p class="device-meta">${DV.os} ${DV.fullVersion || DV.major}${DV.browser?` · ${DV.browser.name}`:''}</p>
         <span class="patch-badge" style="background:${pb};color:${pc};">${pl}</span>
         ${warn}
         ${upgradeNote}
@@ -1131,6 +1136,16 @@ function buildProfile() {
 
   // Store full OS version string for display and scoring
   profile.deviceFullVersion = DV.fullVersion || DV.major;
+
+  // Store browser identity — used by Siteview, Dashboard, and future
+  // browser-specific recommendations
+  if (DV.browser) {
+    profile.browserId      = DV.browser.id;
+    profile.browserName    = DV.browser.name;
+    profile.browserEngine  = DV.browser.engine;
+    profile.browserVersion = DV.browser.version;
+    profile.browserFrozen  = DV.browser.frozen;
+  }
 
   // Default all device flags off
   profile.ip = false; profile.iosV = 1;
