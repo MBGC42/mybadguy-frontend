@@ -225,6 +225,7 @@
   </div>
 </footer>
 
+<script src="/js/browser.js"></script>
 <script>
 // ── Browser Exposure Scanner ───────────────────────────────
 // Reads publicly available browser APIs only.
@@ -423,15 +424,11 @@ async function runScan() {
     }
   }
 
-  // Browser detection
-  let browser = 'Unknown browser';
-  if (/CriOS/.test(ua))      browser = 'Chrome for iOS';
-  else if (/FxiOS/.test(ua)) browser = 'Firefox for iOS';
-  else if (/EdgiOS/.test(ua)) browser = 'Edge for iOS';
-  else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
-  else if (/Chrome/.test(ua)) browser = 'Chrome';
-  else if (/Firefox/.test(ua)) browser = 'Firefox';
-  else if (/Edge/.test(ua))   browser = 'Microsoft Edge';
+  // Browser detection — uses shared browser.js helper for consistency with Detect
+  const browserInfo = (typeof detectBrowser === 'function') ? detectBrowser() : { id:'other', name:'Unknown browser', engine:'unknown', frozen:false, version:'' };
+  const browser = browserInfo.version
+    ? `${browserInfo.name} ${browserInfo.version}`
+    : browserInfo.name;
 
   // Screen
   const screenRes = screen.width + ' × ' + screen.height;
