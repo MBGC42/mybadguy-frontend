@@ -425,7 +425,7 @@ async function runScan() {
   }
 
   // Browser detection — uses shared browser.js helper for consistency with Detect
-  const browserInfo = (typeof detectBrowser === 'function') ? detectBrowser() : { id:'other', name:'Unknown browser', engine:'unknown', frozen:false, version:'' };
+  const browserInfo = (typeof detectBrowserAsync === 'function') ? await detectBrowserAsync() : (typeof detectBrowser === 'function' ? detectBrowser() : { id:'other', name:'Unknown browser', engine:'unknown', frozen:false, version:'' });
   const browser = browserInfo.version
     ? `${browserInfo.name} ${browserInfo.version}`
     : browserInfo.name;
