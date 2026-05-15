@@ -36,11 +36,11 @@ const FALLBACK_TOKENS = {
   br_firefox_ios:  ['FxiOS'],
   br_ddg:          ['Ddg', 'DuckDuckGo'],
   br_safari_ios:   ['Mobile Safari'],
-  br_chrome_desk:  ['(Chrome)'],
-  br_edge_desk:    ['(Edg)', '(Edge)'],
-  br_firefox_desk: ['(Firefox)'],
-  br_safari_desk:  ['(Version)', 'Version/'],
-  br_opera_touch:  ['(OPT)'],
+  br_chrome_desk:  ['Chrome/'],
+  br_edge_desk:    ['Edg/', 'Edge/'],
+  br_firefox_desk: ['Firefox/'],
+  br_safari_desk:  ['Version/', 'Safari/'],
+  br_opera_touch:  ['OPT/'],
   br_samsung:      ['SamsungBrowser'],
 };
 
