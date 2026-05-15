@@ -405,7 +405,7 @@ async function fetchQuestions() {
 }
 
 // ── DEVICE DETECTION ─────────────────────────────────────
-function detectDevice() {
+async function detectDevice() {
   const ua = navigator.userAgent;
   const pl = navigator.platform || '';
   const tp = navigator.maxTouchPoints || 0;
@@ -463,7 +463,7 @@ function detectDevice() {
 
   const patch = versionToPatchStatus(fullVersion || major, type);
   const NAMES = { iphone:'iPhone', ipad:'iPad', android:'Android phone', mac:'Mac', windows:'Windows PC' };
-  const browser = (typeof detectBrowser === 'function') ? detectBrowser() : null;
+  const browser = (typeof detectBrowserAsync === 'function') ? await detectBrowserAsync() : (typeof detectBrowser === 'function' ? detectBrowser() : null);
   return { type, os, major, fullVersion: fullVersion || major, icon, patch, name: NAMES[type] || 'Device', browser };
 }
 
@@ -585,8 +585,12 @@ function renderScan() {
         else if (/iPhone/.test(_ua))  _pt='iphone';
         else if (/Android/.test(_ua)) _pt='android';
         else if (/Macintosh|MacIntel/.test(navigator.platform||'')&&_tp===0) _pt='mac';
-        await Promise.all([fetchOsVersions(_pt), fetchCveStats(_pt)]);
-        DV = detectDevice(); ST = 4; render();
+        await Promise.all([
+          fetchOsVersions(_pt),
+          fetchCveStats(_pt),
+          typeof loadBrowserTokens === 'function' ? loadBrowserTokens() : Promise.resolve()
+        ]);
+        DV = await detectDevice(); ST = 4; render();
       }, 300);
       return;
     }
